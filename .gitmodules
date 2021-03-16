@@ -1,0 +1,3 @@
+[submodule "src/ondewo-s2t-api"]
+	path = src/ondewo-s2t-api
+	url = https://github.com/ondewo/ondewo-s2t-api.git

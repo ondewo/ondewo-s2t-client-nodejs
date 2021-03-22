@@ -757,7 +757,8 @@ proto.ondewo.s2t.TranscribeStreamRequest.toObject = function(includeInstance, ms
     audioChunk: msg.getAudioChunk_asB64(),
     ctcDecoding: jspb.Message.getFieldWithDefault(msg, 3, 0),
     spellingCorrection: jspb.Message.getBooleanFieldWithDefault(msg, 4, false),
-    endOfStream: jspb.Message.getBooleanFieldWithDefault(msg, 5, false)
+    disableNormalization: jspb.Message.getBooleanFieldWithDefault(msg, 5, false),
+    endOfStream: jspb.Message.getBooleanFieldWithDefault(msg, 6, false)
   };
 
   if (includeInstance) {
@@ -811,6 +812,10 @@ proto.ondewo.s2t.TranscribeStreamRequest.deserializeBinaryFromReader = function(
       msg.setSpellingCorrection(value);
       break;
     case 5:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setDisableNormalization(value);
+      break;
+    case 6:
       var value = /** @type {boolean} */ (reader.readBool());
       msg.setEndOfStream(value);
       break;
@@ -871,10 +876,17 @@ proto.ondewo.s2t.TranscribeStreamRequest.serializeBinaryToWriter = function(mess
       f
     );
   }
-  f = message.getEndOfStream();
+  f = message.getDisableNormalization();
   if (f) {
     writer.writeBool(
       5,
+      f
+    );
+  }
+  f = message.getEndOfStream();
+  if (f) {
+    writer.writeBool(
+      6,
       f
     );
   }
@@ -978,10 +990,10 @@ proto.ondewo.s2t.TranscribeStreamRequest.prototype.setSpellingCorrection = funct
 
 
 /**
- * optional bool end_of_stream = 5;
+ * optional bool disable_normalization = 5;
  * @return {boolean}
  */
-proto.ondewo.s2t.TranscribeStreamRequest.prototype.getEndOfStream = function() {
+proto.ondewo.s2t.TranscribeStreamRequest.prototype.getDisableNormalization = function() {
   return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 5, false));
 };
 
@@ -990,8 +1002,26 @@ proto.ondewo.s2t.TranscribeStreamRequest.prototype.getEndOfStream = function() {
  * @param {boolean} value
  * @return {!proto.ondewo.s2t.TranscribeStreamRequest} returns this
  */
-proto.ondewo.s2t.TranscribeStreamRequest.prototype.setEndOfStream = function(value) {
+proto.ondewo.s2t.TranscribeStreamRequest.prototype.setDisableNormalization = function(value) {
   return jspb.Message.setProto3BooleanField(this, 5, value);
+};
+
+
+/**
+ * optional bool end_of_stream = 6;
+ * @return {boolean}
+ */
+proto.ondewo.s2t.TranscribeStreamRequest.prototype.getEndOfStream = function() {
+  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 6, false));
+};
+
+
+/**
+ * @param {boolean} value
+ * @return {!proto.ondewo.s2t.TranscribeStreamRequest} returns this
+ */
+proto.ondewo.s2t.TranscribeStreamRequest.prototype.setEndOfStream = function(value) {
+  return jspb.Message.setProto3BooleanField(this, 6, value);
 };
 
 
@@ -1221,7 +1251,8 @@ proto.ondewo.s2t.TranscribeFileRequest.toObject = function(includeInstance, msg)
     audioFile: msg.getAudioFile_asB64(),
     ctcDecoding: jspb.Message.getFieldWithDefault(msg, 3, 0),
     spellingCorrection: jspb.Message.getBooleanFieldWithDefault(msg, 4, false),
-    includeTiming: jspb.Message.getBooleanFieldWithDefault(msg, 5, false)
+    disableNormalization: jspb.Message.getBooleanFieldWithDefault(msg, 5, false),
+    includeTiming: jspb.Message.getBooleanFieldWithDefault(msg, 6, false)
   };
 
   if (includeInstance) {
@@ -1275,6 +1306,10 @@ proto.ondewo.s2t.TranscribeFileRequest.deserializeBinaryFromReader = function(ms
       msg.setSpellingCorrection(value);
       break;
     case 5:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setDisableNormalization(value);
+      break;
+    case 6:
       var value = /** @type {boolean} */ (reader.readBool());
       msg.setIncludeTiming(value);
       break;
@@ -1335,10 +1370,17 @@ proto.ondewo.s2t.TranscribeFileRequest.serializeBinaryToWriter = function(messag
       f
     );
   }
-  f = message.getIncludeTiming();
+  f = message.getDisableNormalization();
   if (f) {
     writer.writeBool(
       5,
+      f
+    );
+  }
+  f = message.getIncludeTiming();
+  if (f) {
+    writer.writeBool(
+      6,
       f
     );
   }
@@ -1442,10 +1484,10 @@ proto.ondewo.s2t.TranscribeFileRequest.prototype.setSpellingCorrection = functio
 
 
 /**
- * optional bool include_timing = 5;
+ * optional bool disable_normalization = 5;
  * @return {boolean}
  */
-proto.ondewo.s2t.TranscribeFileRequest.prototype.getIncludeTiming = function() {
+proto.ondewo.s2t.TranscribeFileRequest.prototype.getDisableNormalization = function() {
   return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 5, false));
 };
 
@@ -1454,8 +1496,26 @@ proto.ondewo.s2t.TranscribeFileRequest.prototype.getIncludeTiming = function() {
  * @param {boolean} value
  * @return {!proto.ondewo.s2t.TranscribeFileRequest} returns this
  */
-proto.ondewo.s2t.TranscribeFileRequest.prototype.setIncludeTiming = function(value) {
+proto.ondewo.s2t.TranscribeFileRequest.prototype.setDisableNormalization = function(value) {
   return jspb.Message.setProto3BooleanField(this, 5, value);
+};
+
+
+/**
+ * optional bool include_timing = 6;
+ * @return {boolean}
+ */
+proto.ondewo.s2t.TranscribeFileRequest.prototype.getIncludeTiming = function() {
+  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 6, false));
+};
+
+
+/**
+ * @param {boolean} value
+ * @return {!proto.ondewo.s2t.TranscribeFileRequest} returns this
+ */
+proto.ondewo.s2t.TranscribeFileRequest.prototype.setIncludeTiming = function(value) {
+  return jspb.Message.setProto3BooleanField(this, 6, value);
 };
 
 

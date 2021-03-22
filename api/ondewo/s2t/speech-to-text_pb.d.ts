@@ -18,6 +18,8 @@ export class TranscribeStreamRequest extends jspb.Message {
     setCtcDecoding(value: CTCDecoding): TranscribeStreamRequest;
     getSpellingCorrection(): boolean;
     setSpellingCorrection(value: boolean): TranscribeStreamRequest;
+    getDisableNormalization(): boolean;
+    setDisableNormalization(value: boolean): TranscribeStreamRequest;
     getEndOfStream(): boolean;
     setEndOfStream(value: boolean): TranscribeStreamRequest;
 
@@ -37,6 +39,7 @@ export namespace TranscribeStreamRequest {
         audioChunk: Uint8Array | string,
         ctcDecoding: CTCDecoding,
         spellingCorrection: boolean,
+        disableNormalization: boolean,
         endOfStream: boolean,
     }
 }
@@ -78,6 +81,8 @@ export class TranscribeFileRequest extends jspb.Message {
     setCtcDecoding(value: CTCDecoding): TranscribeFileRequest;
     getSpellingCorrection(): boolean;
     setSpellingCorrection(value: boolean): TranscribeFileRequest;
+    getDisableNormalization(): boolean;
+    setDisableNormalization(value: boolean): TranscribeFileRequest;
     getIncludeTiming(): boolean;
     setIncludeTiming(value: boolean): TranscribeFileRequest;
 
@@ -97,6 +102,7 @@ export namespace TranscribeFileRequest {
         audioFile: Uint8Array | string,
         ctcDecoding: CTCDecoding,
         spellingCorrection: boolean,
+        disableNormalization: boolean,
         includeTiming: boolean,
     }
 }

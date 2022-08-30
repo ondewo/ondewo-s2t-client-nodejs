@@ -31,6 +31,39 @@ function deserialize_google_protobuf_Empty(buffer_arg) {
   return google_protobuf_empty_pb.Empty.deserializeBinary(new Uint8Array(buffer_arg));
 }
 
+function serialize_ondewo_s2t_AddDataToUserLanguageModelRequest(arg) {
+  if (!(arg instanceof ondewo_s2t_speech$to$text_pb.AddDataToUserLanguageModelRequest)) {
+    throw new Error('Expected argument of type ondewo.s2t.AddDataToUserLanguageModelRequest');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_ondewo_s2t_AddDataToUserLanguageModelRequest(buffer_arg) {
+  return ondewo_s2t_speech$to$text_pb.AddDataToUserLanguageModelRequest.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
+function serialize_ondewo_s2t_CreateUserLanguageModelRequest(arg) {
+  if (!(arg instanceof ondewo_s2t_speech$to$text_pb.CreateUserLanguageModelRequest)) {
+    throw new Error('Expected argument of type ondewo.s2t.CreateUserLanguageModelRequest');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_ondewo_s2t_CreateUserLanguageModelRequest(buffer_arg) {
+  return ondewo_s2t_speech$to$text_pb.CreateUserLanguageModelRequest.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
+function serialize_ondewo_s2t_DeleteUserLanguageModelRequest(arg) {
+  if (!(arg instanceof ondewo_s2t_speech$to$text_pb.DeleteUserLanguageModelRequest)) {
+    throw new Error('Expected argument of type ondewo.s2t.DeleteUserLanguageModelRequest');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_ondewo_s2t_DeleteUserLanguageModelRequest(buffer_arg) {
+  return ondewo_s2t_speech$to$text_pb.DeleteUserLanguageModelRequest.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
 function serialize_ondewo_s2t_ListS2tDomainsRequest(arg) {
   if (!(arg instanceof ondewo_s2t_speech$to$text_pb.ListS2tDomainsRequest)) {
     throw new Error('Expected argument of type ondewo.s2t.ListS2tDomainsRequest');
@@ -51,6 +84,28 @@ function serialize_ondewo_s2t_ListS2tDomainsResponse(arg) {
 
 function deserialize_ondewo_s2t_ListS2tDomainsResponse(buffer_arg) {
   return ondewo_s2t_speech$to$text_pb.ListS2tDomainsResponse.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
+function serialize_ondewo_s2t_ListS2tLanguageModelsRequest(arg) {
+  if (!(arg instanceof ondewo_s2t_speech$to$text_pb.ListS2tLanguageModelsRequest)) {
+    throw new Error('Expected argument of type ondewo.s2t.ListS2tLanguageModelsRequest');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_ondewo_s2t_ListS2tLanguageModelsRequest(buffer_arg) {
+  return ondewo_s2t_speech$to$text_pb.ListS2tLanguageModelsRequest.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
+function serialize_ondewo_s2t_ListS2tLanguageModelsResponse(arg) {
+  if (!(arg instanceof ondewo_s2t_speech$to$text_pb.ListS2tLanguageModelsResponse)) {
+    throw new Error('Expected argument of type ondewo.s2t.ListS2tLanguageModelsResponse');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_ondewo_s2t_ListS2tLanguageModelsResponse(buffer_arg) {
+  return ondewo_s2t_speech$to$text_pb.ListS2tLanguageModelsResponse.deserializeBinary(new Uint8Array(buffer_arg));
 }
 
 function serialize_ondewo_s2t_ListS2tLanguagesRequest(arg) {
@@ -97,6 +152,17 @@ function deserialize_ondewo_s2t_ListS2tPipelinesResponse(buffer_arg) {
   return ondewo_s2t_speech$to$text_pb.ListS2tPipelinesResponse.deserializeBinary(new Uint8Array(buffer_arg));
 }
 
+function serialize_ondewo_s2t_S2TGetServiceInfoResponse(arg) {
+  if (!(arg instanceof ondewo_s2t_speech$to$text_pb.S2TGetServiceInfoResponse)) {
+    throw new Error('Expected argument of type ondewo.s2t.S2TGetServiceInfoResponse');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_ondewo_s2t_S2TGetServiceInfoResponse(buffer_arg) {
+  return ondewo_s2t_speech$to$text_pb.S2TGetServiceInfoResponse.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
 function serialize_ondewo_s2t_S2tPipelineId(arg) {
   if (!(arg instanceof ondewo_s2t_speech$to$text_pb.S2tPipelineId)) {
     throw new Error('Expected argument of type ondewo.s2t.S2tPipelineId');
@@ -117,6 +183,17 @@ function serialize_ondewo_s2t_Speech2TextConfig(arg) {
 
 function deserialize_ondewo_s2t_Speech2TextConfig(buffer_arg) {
   return ondewo_s2t_speech$to$text_pb.Speech2TextConfig.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
+function serialize_ondewo_s2t_TrainUserLanguageModelRequest(arg) {
+  if (!(arg instanceof ondewo_s2t_speech$to$text_pb.TrainUserLanguageModelRequest)) {
+    throw new Error('Expected argument of type ondewo.s2t.TrainUserLanguageModelRequest');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_ondewo_s2t_TrainUserLanguageModelRequest(buffer_arg) {
+  return ondewo_s2t_speech$to$text_pb.TrainUserLanguageModelRequest.deserializeBinary(new Uint8Array(buffer_arg));
 }
 
 function serialize_ondewo_s2t_TranscribeFileRequest(arg) {
@@ -177,7 +254,8 @@ var Speech2TextService = exports.Speech2TextService = {
     responseSerialize: serialize_ondewo_s2t_TranscribeFileResponse,
     responseDeserialize: deserialize_ondewo_s2t_TranscribeFileResponse,
   },
-  transcribeStream: {
+  // Transcribes an audio stream.
+transcribeStream: {
     path: '/ondewo.s2t.Speech2Text/TranscribeStream',
     requestStream: true,
     responseStream: true,
@@ -188,7 +266,9 @@ var Speech2TextService = exports.Speech2TextService = {
     responseSerialize: serialize_ondewo_s2t_TranscribeStreamResponse,
     responseDeserialize: deserialize_ondewo_s2t_TranscribeStreamResponse,
   },
-  getS2tPipeline: {
+  // Gets a speech to text pipeline corresponding to the id specified in S2tPipelineId. If no corresponding id is
+// found, raises ModuleNotFoundError in server.
+getS2tPipeline: {
     path: '/ondewo.s2t.Speech2Text/GetS2tPipeline',
     requestStream: false,
     responseStream: false,
@@ -199,7 +279,8 @@ var Speech2TextService = exports.Speech2TextService = {
     responseSerialize: serialize_ondewo_s2t_Speech2TextConfig,
     responseDeserialize: deserialize_ondewo_s2t_Speech2TextConfig,
   },
-  createS2tPipeline: {
+  // Creates a new speech to text pipeline from a Speech2TextConfig and registers the new pipeline in the server.
+createS2tPipeline: {
     path: '/ondewo.s2t.Speech2Text/CreateS2tPipeline',
     requestStream: false,
     responseStream: false,
@@ -210,7 +291,9 @@ var Speech2TextService = exports.Speech2TextService = {
     responseSerialize: serialize_ondewo_s2t_S2tPipelineId,
     responseDeserialize: deserialize_ondewo_s2t_S2tPipelineId,
   },
-  deleteS2tPipeline: {
+  // Deletes a pipeline corresponding to the id parsed in S2TPipelineId. If no corresponding id is
+// found, raises ModuleNotFoundError in server.
+deleteS2tPipeline: {
     path: '/ondewo.s2t.Speech2Text/DeleteS2tPipeline',
     requestStream: false,
     responseStream: false,
@@ -221,7 +304,9 @@ var Speech2TextService = exports.Speech2TextService = {
     responseSerialize: serialize_google_protobuf_Empty,
     responseDeserialize: deserialize_google_protobuf_Empty,
   },
-  updateS2tPipeline: {
+  // Updates a pipeline with the id specified in Speech2TextConfig with the new config. If no corresponding id is
+// found, raises ModuleNotFoundError in server.
+updateS2tPipeline: {
     path: '/ondewo.s2t.Speech2Text/UpdateS2tPipeline',
     requestStream: false,
     responseStream: false,
@@ -232,7 +317,8 @@ var Speech2TextService = exports.Speech2TextService = {
     responseSerialize: serialize_google_protobuf_Empty,
     responseDeserialize: deserialize_google_protobuf_Empty,
   },
-  listS2tPipelines: {
+  // Lists all speech to text pipelines.
+listS2tPipelines: {
     path: '/ondewo.s2t.Speech2Text/ListS2tPipelines',
     requestStream: false,
     responseStream: false,
@@ -243,7 +329,8 @@ var Speech2TextService = exports.Speech2TextService = {
     responseSerialize: serialize_ondewo_s2t_ListS2tPipelinesResponse,
     responseDeserialize: deserialize_ondewo_s2t_ListS2tPipelinesResponse,
   },
-  listS2tLanguages: {
+  // Returns a message containing a list of all languages for which there exist pipelines.
+listS2tLanguages: {
     path: '/ondewo.s2t.Speech2Text/ListS2tLanguages',
     requestStream: false,
     responseStream: false,
@@ -254,7 +341,8 @@ var Speech2TextService = exports.Speech2TextService = {
     responseSerialize: serialize_ondewo_s2t_ListS2tLanguagesResponse,
     responseDeserialize: deserialize_ondewo_s2t_ListS2tLanguagesResponse,
   },
-  listS2tDomains: {
+  // Returns a message containing a list of all domains for which there exist pipelines.
+listS2tDomains: {
     path: '/ondewo.s2t.Speech2Text/ListS2tDomains',
     requestStream: false,
     responseStream: false,
@@ -264,6 +352,79 @@ var Speech2TextService = exports.Speech2TextService = {
     requestDeserialize: deserialize_ondewo_s2t_ListS2tDomainsRequest,
     responseSerialize: serialize_ondewo_s2t_ListS2tDomainsResponse,
     responseDeserialize: deserialize_ondewo_s2t_ListS2tDomainsResponse,
+  },
+  // Returns a message containing the version of the running speech to text server.
+getServiceInfo: {
+    path: '/ondewo.s2t.Speech2Text/GetServiceInfo',
+    requestStream: false,
+    responseStream: false,
+    requestType: google_protobuf_empty_pb.Empty,
+    responseType: ondewo_s2t_speech$to$text_pb.S2TGetServiceInfoResponse,
+    requestSerialize: serialize_google_protobuf_Empty,
+    requestDeserialize: deserialize_google_protobuf_Empty,
+    responseSerialize: serialize_ondewo_s2t_S2TGetServiceInfoResponse,
+    responseDeserialize: deserialize_ondewo_s2t_S2TGetServiceInfoResponse,
+  },
+  // Given a list of pipeline ids, returns a list of LanguageModelPipelineId messages containing the pipeline
+// id and a list of the language models loaded in the pipeline.
+listS2tLanguageModels: {
+    path: '/ondewo.s2t.Speech2Text/ListS2tLanguageModels',
+    requestStream: false,
+    responseStream: false,
+    requestType: ondewo_s2t_speech$to$text_pb.ListS2tLanguageModelsRequest,
+    responseType: ondewo_s2t_speech$to$text_pb.ListS2tLanguageModelsResponse,
+    requestSerialize: serialize_ondewo_s2t_ListS2tLanguageModelsRequest,
+    requestDeserialize: deserialize_ondewo_s2t_ListS2tLanguageModelsRequest,
+    responseSerialize: serialize_ondewo_s2t_ListS2tLanguageModelsResponse,
+    responseDeserialize: deserialize_ondewo_s2t_ListS2tLanguageModelsResponse,
+  },
+  // Create a user language model.
+createUserLanguageModel: {
+    path: '/ondewo.s2t.Speech2Text/CreateUserLanguageModel',
+    requestStream: false,
+    responseStream: false,
+    requestType: ondewo_s2t_speech$to$text_pb.CreateUserLanguageModelRequest,
+    responseType: google_protobuf_empty_pb.Empty,
+    requestSerialize: serialize_ondewo_s2t_CreateUserLanguageModelRequest,
+    requestDeserialize: deserialize_ondewo_s2t_CreateUserLanguageModelRequest,
+    responseSerialize: serialize_google_protobuf_Empty,
+    responseDeserialize: deserialize_google_protobuf_Empty,
+  },
+  // Delete a user language model.
+deleteUserLanguageModel: {
+    path: '/ondewo.s2t.Speech2Text/DeleteUserLanguageModel',
+    requestStream: false,
+    responseStream: false,
+    requestType: ondewo_s2t_speech$to$text_pb.DeleteUserLanguageModelRequest,
+    responseType: google_protobuf_empty_pb.Empty,
+    requestSerialize: serialize_ondewo_s2t_DeleteUserLanguageModelRequest,
+    requestDeserialize: deserialize_ondewo_s2t_DeleteUserLanguageModelRequest,
+    responseSerialize: serialize_google_protobuf_Empty,
+    responseDeserialize: deserialize_google_protobuf_Empty,
+  },
+  // Add data to a user language model.
+addDataToUserLanguageModel: {
+    path: '/ondewo.s2t.Speech2Text/AddDataToUserLanguageModel',
+    requestStream: false,
+    responseStream: false,
+    requestType: ondewo_s2t_speech$to$text_pb.AddDataToUserLanguageModelRequest,
+    responseType: google_protobuf_empty_pb.Empty,
+    requestSerialize: serialize_ondewo_s2t_AddDataToUserLanguageModelRequest,
+    requestDeserialize: deserialize_ondewo_s2t_AddDataToUserLanguageModelRequest,
+    responseSerialize: serialize_google_protobuf_Empty,
+    responseDeserialize: deserialize_google_protobuf_Empty,
+  },
+  // Train a user language model.
+trainUserLanguageModel: {
+    path: '/ondewo.s2t.Speech2Text/TrainUserLanguageModel',
+    requestStream: false,
+    responseStream: false,
+    requestType: ondewo_s2t_speech$to$text_pb.TrainUserLanguageModelRequest,
+    responseType: google_protobuf_empty_pb.Empty,
+    requestSerialize: serialize_ondewo_s2t_TrainUserLanguageModelRequest,
+    requestDeserialize: deserialize_ondewo_s2t_TrainUserLanguageModelRequest,
+    responseSerialize: serialize_google_protobuf_Empty,
+    responseDeserialize: deserialize_google_protobuf_Empty,
   },
 };
 

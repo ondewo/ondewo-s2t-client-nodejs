@@ -3,7 +3,7 @@
     <img alt="ONDEWO Logo" src="https://raw.githubusercontent.com/ondewo/ondewo-logos/master/github/ondewo_logo_github_2.png"/>
   </a>
   <h1 align="center">
-    ONDEWO S2T Client Js
+    ONDEWO S2T Client NodeJs
   </h1>
   <p align="center">
     <a href="https://badge.fury.io/js/%40ondewo%2Fs2t-client-nodejs"><img src="https://badge.fury.io/js/%40ondewo%2Fs2t-client-nodejs.svg" alt="npm version" height="18"></a>

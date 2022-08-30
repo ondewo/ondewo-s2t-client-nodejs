@@ -7,21 +7,213 @@
 import * as jspb from "google-protobuf";
 import * as google_protobuf_empty_pb from "google-protobuf/google/protobuf/empty_pb";
 
-export class TranscribeStreamRequest extends jspb.Message { 
+export class TranscribeRequestConfig extends jspb.Message { 
     getS2tPipelineId(): string;
-    setS2tPipelineId(value: string): TranscribeStreamRequest;
+    setS2tPipelineId(value: string): TranscribeRequestConfig;
+    getCtcDecoding(): CTCDecoding;
+    setCtcDecoding(value: CTCDecoding): TranscribeRequestConfig;
+
+    hasLanguageModelName(): boolean;
+    clearLanguageModelName(): void;
+    getLanguageModelName(): string;
+    setLanguageModelName(value: string): TranscribeRequestConfig;
+
+    hasPostProcessing(): boolean;
+    clearPostProcessing(): void;
+    getPostProcessing(): PostProcessingOptions | undefined;
+    setPostProcessing(value?: PostProcessingOptions): TranscribeRequestConfig;
+
+    hasUtteranceDetection(): boolean;
+    clearUtteranceDetection(): void;
+    getUtteranceDetection(): UtteranceDetectionOptions | undefined;
+    setUtteranceDetection(value?: UtteranceDetectionOptions): TranscribeRequestConfig;
+
+    hasPyannote(): boolean;
+    clearPyannote(): void;
+    getPyannote(): Pyannote | undefined;
+    setPyannote(value?: Pyannote): TranscribeRequestConfig;
+
+    hasMatchbox(): boolean;
+    clearMatchbox(): void;
+    getMatchbox(): Matchbox | undefined;
+    setMatchbox(value?: Matchbox): TranscribeRequestConfig;
+
+    hasReturnOptions(): boolean;
+    clearReturnOptions(): void;
+    getReturnOptions(): TranscriptionReturnOptions | undefined;
+    setReturnOptions(value?: TranscriptionReturnOptions): TranscribeRequestConfig;
+
+    getOneofLanguageModelNameCase(): TranscribeRequestConfig.OneofLanguageModelNameCase;
+    getOneofPostProcessingCase(): TranscribeRequestConfig.OneofPostProcessingCase;
+    getOneofUtteranceDetectionCase(): TranscribeRequestConfig.OneofUtteranceDetectionCase;
+    getVoiceActivityDetectionCase(): TranscribeRequestConfig.VoiceActivityDetectionCase;
+    getOneofReturnOptionsCase(): TranscribeRequestConfig.OneofReturnOptionsCase;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): TranscribeRequestConfig.AsObject;
+    static toObject(includeInstance: boolean, msg: TranscribeRequestConfig): TranscribeRequestConfig.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: TranscribeRequestConfig, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): TranscribeRequestConfig;
+    static deserializeBinaryFromReader(message: TranscribeRequestConfig, reader: jspb.BinaryReader): TranscribeRequestConfig;
+}
+
+export namespace TranscribeRequestConfig {
+    export type AsObject = {
+        s2tPipelineId: string,
+        ctcDecoding: CTCDecoding,
+        languageModelName: string,
+        postProcessing?: PostProcessingOptions.AsObject,
+        utteranceDetection?: UtteranceDetectionOptions.AsObject,
+        pyannote?: Pyannote.AsObject,
+        matchbox?: Matchbox.AsObject,
+        returnOptions?: TranscriptionReturnOptions.AsObject,
+    }
+
+    export enum OneofLanguageModelNameCase {
+        ONEOF_LANGUAGE_MODEL_NAME_NOT_SET = 0,
+        LANGUAGE_MODEL_NAME = 3,
+    }
+
+    export enum OneofPostProcessingCase {
+        ONEOF_POST_PROCESSING_NOT_SET = 0,
+        POST_PROCESSING = 4,
+    }
+
+    export enum OneofUtteranceDetectionCase {
+        ONEOF_UTTERANCE_DETECTION_NOT_SET = 0,
+        UTTERANCE_DETECTION = 5,
+    }
+
+    export enum VoiceActivityDetectionCase {
+        VOICE_ACTIVITY_DETECTION_NOT_SET = 0,
+        PYANNOTE = 6,
+        MATCHBOX = 7,
+    }
+
+    export enum OneofReturnOptionsCase {
+        ONEOF_RETURN_OPTIONS_NOT_SET = 0,
+        RETURN_OPTIONS = 8,
+    }
+
+}
+
+export class TranscriptionReturnOptions extends jspb.Message { 
+    getReturnStartOfSpeech(): boolean;
+    setReturnStartOfSpeech(value: boolean): TranscriptionReturnOptions;
+    getReturnAudio(): boolean;
+    setReturnAudio(value: boolean): TranscriptionReturnOptions;
+    getReturnAlternativeTranscriptions(): boolean;
+    setReturnAlternativeTranscriptions(value: boolean): TranscriptionReturnOptions;
+    getReturnConfidenceScore(): boolean;
+    setReturnConfidenceScore(value: boolean): TranscriptionReturnOptions;
+    getReturnWordTiming(): boolean;
+    setReturnWordTiming(value: boolean): TranscriptionReturnOptions;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): TranscriptionReturnOptions.AsObject;
+    static toObject(includeInstance: boolean, msg: TranscriptionReturnOptions): TranscriptionReturnOptions.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: TranscriptionReturnOptions, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): TranscriptionReturnOptions;
+    static deserializeBinaryFromReader(message: TranscriptionReturnOptions, reader: jspb.BinaryReader): TranscriptionReturnOptions;
+}
+
+export namespace TranscriptionReturnOptions {
+    export type AsObject = {
+        returnStartOfSpeech: boolean,
+        returnAudio: boolean,
+        returnAlternativeTranscriptions: boolean,
+        returnConfidenceScore: boolean,
+        returnWordTiming: boolean,
+    }
+}
+
+export class UtteranceDetectionOptions extends jspb.Message { 
+
+    hasTranscribeNotFinal(): boolean;
+    clearTranscribeNotFinal(): void;
+    getTranscribeNotFinal(): boolean;
+    setTranscribeNotFinal(value: boolean): UtteranceDetectionOptions;
+    getStartOfUtteranceThreshold(): number;
+    setStartOfUtteranceThreshold(value: number): UtteranceDetectionOptions;
+    getEndOfUtteranceThreshold(): number;
+    setEndOfUtteranceThreshold(value: number): UtteranceDetectionOptions;
+    getNextChunkTimeout(): number;
+    setNextChunkTimeout(value: number): UtteranceDetectionOptions;
+
+    getOneofTranscribeNotFinalCase(): UtteranceDetectionOptions.OneofTranscribeNotFinalCase;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): UtteranceDetectionOptions.AsObject;
+    static toObject(includeInstance: boolean, msg: UtteranceDetectionOptions): UtteranceDetectionOptions.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: UtteranceDetectionOptions, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): UtteranceDetectionOptions;
+    static deserializeBinaryFromReader(message: UtteranceDetectionOptions, reader: jspb.BinaryReader): UtteranceDetectionOptions;
+}
+
+export namespace UtteranceDetectionOptions {
+    export type AsObject = {
+        transcribeNotFinal: boolean,
+        startOfUtteranceThreshold: number,
+        endOfUtteranceThreshold: number,
+        nextChunkTimeout: number,
+    }
+
+    export enum OneofTranscribeNotFinalCase {
+        ONEOF_TRANSCRIBE_NOT_FINAL_NOT_SET = 0,
+        TRANSCRIBE_NOT_FINAL = 1,
+    }
+
+}
+
+export class PostProcessingOptions extends jspb.Message { 
+    getSpellingCorrection(): boolean;
+    setSpellingCorrection(value: boolean): PostProcessingOptions;
+    getNormalize(): boolean;
+    setNormalize(value: boolean): PostProcessingOptions;
+
+    hasConfig(): boolean;
+    clearConfig(): void;
+    getConfig(): PostProcessing | undefined;
+    setConfig(value?: PostProcessing): PostProcessingOptions;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): PostProcessingOptions.AsObject;
+    static toObject(includeInstance: boolean, msg: PostProcessingOptions): PostProcessingOptions.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: PostProcessingOptions, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): PostProcessingOptions;
+    static deserializeBinaryFromReader(message: PostProcessingOptions, reader: jspb.BinaryReader): PostProcessingOptions;
+}
+
+export namespace PostProcessingOptions {
+    export type AsObject = {
+        spellingCorrection: boolean,
+        normalize: boolean,
+        config?: PostProcessing.AsObject,
+    }
+}
+
+export class TranscribeStreamRequest extends jspb.Message { 
     getAudioChunk(): Uint8Array | string;
     getAudioChunk_asU8(): Uint8Array;
     getAudioChunk_asB64(): string;
     setAudioChunk(value: Uint8Array | string): TranscribeStreamRequest;
-    getCtcDecoding(): CTCDecoding;
-    setCtcDecoding(value: CTCDecoding): TranscribeStreamRequest;
-    getSpellingCorrection(): boolean;
-    setSpellingCorrection(value: boolean): TranscribeStreamRequest;
-    getDisableNormalization(): boolean;
-    setDisableNormalization(value: boolean): TranscribeStreamRequest;
     getEndOfStream(): boolean;
     setEndOfStream(value: boolean): TranscribeStreamRequest;
+
+    hasConfig(): boolean;
+    clearConfig(): void;
+    getConfig(): TranscribeRequestConfig | undefined;
+    setConfig(value?: TranscribeRequestConfig): TranscribeStreamRequest;
+    getMuteAudio(): boolean;
+    setMuteAudio(value: boolean): TranscribeStreamRequest;
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): TranscribeStreamRequest.AsObject;
@@ -35,22 +227,62 @@ export class TranscribeStreamRequest extends jspb.Message {
 
 export namespace TranscribeStreamRequest {
     export type AsObject = {
-        s2tPipelineId: string,
         audioChunk: Uint8Array | string,
-        ctcDecoding: CTCDecoding,
-        spellingCorrection: boolean,
-        disableNormalization: boolean,
         endOfStream: boolean,
+        config?: TranscribeRequestConfig.AsObject,
+        muteAudio: boolean,
+    }
+}
+
+export class Transcription extends jspb.Message { 
+    getTranscription(): string;
+    setTranscription(value: string): Transcription;
+    getConfidenceScore(): number;
+    setConfidenceScore(value: number): Transcription;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): Transcription.AsObject;
+    static toObject(includeInstance: boolean, msg: Transcription): Transcription.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: Transcription, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): Transcription;
+    static deserializeBinaryFromReader(message: Transcription, reader: jspb.BinaryReader): Transcription;
+}
+
+export namespace Transcription {
+    export type AsObject = {
+        transcription: string,
+        confidenceScore: number,
     }
 }
 
 export class TranscribeStreamResponse extends jspb.Message { 
-    getTranscription(): string;
-    setTranscription(value: string): TranscribeStreamResponse;
+    clearTranscriptionsList(): void;
+    getTranscriptionsList(): Array<Transcription>;
+    setTranscriptionsList(value: Array<Transcription>): TranscribeStreamResponse;
+    addTranscriptions(value?: Transcription, index?: number): Transcription;
     getTime(): number;
     setTime(value: number): TranscribeStreamResponse;
     getFinal(): boolean;
     setFinal(value: boolean): TranscribeStreamResponse;
+    getReturnAudio(): boolean;
+    setReturnAudio(value: boolean): TranscribeStreamResponse;
+    getAudio(): Uint8Array | string;
+    getAudio_asU8(): Uint8Array;
+    getAudio_asB64(): string;
+    setAudio(value: Uint8Array | string): TranscribeStreamResponse;
+    getUtteranceStart(): boolean;
+    setUtteranceStart(value: boolean): TranscribeStreamResponse;
+    getAudioUuid(): string;
+    setAudioUuid(value: string): TranscribeStreamResponse;
+
+    hasConfig(): boolean;
+    clearConfig(): void;
+    getConfig(): TranscribeRequestConfig | undefined;
+    setConfig(value?: TranscribeRequestConfig): TranscribeStreamResponse;
+
+    getOneofConfigCase(): TranscribeStreamResponse.OneofConfigCase;
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): TranscribeStreamResponse.AsObject;
@@ -64,27 +296,33 @@ export class TranscribeStreamResponse extends jspb.Message {
 
 export namespace TranscribeStreamResponse {
     export type AsObject = {
-        transcription: string,
+        transcriptionsList: Array<Transcription.AsObject>,
         time: number,
         pb_final: boolean,
+        returnAudio: boolean,
+        audio: Uint8Array | string,
+        utteranceStart: boolean,
+        audioUuid: string,
+        config?: TranscribeRequestConfig.AsObject,
     }
+
+    export enum OneofConfigCase {
+        ONEOF_CONFIG_NOT_SET = 0,
+        CONFIG = 8,
+    }
+
 }
 
 export class TranscribeFileRequest extends jspb.Message { 
-    getS2tPipelineId(): string;
-    setS2tPipelineId(value: string): TranscribeFileRequest;
     getAudioFile(): Uint8Array | string;
     getAudioFile_asU8(): Uint8Array;
     getAudioFile_asB64(): string;
     setAudioFile(value: Uint8Array | string): TranscribeFileRequest;
-    getCtcDecoding(): CTCDecoding;
-    setCtcDecoding(value: CTCDecoding): TranscribeFileRequest;
-    getSpellingCorrection(): boolean;
-    setSpellingCorrection(value: boolean): TranscribeFileRequest;
-    getDisableNormalization(): boolean;
-    setDisableNormalization(value: boolean): TranscribeFileRequest;
-    getIncludeTiming(): boolean;
-    setIncludeTiming(value: boolean): TranscribeFileRequest;
+
+    hasConfig(): boolean;
+    clearConfig(): void;
+    getConfig(): TranscribeRequestConfig | undefined;
+    setConfig(value?: TranscribeRequestConfig): TranscribeFileRequest;
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): TranscribeFileRequest.AsObject;
@@ -98,24 +336,24 @@ export class TranscribeFileRequest extends jspb.Message {
 
 export namespace TranscribeFileRequest {
     export type AsObject = {
-        s2tPipelineId: string,
         audioFile: Uint8Array | string,
-        ctcDecoding: CTCDecoding,
-        spellingCorrection: boolean,
-        disableNormalization: boolean,
-        includeTiming: boolean,
+        config?: TranscribeRequestConfig.AsObject,
     }
 }
 
 export class TranscribeFileResponse extends jspb.Message { 
-    getTranscription(): string;
-    setTranscription(value: string): TranscribeFileResponse;
+    clearTranscriptionsList(): void;
+    getTranscriptionsList(): Array<Transcription>;
+    setTranscriptionsList(value: Array<Transcription>): TranscribeFileResponse;
+    addTranscriptions(value?: Transcription, index?: number): Transcription;
     getTime(): number;
     setTime(value: number): TranscribeFileResponse;
     clearWordTimingList(): void;
     getWordTimingList(): Array<WordTiming>;
     setWordTimingList(value: Array<WordTiming>): TranscribeFileResponse;
     addWordTiming(value?: WordTiming, index?: number): WordTiming;
+    getAudioUuid(): string;
+    setAudioUuid(value: string): TranscribeFileResponse;
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): TranscribeFileResponse.AsObject;
@@ -129,9 +367,10 @@ export class TranscribeFileResponse extends jspb.Message {
 
 export namespace TranscribeFileResponse {
     export type AsObject = {
-        transcription: string,
+        transcriptionsList: Array<Transcription.AsObject>,
         time: number,
         wordTimingList: Array<WordTiming.AsObject>,
+        audioUuid: string,
     }
 }
 
@@ -194,6 +433,8 @@ export class ListS2tPipelinesRequest extends jspb.Message {
     getDomainsList(): Array<string>;
     setDomainsList(value: Array<string>): ListS2tPipelinesRequest;
     addDomains(value: string, index?: number): string;
+    getRegisteredOnly(): boolean;
+    setRegisteredOnly(value: boolean): ListS2tPipelinesRequest;
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): ListS2tPipelinesRequest.AsObject;
@@ -210,6 +451,7 @@ export namespace ListS2tPipelinesRequest {
         languagesList: Array<string>,
         pipelineOwnersList: Array<string>,
         domainsList: Array<string>,
+        registeredOnly: boolean,
     }
 }
 
@@ -333,21 +575,41 @@ export namespace ListS2tDomainsResponse {
     }
 }
 
+export class S2TGetServiceInfoResponse extends jspb.Message { 
+    getVersion(): string;
+    setVersion(value: string): S2TGetServiceInfoResponse;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): S2TGetServiceInfoResponse.AsObject;
+    static toObject(includeInstance: boolean, msg: S2TGetServiceInfoResponse): S2TGetServiceInfoResponse.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: S2TGetServiceInfoResponse, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): S2TGetServiceInfoResponse;
+    static deserializeBinaryFromReader(message: S2TGetServiceInfoResponse, reader: jspb.BinaryReader): S2TGetServiceInfoResponse;
+}
+
+export namespace S2TGetServiceInfoResponse {
+    export type AsObject = {
+        version: string,
+    }
+}
+
 export class Speech2TextConfig extends jspb.Message { 
     getId(): string;
     setId(value: string): Speech2TextConfig;
 
     hasDescription(): boolean;
     clearDescription(): void;
-    getDescription(): Description | undefined;
-    setDescription(value?: Description): Speech2TextConfig;
+    getDescription(): S2TDescription | undefined;
+    setDescription(value?: S2TDescription): Speech2TextConfig;
     getActive(): boolean;
     setActive(value: boolean): Speech2TextConfig;
 
     hasInference(): boolean;
     clearInference(): void;
-    getInference(): Inference | undefined;
-    setInference(value?: Inference): Speech2TextConfig;
+    getInference(): S2TInference | undefined;
+    setInference(value?: S2TInference): Speech2TextConfig;
 
     hasStreamingServer(): boolean;
     clearStreamingServer(): void;
@@ -382,9 +644,9 @@ export class Speech2TextConfig extends jspb.Message {
 export namespace Speech2TextConfig {
     export type AsObject = {
         id: string,
-        description?: Description.AsObject,
+        description?: S2TDescription.AsObject,
         active: boolean,
-        inference?: Inference.AsObject,
+        inference?: S2TInference.AsObject,
         streamingServer?: StreamingServer.AsObject,
         voiceActivityDetection?: VoiceActivityDetection.AsObject,
         postProcessing?: PostProcessing.AsObject,
@@ -392,27 +654,27 @@ export namespace Speech2TextConfig {
     }
 }
 
-export class Description extends jspb.Message { 
+export class S2TDescription extends jspb.Message { 
     getLanguage(): string;
-    setLanguage(value: string): Description;
+    setLanguage(value: string): S2TDescription;
     getPipelineOwner(): string;
-    setPipelineOwner(value: string): Description;
+    setPipelineOwner(value: string): S2TDescription;
     getDomain(): string;
-    setDomain(value: string): Description;
+    setDomain(value: string): S2TDescription;
     getComments(): string;
-    setComments(value: string): Description;
+    setComments(value: string): S2TDescription;
 
     serializeBinary(): Uint8Array;
-    toObject(includeInstance?: boolean): Description.AsObject;
-    static toObject(includeInstance: boolean, msg: Description): Description.AsObject;
+    toObject(includeInstance?: boolean): S2TDescription.AsObject;
+    static toObject(includeInstance: boolean, msg: S2TDescription): S2TDescription.AsObject;
     static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
     static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-    static serializeBinaryToWriter(message: Description, writer: jspb.BinaryWriter): void;
-    static deserializeBinary(bytes: Uint8Array): Description;
-    static deserializeBinaryFromReader(message: Description, reader: jspb.BinaryReader): Description;
+    static serializeBinaryToWriter(message: S2TDescription, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): S2TDescription;
+    static deserializeBinaryFromReader(message: S2TDescription, reader: jspb.BinaryReader): S2TDescription;
 }
 
-export namespace Description {
+export namespace S2TDescription {
     export type AsObject = {
         language: string,
         pipelineOwner: string,
@@ -421,32 +683,32 @@ export namespace Description {
     }
 }
 
-export class Inference extends jspb.Message { 
+export class S2TInference extends jspb.Message { 
 
     hasCtcAcousticModels(): boolean;
     clearCtcAcousticModels(): void;
     getCtcAcousticModels(): CtcAcousticModels | undefined;
-    setCtcAcousticModels(value?: CtcAcousticModels): Inference;
+    setCtcAcousticModels(value?: CtcAcousticModels): S2TInference;
 
-    hasLanguageModel(): boolean;
-    clearLanguageModel(): void;
-    getLanguageModel(): LanguageModel | undefined;
-    setLanguageModel(value?: LanguageModel): Inference;
+    hasLanguageModels(): boolean;
+    clearLanguageModels(): void;
+    getLanguageModels(): LanguageModels | undefined;
+    setLanguageModels(value?: LanguageModels): S2TInference;
 
     serializeBinary(): Uint8Array;
-    toObject(includeInstance?: boolean): Inference.AsObject;
-    static toObject(includeInstance: boolean, msg: Inference): Inference.AsObject;
+    toObject(includeInstance?: boolean): S2TInference.AsObject;
+    static toObject(includeInstance: boolean, msg: S2TInference): S2TInference.AsObject;
     static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
     static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-    static serializeBinaryToWriter(message: Inference, writer: jspb.BinaryWriter): void;
-    static deserializeBinary(bytes: Uint8Array): Inference;
-    static deserializeBinaryFromReader(message: Inference, reader: jspb.BinaryReader): Inference;
+    static serializeBinaryToWriter(message: S2TInference, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): S2TInference;
+    static deserializeBinaryFromReader(message: S2TInference, reader: jspb.BinaryReader): S2TInference;
 }
 
-export namespace Inference {
+export namespace S2TInference {
     export type AsObject = {
         ctcAcousticModels?: CtcAcousticModels.AsObject,
-        languageModel?: LanguageModel.AsObject,
+        languageModels?: LanguageModels.AsObject,
     }
 }
 
@@ -469,6 +731,11 @@ export class CtcAcousticModels extends jspb.Message {
     getWav2vec(): Wav2Vec | undefined;
     setWav2vec(value?: Wav2Vec): CtcAcousticModels;
 
+    hasWav2vecTriton(): boolean;
+    clearWav2vecTriton(): void;
+    getWav2vecTriton(): Wav2VecTriton | undefined;
+    setWav2vecTriton(value?: Wav2VecTriton): CtcAcousticModels;
+
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): CtcAcousticModels.AsObject;
     static toObject(includeInstance: boolean, msg: CtcAcousticModels): CtcAcousticModels.AsObject;
@@ -485,6 +752,7 @@ export namespace CtcAcousticModels {
         quartznet?: Quartznet.AsObject,
         quartznetTriton?: QuartznetTriton.AsObject,
         wav2vec?: Wav2Vec.AsObject,
+        wav2vecTriton?: Wav2VecTriton.AsObject,
     }
 }
 
@@ -511,6 +779,35 @@ export namespace Wav2Vec {
     }
 }
 
+export class Wav2VecTriton extends jspb.Message { 
+    getProcessorPath(): string;
+    setProcessorPath(value: string): Wav2VecTriton;
+    getTritonModelName(): string;
+    setTritonModelName(value: string): Wav2VecTriton;
+    getTritonModelVersion(): string;
+    setTritonModelVersion(value: string): Wav2VecTriton;
+    getCheckStatusTimeout(): number;
+    setCheckStatusTimeout(value: number): Wav2VecTriton;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): Wav2VecTriton.AsObject;
+    static toObject(includeInstance: boolean, msg: Wav2VecTriton): Wav2VecTriton.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: Wav2VecTriton, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): Wav2VecTriton;
+    static deserializeBinaryFromReader(message: Wav2VecTriton, reader: jspb.BinaryReader): Wav2VecTriton;
+}
+
+export namespace Wav2VecTriton {
+    export type AsObject = {
+        processorPath: string,
+        tritonModelName: string,
+        tritonModelVersion: string,
+        checkStatusTimeout: number,
+    }
+}
+
 export class Quartznet extends jspb.Message { 
     getConfigPath(): string;
     setConfigPath(value: string): Quartznet;
@@ -526,6 +823,8 @@ export class Quartznet extends jspb.Message {
     clearCkptFile(): void;
     getCkptFile(): CkptFile | undefined;
     setCkptFile(value?: CkptFile): Quartznet;
+    getUseGpu(): boolean;
+    setUseGpu(value: boolean): Quartznet;
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): Quartznet.AsObject;
@@ -543,6 +842,7 @@ export namespace Quartznet {
         loadType: string,
         ptFiles?: PtFiles.AsObject,
         ckptFile?: CkptFile.AsObject,
+        useGpu: boolean,
     }
 }
 
@@ -615,30 +915,33 @@ export namespace QuartznetTriton {
     }
 }
 
-export class LanguageModel extends jspb.Message { 
+export class LanguageModels extends jspb.Message { 
     getPath(): string;
-    setPath(value: string): LanguageModel;
+    setPath(value: string): LanguageModels;
     getBeamSize(): number;
-    setBeamSize(value: number): LanguageModel;
+    setBeamSize(value: number): LanguageModels;
+    getDefaultLm(): string;
+    setDefaultLm(value: string): LanguageModels;
     getBeamSearchScorerAlpha(): number;
-    setBeamSearchScorerAlpha(value: number): LanguageModel;
+    setBeamSearchScorerAlpha(value: number): LanguageModels;
     getBeamSearchScorerBeta(): number;
-    setBeamSearchScorerBeta(value: number): LanguageModel;
+    setBeamSearchScorerBeta(value: number): LanguageModels;
 
     serializeBinary(): Uint8Array;
-    toObject(includeInstance?: boolean): LanguageModel.AsObject;
-    static toObject(includeInstance: boolean, msg: LanguageModel): LanguageModel.AsObject;
+    toObject(includeInstance?: boolean): LanguageModels.AsObject;
+    static toObject(includeInstance: boolean, msg: LanguageModels): LanguageModels.AsObject;
     static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
     static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-    static serializeBinaryToWriter(message: LanguageModel, writer: jspb.BinaryWriter): void;
-    static deserializeBinary(bytes: Uint8Array): LanguageModel;
-    static deserializeBinaryFromReader(message: LanguageModel, reader: jspb.BinaryReader): LanguageModel;
+    static serializeBinaryToWriter(message: LanguageModels, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): LanguageModels;
+    static deserializeBinaryFromReader(message: LanguageModels, reader: jspb.BinaryReader): LanguageModels;
 }
 
-export namespace LanguageModel {
+export namespace LanguageModels {
     export type AsObject = {
         path: string,
         beamSize: number,
+        defaultLm: string,
         beamSearchScorerAlpha: number,
         beamSearchScorerBeta: number,
     }
@@ -689,6 +992,8 @@ export class StreamingSpeechRecognition extends jspb.Message {
     setStartOfUtteranceThreshold(value: number): StreamingSpeechRecognition;
     getEndOfUtteranceThreshold(): number;
     setEndOfUtteranceThreshold(value: number): StreamingSpeechRecognition;
+    getNextChunkTimeout(): number;
+    setNextChunkTimeout(value: number): StreamingSpeechRecognition;
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): StreamingSpeechRecognition.AsObject;
@@ -708,6 +1013,7 @@ export namespace StreamingSpeechRecognition {
         minAudioChunkSize: number,
         startOfUtteranceThreshold: number,
         endOfUtteranceThreshold: number,
+        nextChunkTimeout: number,
     }
 }
 
@@ -755,12 +1061,17 @@ export class Pyannote extends jspb.Message {
     setOffset(value: number): Pyannote;
     getOnset(): number;
     setOnset(value: number): Pyannote;
+
+    hasLogScale(): boolean;
+    clearLogScale(): void;
     getLogScale(): boolean;
     setLogScale(value: boolean): Pyannote;
     getMinDurationOff(): number;
     setMinDurationOff(value: number): Pyannote;
     getMinDurationOn(): number;
     setMinDurationOn(value: number): Pyannote;
+
+    getOneofLogScaleCase(): Pyannote.OneofLogScaleCase;
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): Pyannote.AsObject;
@@ -782,6 +1093,12 @@ export namespace Pyannote {
         minDurationOff: number,
         minDurationOn: number,
     }
+
+    export enum OneofLogScaleCase {
+        ONEOF_LOG_SCALE_NOT_SET = 0,
+        LOG_SCALE = 5,
+    }
+
 }
 
 export class Matchbox extends jspb.Message { 
@@ -847,8 +1164,8 @@ export class PostProcessors extends jspb.Message {
 
     hasNormalization(): boolean;
     clearNormalization(): void;
-    getNormalization(): Normalization | undefined;
-    setNormalization(value?: Normalization): PostProcessors;
+    getNormalization(): S2TNormalization | undefined;
+    setNormalization(value?: S2TNormalization): PostProcessors;
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): PostProcessors.AsObject;
@@ -863,7 +1180,7 @@ export class PostProcessors extends jspb.Message {
 export namespace PostProcessors {
     export type AsObject = {
         symSpell?: SymSpell.AsObject,
-        normalization?: Normalization.AsObject,
+        normalization?: S2TNormalization.AsObject,
     }
 }
 
@@ -893,21 +1210,21 @@ export namespace SymSpell {
     }
 }
 
-export class Normalization extends jspb.Message { 
+export class S2TNormalization extends jspb.Message { 
     getLanguage(): string;
-    setLanguage(value: string): Normalization;
+    setLanguage(value: string): S2TNormalization;
 
     serializeBinary(): Uint8Array;
-    toObject(includeInstance?: boolean): Normalization.AsObject;
-    static toObject(includeInstance: boolean, msg: Normalization): Normalization.AsObject;
+    toObject(includeInstance?: boolean): S2TNormalization.AsObject;
+    static toObject(includeInstance: boolean, msg: S2TNormalization): S2TNormalization.AsObject;
     static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
     static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-    static serializeBinaryToWriter(message: Normalization, writer: jspb.BinaryWriter): void;
-    static deserializeBinary(bytes: Uint8Array): Normalization;
-    static deserializeBinaryFromReader(message: Normalization, reader: jspb.BinaryReader): Normalization;
+    static serializeBinaryToWriter(message: S2TNormalization, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): S2TNormalization;
+    static deserializeBinaryFromReader(message: S2TNormalization, reader: jspb.BinaryReader): S2TNormalization;
 }
 
-export namespace Normalization {
+export namespace S2TNormalization {
     export type AsObject = {
         language: string,
     }
@@ -936,7 +1253,165 @@ export namespace Logging {
     }
 }
 
+export class ListS2tLanguageModelsRequest extends jspb.Message { 
+    clearIdsList(): void;
+    getIdsList(): Array<string>;
+    setIdsList(value: Array<string>): ListS2tLanguageModelsRequest;
+    addIds(value: string, index?: number): string;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): ListS2tLanguageModelsRequest.AsObject;
+    static toObject(includeInstance: boolean, msg: ListS2tLanguageModelsRequest): ListS2tLanguageModelsRequest.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: ListS2tLanguageModelsRequest, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): ListS2tLanguageModelsRequest;
+    static deserializeBinaryFromReader(message: ListS2tLanguageModelsRequest, reader: jspb.BinaryReader): ListS2tLanguageModelsRequest;
+}
+
+export namespace ListS2tLanguageModelsRequest {
+    export type AsObject = {
+        idsList: Array<string>,
+    }
+}
+
+export class LanguageModelPipelineId extends jspb.Message { 
+    getPipelineId(): string;
+    setPipelineId(value: string): LanguageModelPipelineId;
+    clearModelNamesList(): void;
+    getModelNamesList(): Array<string>;
+    setModelNamesList(value: Array<string>): LanguageModelPipelineId;
+    addModelNames(value: string, index?: number): string;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): LanguageModelPipelineId.AsObject;
+    static toObject(includeInstance: boolean, msg: LanguageModelPipelineId): LanguageModelPipelineId.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: LanguageModelPipelineId, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): LanguageModelPipelineId;
+    static deserializeBinaryFromReader(message: LanguageModelPipelineId, reader: jspb.BinaryReader): LanguageModelPipelineId;
+}
+
+export namespace LanguageModelPipelineId {
+    export type AsObject = {
+        pipelineId: string,
+        modelNamesList: Array<string>,
+    }
+}
+
+export class ListS2tLanguageModelsResponse extends jspb.Message { 
+    clearLmPipelineIdsList(): void;
+    getLmPipelineIdsList(): Array<LanguageModelPipelineId>;
+    setLmPipelineIdsList(value: Array<LanguageModelPipelineId>): ListS2tLanguageModelsResponse;
+    addLmPipelineIds(value?: LanguageModelPipelineId, index?: number): LanguageModelPipelineId;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): ListS2tLanguageModelsResponse.AsObject;
+    static toObject(includeInstance: boolean, msg: ListS2tLanguageModelsResponse): ListS2tLanguageModelsResponse.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: ListS2tLanguageModelsResponse, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): ListS2tLanguageModelsResponse;
+    static deserializeBinaryFromReader(message: ListS2tLanguageModelsResponse, reader: jspb.BinaryReader): ListS2tLanguageModelsResponse;
+}
+
+export namespace ListS2tLanguageModelsResponse {
+    export type AsObject = {
+        lmPipelineIdsList: Array<LanguageModelPipelineId.AsObject>,
+    }
+}
+
+export class CreateUserLanguageModelRequest extends jspb.Message { 
+    getLanguageModelName(): string;
+    setLanguageModelName(value: string): CreateUserLanguageModelRequest;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): CreateUserLanguageModelRequest.AsObject;
+    static toObject(includeInstance: boolean, msg: CreateUserLanguageModelRequest): CreateUserLanguageModelRequest.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: CreateUserLanguageModelRequest, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): CreateUserLanguageModelRequest;
+    static deserializeBinaryFromReader(message: CreateUserLanguageModelRequest, reader: jspb.BinaryReader): CreateUserLanguageModelRequest;
+}
+
+export namespace CreateUserLanguageModelRequest {
+    export type AsObject = {
+        languageModelName: string,
+    }
+}
+
+export class DeleteUserLanguageModelRequest extends jspb.Message { 
+    getLanguageModelName(): string;
+    setLanguageModelName(value: string): DeleteUserLanguageModelRequest;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): DeleteUserLanguageModelRequest.AsObject;
+    static toObject(includeInstance: boolean, msg: DeleteUserLanguageModelRequest): DeleteUserLanguageModelRequest.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: DeleteUserLanguageModelRequest, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): DeleteUserLanguageModelRequest;
+    static deserializeBinaryFromReader(message: DeleteUserLanguageModelRequest, reader: jspb.BinaryReader): DeleteUserLanguageModelRequest;
+}
+
+export namespace DeleteUserLanguageModelRequest {
+    export type AsObject = {
+        languageModelName: string,
+    }
+}
+
+export class AddDataToUserLanguageModelRequest extends jspb.Message { 
+    getLanguageModelName(): string;
+    setLanguageModelName(value: string): AddDataToUserLanguageModelRequest;
+    getZippedData(): Uint8Array | string;
+    getZippedData_asU8(): Uint8Array;
+    getZippedData_asB64(): string;
+    setZippedData(value: Uint8Array | string): AddDataToUserLanguageModelRequest;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): AddDataToUserLanguageModelRequest.AsObject;
+    static toObject(includeInstance: boolean, msg: AddDataToUserLanguageModelRequest): AddDataToUserLanguageModelRequest.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: AddDataToUserLanguageModelRequest, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): AddDataToUserLanguageModelRequest;
+    static deserializeBinaryFromReader(message: AddDataToUserLanguageModelRequest, reader: jspb.BinaryReader): AddDataToUserLanguageModelRequest;
+}
+
+export namespace AddDataToUserLanguageModelRequest {
+    export type AsObject = {
+        languageModelName: string,
+        zippedData: Uint8Array | string,
+    }
+}
+
+export class TrainUserLanguageModelRequest extends jspb.Message { 
+    getLanguageModelName(): string;
+    setLanguageModelName(value: string): TrainUserLanguageModelRequest;
+    getOrder(): number;
+    setOrder(value: number): TrainUserLanguageModelRequest;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): TrainUserLanguageModelRequest.AsObject;
+    static toObject(includeInstance: boolean, msg: TrainUserLanguageModelRequest): TrainUserLanguageModelRequest.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: TrainUserLanguageModelRequest, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): TrainUserLanguageModelRequest;
+    static deserializeBinaryFromReader(message: TrainUserLanguageModelRequest, reader: jspb.BinaryReader): TrainUserLanguageModelRequest;
+}
+
+export namespace TrainUserLanguageModelRequest {
+    export type AsObject = {
+        languageModelName: string,
+        order: number,
+    }
+}
+
 export enum CTCDecoding {
-    GREEDY = 0,
-    BEAM_SEARCH_WITH_LM = 1,
+    DEFAULT = 0,
+    GREEDY = 1,
+    BEAM_SEARCH_WITH_LM = 2,
 }

@@ -2,6 +2,7 @@
 /**
  * @fileoverview
  * @enhanceable
+ * @suppress {missingRequire} reports error on implicit type usages.
  * @suppress {messageConventions} JS Compiler reports an error if a variable or
  *     field starts with 'MSG_' and isn't a translatable message.
  * @public
@@ -16,39 +17,145 @@ var global = Function('return this')();
 
 var google_protobuf_empty_pb = require('google-protobuf/google/protobuf/empty_pb.js');
 goog.object.extend(proto, google_protobuf_empty_pb);
+goog.exportSymbol('proto.ondewo.s2t.AddDataToUserLanguageModelRequest', null, global);
 goog.exportSymbol('proto.ondewo.s2t.CTCDecoding', null, global);
 goog.exportSymbol('proto.ondewo.s2t.CkptFile', null, global);
+goog.exportSymbol('proto.ondewo.s2t.CreateUserLanguageModelRequest', null, global);
 goog.exportSymbol('proto.ondewo.s2t.CtcAcousticModels', null, global);
-goog.exportSymbol('proto.ondewo.s2t.Description', null, global);
-goog.exportSymbol('proto.ondewo.s2t.Inference', null, global);
-goog.exportSymbol('proto.ondewo.s2t.LanguageModel', null, global);
+goog.exportSymbol('proto.ondewo.s2t.DeleteUserLanguageModelRequest', null, global);
+goog.exportSymbol('proto.ondewo.s2t.LanguageModelPipelineId', null, global);
+goog.exportSymbol('proto.ondewo.s2t.LanguageModels', null, global);
 goog.exportSymbol('proto.ondewo.s2t.ListS2tDomainsRequest', null, global);
 goog.exportSymbol('proto.ondewo.s2t.ListS2tDomainsResponse', null, global);
+goog.exportSymbol('proto.ondewo.s2t.ListS2tLanguageModelsRequest', null, global);
+goog.exportSymbol('proto.ondewo.s2t.ListS2tLanguageModelsResponse', null, global);
 goog.exportSymbol('proto.ondewo.s2t.ListS2tLanguagesRequest', null, global);
 goog.exportSymbol('proto.ondewo.s2t.ListS2tLanguagesResponse', null, global);
 goog.exportSymbol('proto.ondewo.s2t.ListS2tPipelinesRequest', null, global);
 goog.exportSymbol('proto.ondewo.s2t.ListS2tPipelinesResponse', null, global);
 goog.exportSymbol('proto.ondewo.s2t.Logging', null, global);
 goog.exportSymbol('proto.ondewo.s2t.Matchbox', null, global);
-goog.exportSymbol('proto.ondewo.s2t.Normalization', null, global);
 goog.exportSymbol('proto.ondewo.s2t.PostProcessing', null, global);
+goog.exportSymbol('proto.ondewo.s2t.PostProcessingOptions', null, global);
 goog.exportSymbol('proto.ondewo.s2t.PostProcessors', null, global);
 goog.exportSymbol('proto.ondewo.s2t.PtFiles', null, global);
 goog.exportSymbol('proto.ondewo.s2t.Pyannote', null, global);
+goog.exportSymbol('proto.ondewo.s2t.Pyannote.OneofLogScaleCase', null, global);
 goog.exportSymbol('proto.ondewo.s2t.Quartznet', null, global);
 goog.exportSymbol('proto.ondewo.s2t.QuartznetTriton', null, global);
+goog.exportSymbol('proto.ondewo.s2t.S2TDescription', null, global);
+goog.exportSymbol('proto.ondewo.s2t.S2TGetServiceInfoResponse', null, global);
+goog.exportSymbol('proto.ondewo.s2t.S2TInference', null, global);
+goog.exportSymbol('proto.ondewo.s2t.S2TNormalization', null, global);
 goog.exportSymbol('proto.ondewo.s2t.S2tPipelineId', null, global);
 goog.exportSymbol('proto.ondewo.s2t.Speech2TextConfig', null, global);
 goog.exportSymbol('proto.ondewo.s2t.StreamingServer', null, global);
 goog.exportSymbol('proto.ondewo.s2t.StreamingSpeechRecognition', null, global);
 goog.exportSymbol('proto.ondewo.s2t.SymSpell', null, global);
+goog.exportSymbol('proto.ondewo.s2t.TrainUserLanguageModelRequest', null, global);
 goog.exportSymbol('proto.ondewo.s2t.TranscribeFileRequest', null, global);
 goog.exportSymbol('proto.ondewo.s2t.TranscribeFileResponse', null, global);
+goog.exportSymbol('proto.ondewo.s2t.TranscribeRequestConfig', null, global);
+goog.exportSymbol('proto.ondewo.s2t.TranscribeRequestConfig.OneofLanguageModelNameCase', null, global);
+goog.exportSymbol('proto.ondewo.s2t.TranscribeRequestConfig.OneofPostProcessingCase', null, global);
+goog.exportSymbol('proto.ondewo.s2t.TranscribeRequestConfig.OneofReturnOptionsCase', null, global);
+goog.exportSymbol('proto.ondewo.s2t.TranscribeRequestConfig.OneofUtteranceDetectionCase', null, global);
+goog.exportSymbol('proto.ondewo.s2t.TranscribeRequestConfig.VoiceActivityDetectionCase', null, global);
 goog.exportSymbol('proto.ondewo.s2t.TranscribeStreamRequest', null, global);
 goog.exportSymbol('proto.ondewo.s2t.TranscribeStreamResponse', null, global);
+goog.exportSymbol('proto.ondewo.s2t.TranscribeStreamResponse.OneofConfigCase', null, global);
+goog.exportSymbol('proto.ondewo.s2t.Transcription', null, global);
+goog.exportSymbol('proto.ondewo.s2t.TranscriptionReturnOptions', null, global);
+goog.exportSymbol('proto.ondewo.s2t.UtteranceDetectionOptions', null, global);
+goog.exportSymbol('proto.ondewo.s2t.UtteranceDetectionOptions.OneofTranscribeNotFinalCase', null, global);
 goog.exportSymbol('proto.ondewo.s2t.VoiceActivityDetection', null, global);
 goog.exportSymbol('proto.ondewo.s2t.Wav2Vec', null, global);
+goog.exportSymbol('proto.ondewo.s2t.Wav2VecTriton', null, global);
 goog.exportSymbol('proto.ondewo.s2t.WordTiming', null, global);
+/**
+ * Generated by JsPbCodeGenerator.
+ * @param {Array=} opt_data Optional initial data array, typically from a
+ * server response, or constructed directly in Javascript. The array is used
+ * in place and becomes part of the constructed object. It is not cloned.
+ * If no data is provided, the constructed object will be empty, but still
+ * valid.
+ * @extends {jspb.Message}
+ * @constructor
+ */
+proto.ondewo.s2t.TranscribeRequestConfig = function(opt_data) {
+  jspb.Message.initialize(this, opt_data, 0, -1, null, proto.ondewo.s2t.TranscribeRequestConfig.oneofGroups_);
+};
+goog.inherits(proto.ondewo.s2t.TranscribeRequestConfig, jspb.Message);
+if (goog.DEBUG && !COMPILED) {
+  /**
+   * @public
+   * @override
+   */
+  proto.ondewo.s2t.TranscribeRequestConfig.displayName = 'proto.ondewo.s2t.TranscribeRequestConfig';
+}
+/**
+ * Generated by JsPbCodeGenerator.
+ * @param {Array=} opt_data Optional initial data array, typically from a
+ * server response, or constructed directly in Javascript. The array is used
+ * in place and becomes part of the constructed object. It is not cloned.
+ * If no data is provided, the constructed object will be empty, but still
+ * valid.
+ * @extends {jspb.Message}
+ * @constructor
+ */
+proto.ondewo.s2t.TranscriptionReturnOptions = function(opt_data) {
+  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
+};
+goog.inherits(proto.ondewo.s2t.TranscriptionReturnOptions, jspb.Message);
+if (goog.DEBUG && !COMPILED) {
+  /**
+   * @public
+   * @override
+   */
+  proto.ondewo.s2t.TranscriptionReturnOptions.displayName = 'proto.ondewo.s2t.TranscriptionReturnOptions';
+}
+/**
+ * Generated by JsPbCodeGenerator.
+ * @param {Array=} opt_data Optional initial data array, typically from a
+ * server response, or constructed directly in Javascript. The array is used
+ * in place and becomes part of the constructed object. It is not cloned.
+ * If no data is provided, the constructed object will be empty, but still
+ * valid.
+ * @extends {jspb.Message}
+ * @constructor
+ */
+proto.ondewo.s2t.UtteranceDetectionOptions = function(opt_data) {
+  jspb.Message.initialize(this, opt_data, 0, -1, null, proto.ondewo.s2t.UtteranceDetectionOptions.oneofGroups_);
+};
+goog.inherits(proto.ondewo.s2t.UtteranceDetectionOptions, jspb.Message);
+if (goog.DEBUG && !COMPILED) {
+  /**
+   * @public
+   * @override
+   */
+  proto.ondewo.s2t.UtteranceDetectionOptions.displayName = 'proto.ondewo.s2t.UtteranceDetectionOptions';
+}
+/**
+ * Generated by JsPbCodeGenerator.
+ * @param {Array=} opt_data Optional initial data array, typically from a
+ * server response, or constructed directly in Javascript. The array is used
+ * in place and becomes part of the constructed object. It is not cloned.
+ * If no data is provided, the constructed object will be empty, but still
+ * valid.
+ * @extends {jspb.Message}
+ * @constructor
+ */
+proto.ondewo.s2t.PostProcessingOptions = function(opt_data) {
+  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
+};
+goog.inherits(proto.ondewo.s2t.PostProcessingOptions, jspb.Message);
+if (goog.DEBUG && !COMPILED) {
+  /**
+   * @public
+   * @override
+   */
+  proto.ondewo.s2t.PostProcessingOptions.displayName = 'proto.ondewo.s2t.PostProcessingOptions';
+}
 /**
  * Generated by JsPbCodeGenerator.
  * @param {Array=} opt_data Optional initial data array, typically from a
@@ -80,8 +187,29 @@ if (goog.DEBUG && !COMPILED) {
  * @extends {jspb.Message}
  * @constructor
  */
-proto.ondewo.s2t.TranscribeStreamResponse = function(opt_data) {
+proto.ondewo.s2t.Transcription = function(opt_data) {
   jspb.Message.initialize(this, opt_data, 0, -1, null, null);
+};
+goog.inherits(proto.ondewo.s2t.Transcription, jspb.Message);
+if (goog.DEBUG && !COMPILED) {
+  /**
+   * @public
+   * @override
+   */
+  proto.ondewo.s2t.Transcription.displayName = 'proto.ondewo.s2t.Transcription';
+}
+/**
+ * Generated by JsPbCodeGenerator.
+ * @param {Array=} opt_data Optional initial data array, typically from a
+ * server response, or constructed directly in Javascript. The array is used
+ * in place and becomes part of the constructed object. It is not cloned.
+ * If no data is provided, the constructed object will be empty, but still
+ * valid.
+ * @extends {jspb.Message}
+ * @constructor
+ */
+proto.ondewo.s2t.TranscribeStreamResponse = function(opt_data) {
+  jspb.Message.initialize(this, opt_data, 0, -1, proto.ondewo.s2t.TranscribeStreamResponse.repeatedFields_, proto.ondewo.s2t.TranscribeStreamResponse.oneofGroups_);
 };
 goog.inherits(proto.ondewo.s2t.TranscribeStreamResponse, jspb.Message);
 if (goog.DEBUG && !COMPILED) {
@@ -311,6 +439,27 @@ if (goog.DEBUG && !COMPILED) {
  * @extends {jspb.Message}
  * @constructor
  */
+proto.ondewo.s2t.S2TGetServiceInfoResponse = function(opt_data) {
+  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
+};
+goog.inherits(proto.ondewo.s2t.S2TGetServiceInfoResponse, jspb.Message);
+if (goog.DEBUG && !COMPILED) {
+  /**
+   * @public
+   * @override
+   */
+  proto.ondewo.s2t.S2TGetServiceInfoResponse.displayName = 'proto.ondewo.s2t.S2TGetServiceInfoResponse';
+}
+/**
+ * Generated by JsPbCodeGenerator.
+ * @param {Array=} opt_data Optional initial data array, typically from a
+ * server response, or constructed directly in Javascript. The array is used
+ * in place and becomes part of the constructed object. It is not cloned.
+ * If no data is provided, the constructed object will be empty, but still
+ * valid.
+ * @extends {jspb.Message}
+ * @constructor
+ */
 proto.ondewo.s2t.Speech2TextConfig = function(opt_data) {
   jspb.Message.initialize(this, opt_data, 0, -1, null, null);
 };
@@ -332,16 +481,16 @@ if (goog.DEBUG && !COMPILED) {
  * @extends {jspb.Message}
  * @constructor
  */
-proto.ondewo.s2t.Description = function(opt_data) {
+proto.ondewo.s2t.S2TDescription = function(opt_data) {
   jspb.Message.initialize(this, opt_data, 0, -1, null, null);
 };
-goog.inherits(proto.ondewo.s2t.Description, jspb.Message);
+goog.inherits(proto.ondewo.s2t.S2TDescription, jspb.Message);
 if (goog.DEBUG && !COMPILED) {
   /**
    * @public
    * @override
    */
-  proto.ondewo.s2t.Description.displayName = 'proto.ondewo.s2t.Description';
+  proto.ondewo.s2t.S2TDescription.displayName = 'proto.ondewo.s2t.S2TDescription';
 }
 /**
  * Generated by JsPbCodeGenerator.
@@ -353,16 +502,16 @@ if (goog.DEBUG && !COMPILED) {
  * @extends {jspb.Message}
  * @constructor
  */
-proto.ondewo.s2t.Inference = function(opt_data) {
+proto.ondewo.s2t.S2TInference = function(opt_data) {
   jspb.Message.initialize(this, opt_data, 0, -1, null, null);
 };
-goog.inherits(proto.ondewo.s2t.Inference, jspb.Message);
+goog.inherits(proto.ondewo.s2t.S2TInference, jspb.Message);
 if (goog.DEBUG && !COMPILED) {
   /**
    * @public
    * @override
    */
-  proto.ondewo.s2t.Inference.displayName = 'proto.ondewo.s2t.Inference';
+  proto.ondewo.s2t.S2TInference.displayName = 'proto.ondewo.s2t.S2TInference';
 }
 /**
  * Generated by JsPbCodeGenerator.
@@ -405,6 +554,27 @@ if (goog.DEBUG && !COMPILED) {
    * @override
    */
   proto.ondewo.s2t.Wav2Vec.displayName = 'proto.ondewo.s2t.Wav2Vec';
+}
+/**
+ * Generated by JsPbCodeGenerator.
+ * @param {Array=} opt_data Optional initial data array, typically from a
+ * server response, or constructed directly in Javascript. The array is used
+ * in place and becomes part of the constructed object. It is not cloned.
+ * If no data is provided, the constructed object will be empty, but still
+ * valid.
+ * @extends {jspb.Message}
+ * @constructor
+ */
+proto.ondewo.s2t.Wav2VecTriton = function(opt_data) {
+  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
+};
+goog.inherits(proto.ondewo.s2t.Wav2VecTriton, jspb.Message);
+if (goog.DEBUG && !COMPILED) {
+  /**
+   * @public
+   * @override
+   */
+  proto.ondewo.s2t.Wav2VecTriton.displayName = 'proto.ondewo.s2t.Wav2VecTriton';
 }
 /**
  * Generated by JsPbCodeGenerator.
@@ -500,16 +670,16 @@ if (goog.DEBUG && !COMPILED) {
  * @extends {jspb.Message}
  * @constructor
  */
-proto.ondewo.s2t.LanguageModel = function(opt_data) {
+proto.ondewo.s2t.LanguageModels = function(opt_data) {
   jspb.Message.initialize(this, opt_data, 0, -1, null, null);
 };
-goog.inherits(proto.ondewo.s2t.LanguageModel, jspb.Message);
+goog.inherits(proto.ondewo.s2t.LanguageModels, jspb.Message);
 if (goog.DEBUG && !COMPILED) {
   /**
    * @public
    * @override
    */
-  proto.ondewo.s2t.LanguageModel.displayName = 'proto.ondewo.s2t.LanguageModel';
+  proto.ondewo.s2t.LanguageModels.displayName = 'proto.ondewo.s2t.LanguageModels';
 }
 /**
  * Generated by JsPbCodeGenerator.
@@ -585,7 +755,7 @@ if (goog.DEBUG && !COMPILED) {
  * @constructor
  */
 proto.ondewo.s2t.Pyannote = function(opt_data) {
-  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
+  jspb.Message.initialize(this, opt_data, 0, -1, null, proto.ondewo.s2t.Pyannote.oneofGroups_);
 };
 goog.inherits(proto.ondewo.s2t.Pyannote, jspb.Message);
 if (goog.DEBUG && !COMPILED) {
@@ -689,16 +859,16 @@ if (goog.DEBUG && !COMPILED) {
  * @extends {jspb.Message}
  * @constructor
  */
-proto.ondewo.s2t.Normalization = function(opt_data) {
+proto.ondewo.s2t.S2TNormalization = function(opt_data) {
   jspb.Message.initialize(this, opt_data, 0, -1, null, null);
 };
-goog.inherits(proto.ondewo.s2t.Normalization, jspb.Message);
+goog.inherits(proto.ondewo.s2t.S2TNormalization, jspb.Message);
 if (goog.DEBUG && !COMPILED) {
   /**
    * @public
    * @override
    */
-  proto.ondewo.s2t.Normalization.displayName = 'proto.ondewo.s2t.Normalization';
+  proto.ondewo.s2t.S2TNormalization.displayName = 'proto.ondewo.s2t.S2TNormalization';
 }
 /**
  * Generated by JsPbCodeGenerator.
@@ -721,6 +891,1426 @@ if (goog.DEBUG && !COMPILED) {
    */
   proto.ondewo.s2t.Logging.displayName = 'proto.ondewo.s2t.Logging';
 }
+/**
+ * Generated by JsPbCodeGenerator.
+ * @param {Array=} opt_data Optional initial data array, typically from a
+ * server response, or constructed directly in Javascript. The array is used
+ * in place and becomes part of the constructed object. It is not cloned.
+ * If no data is provided, the constructed object will be empty, but still
+ * valid.
+ * @extends {jspb.Message}
+ * @constructor
+ */
+proto.ondewo.s2t.ListS2tLanguageModelsRequest = function(opt_data) {
+  jspb.Message.initialize(this, opt_data, 0, -1, proto.ondewo.s2t.ListS2tLanguageModelsRequest.repeatedFields_, null);
+};
+goog.inherits(proto.ondewo.s2t.ListS2tLanguageModelsRequest, jspb.Message);
+if (goog.DEBUG && !COMPILED) {
+  /**
+   * @public
+   * @override
+   */
+  proto.ondewo.s2t.ListS2tLanguageModelsRequest.displayName = 'proto.ondewo.s2t.ListS2tLanguageModelsRequest';
+}
+/**
+ * Generated by JsPbCodeGenerator.
+ * @param {Array=} opt_data Optional initial data array, typically from a
+ * server response, or constructed directly in Javascript. The array is used
+ * in place and becomes part of the constructed object. It is not cloned.
+ * If no data is provided, the constructed object will be empty, but still
+ * valid.
+ * @extends {jspb.Message}
+ * @constructor
+ */
+proto.ondewo.s2t.LanguageModelPipelineId = function(opt_data) {
+  jspb.Message.initialize(this, opt_data, 0, -1, proto.ondewo.s2t.LanguageModelPipelineId.repeatedFields_, null);
+};
+goog.inherits(proto.ondewo.s2t.LanguageModelPipelineId, jspb.Message);
+if (goog.DEBUG && !COMPILED) {
+  /**
+   * @public
+   * @override
+   */
+  proto.ondewo.s2t.LanguageModelPipelineId.displayName = 'proto.ondewo.s2t.LanguageModelPipelineId';
+}
+/**
+ * Generated by JsPbCodeGenerator.
+ * @param {Array=} opt_data Optional initial data array, typically from a
+ * server response, or constructed directly in Javascript. The array is used
+ * in place and becomes part of the constructed object. It is not cloned.
+ * If no data is provided, the constructed object will be empty, but still
+ * valid.
+ * @extends {jspb.Message}
+ * @constructor
+ */
+proto.ondewo.s2t.ListS2tLanguageModelsResponse = function(opt_data) {
+  jspb.Message.initialize(this, opt_data, 0, -1, proto.ondewo.s2t.ListS2tLanguageModelsResponse.repeatedFields_, null);
+};
+goog.inherits(proto.ondewo.s2t.ListS2tLanguageModelsResponse, jspb.Message);
+if (goog.DEBUG && !COMPILED) {
+  /**
+   * @public
+   * @override
+   */
+  proto.ondewo.s2t.ListS2tLanguageModelsResponse.displayName = 'proto.ondewo.s2t.ListS2tLanguageModelsResponse';
+}
+/**
+ * Generated by JsPbCodeGenerator.
+ * @param {Array=} opt_data Optional initial data array, typically from a
+ * server response, or constructed directly in Javascript. The array is used
+ * in place and becomes part of the constructed object. It is not cloned.
+ * If no data is provided, the constructed object will be empty, but still
+ * valid.
+ * @extends {jspb.Message}
+ * @constructor
+ */
+proto.ondewo.s2t.CreateUserLanguageModelRequest = function(opt_data) {
+  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
+};
+goog.inherits(proto.ondewo.s2t.CreateUserLanguageModelRequest, jspb.Message);
+if (goog.DEBUG && !COMPILED) {
+  /**
+   * @public
+   * @override
+   */
+  proto.ondewo.s2t.CreateUserLanguageModelRequest.displayName = 'proto.ondewo.s2t.CreateUserLanguageModelRequest';
+}
+/**
+ * Generated by JsPbCodeGenerator.
+ * @param {Array=} opt_data Optional initial data array, typically from a
+ * server response, or constructed directly in Javascript. The array is used
+ * in place and becomes part of the constructed object. It is not cloned.
+ * If no data is provided, the constructed object will be empty, but still
+ * valid.
+ * @extends {jspb.Message}
+ * @constructor
+ */
+proto.ondewo.s2t.DeleteUserLanguageModelRequest = function(opt_data) {
+  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
+};
+goog.inherits(proto.ondewo.s2t.DeleteUserLanguageModelRequest, jspb.Message);
+if (goog.DEBUG && !COMPILED) {
+  /**
+   * @public
+   * @override
+   */
+  proto.ondewo.s2t.DeleteUserLanguageModelRequest.displayName = 'proto.ondewo.s2t.DeleteUserLanguageModelRequest';
+}
+/**
+ * Generated by JsPbCodeGenerator.
+ * @param {Array=} opt_data Optional initial data array, typically from a
+ * server response, or constructed directly in Javascript. The array is used
+ * in place and becomes part of the constructed object. It is not cloned.
+ * If no data is provided, the constructed object will be empty, but still
+ * valid.
+ * @extends {jspb.Message}
+ * @constructor
+ */
+proto.ondewo.s2t.AddDataToUserLanguageModelRequest = function(opt_data) {
+  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
+};
+goog.inherits(proto.ondewo.s2t.AddDataToUserLanguageModelRequest, jspb.Message);
+if (goog.DEBUG && !COMPILED) {
+  /**
+   * @public
+   * @override
+   */
+  proto.ondewo.s2t.AddDataToUserLanguageModelRequest.displayName = 'proto.ondewo.s2t.AddDataToUserLanguageModelRequest';
+}
+/**
+ * Generated by JsPbCodeGenerator.
+ * @param {Array=} opt_data Optional initial data array, typically from a
+ * server response, or constructed directly in Javascript. The array is used
+ * in place and becomes part of the constructed object. It is not cloned.
+ * If no data is provided, the constructed object will be empty, but still
+ * valid.
+ * @extends {jspb.Message}
+ * @constructor
+ */
+proto.ondewo.s2t.TrainUserLanguageModelRequest = function(opt_data) {
+  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
+};
+goog.inherits(proto.ondewo.s2t.TrainUserLanguageModelRequest, jspb.Message);
+if (goog.DEBUG && !COMPILED) {
+  /**
+   * @public
+   * @override
+   */
+  proto.ondewo.s2t.TrainUserLanguageModelRequest.displayName = 'proto.ondewo.s2t.TrainUserLanguageModelRequest';
+}
+
+/**
+ * Oneof group definitions for this message. Each group defines the field
+ * numbers belonging to that group. When of these fields' value is set, all
+ * other fields in the group are cleared. During deserialization, if multiple
+ * fields are encountered for a group, only the last value seen will be kept.
+ * @private {!Array<!Array<number>>}
+ * @const
+ */
+proto.ondewo.s2t.TranscribeRequestConfig.oneofGroups_ = [[3],[4],[5],[6,7],[8]];
+
+/**
+ * @enum {number}
+ */
+proto.ondewo.s2t.TranscribeRequestConfig.OneofLanguageModelNameCase = {
+  ONEOF_LANGUAGE_MODEL_NAME_NOT_SET: 0,
+  LANGUAGE_MODEL_NAME: 3
+};
+
+/**
+ * @return {proto.ondewo.s2t.TranscribeRequestConfig.OneofLanguageModelNameCase}
+ */
+proto.ondewo.s2t.TranscribeRequestConfig.prototype.getOneofLanguageModelNameCase = function() {
+  return /** @type {proto.ondewo.s2t.TranscribeRequestConfig.OneofLanguageModelNameCase} */(jspb.Message.computeOneofCase(this, proto.ondewo.s2t.TranscribeRequestConfig.oneofGroups_[0]));
+};
+
+/**
+ * @enum {number}
+ */
+proto.ondewo.s2t.TranscribeRequestConfig.OneofPostProcessingCase = {
+  ONEOF_POST_PROCESSING_NOT_SET: 0,
+  POST_PROCESSING: 4
+};
+
+/**
+ * @return {proto.ondewo.s2t.TranscribeRequestConfig.OneofPostProcessingCase}
+ */
+proto.ondewo.s2t.TranscribeRequestConfig.prototype.getOneofPostProcessingCase = function() {
+  return /** @type {proto.ondewo.s2t.TranscribeRequestConfig.OneofPostProcessingCase} */(jspb.Message.computeOneofCase(this, proto.ondewo.s2t.TranscribeRequestConfig.oneofGroups_[1]));
+};
+
+/**
+ * @enum {number}
+ */
+proto.ondewo.s2t.TranscribeRequestConfig.OneofUtteranceDetectionCase = {
+  ONEOF_UTTERANCE_DETECTION_NOT_SET: 0,
+  UTTERANCE_DETECTION: 5
+};
+
+/**
+ * @return {proto.ondewo.s2t.TranscribeRequestConfig.OneofUtteranceDetectionCase}
+ */
+proto.ondewo.s2t.TranscribeRequestConfig.prototype.getOneofUtteranceDetectionCase = function() {
+  return /** @type {proto.ondewo.s2t.TranscribeRequestConfig.OneofUtteranceDetectionCase} */(jspb.Message.computeOneofCase(this, proto.ondewo.s2t.TranscribeRequestConfig.oneofGroups_[2]));
+};
+
+/**
+ * @enum {number}
+ */
+proto.ondewo.s2t.TranscribeRequestConfig.VoiceActivityDetectionCase = {
+  VOICE_ACTIVITY_DETECTION_NOT_SET: 0,
+  PYANNOTE: 6,
+  MATCHBOX: 7
+};
+
+/**
+ * @return {proto.ondewo.s2t.TranscribeRequestConfig.VoiceActivityDetectionCase}
+ */
+proto.ondewo.s2t.TranscribeRequestConfig.prototype.getVoiceActivityDetectionCase = function() {
+  return /** @type {proto.ondewo.s2t.TranscribeRequestConfig.VoiceActivityDetectionCase} */(jspb.Message.computeOneofCase(this, proto.ondewo.s2t.TranscribeRequestConfig.oneofGroups_[3]));
+};
+
+/**
+ * @enum {number}
+ */
+proto.ondewo.s2t.TranscribeRequestConfig.OneofReturnOptionsCase = {
+  ONEOF_RETURN_OPTIONS_NOT_SET: 0,
+  RETURN_OPTIONS: 8
+};
+
+/**
+ * @return {proto.ondewo.s2t.TranscribeRequestConfig.OneofReturnOptionsCase}
+ */
+proto.ondewo.s2t.TranscribeRequestConfig.prototype.getOneofReturnOptionsCase = function() {
+  return /** @type {proto.ondewo.s2t.TranscribeRequestConfig.OneofReturnOptionsCase} */(jspb.Message.computeOneofCase(this, proto.ondewo.s2t.TranscribeRequestConfig.oneofGroups_[4]));
+};
+
+
+
+if (jspb.Message.GENERATE_TO_OBJECT) {
+/**
+ * Creates an object representation of this proto.
+ * Field names that are reserved in JavaScript and will be renamed to pb_name.
+ * Optional fields that are not set will be set to undefined.
+ * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
+ * For the list of reserved names please see:
+ *     net/proto2/compiler/js/internal/generator.cc#kKeyword.
+ * @param {boolean=} opt_includeInstance Deprecated. whether to include the
+ *     JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @return {!Object}
+ */
+proto.ondewo.s2t.TranscribeRequestConfig.prototype.toObject = function(opt_includeInstance) {
+  return proto.ondewo.s2t.TranscribeRequestConfig.toObject(opt_includeInstance, this);
+};
+
+
+/**
+ * Static version of the {@see toObject} method.
+ * @param {boolean|undefined} includeInstance Deprecated. Whether to include
+ *     the JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @param {!proto.ondewo.s2t.TranscribeRequestConfig} msg The msg instance to transform.
+ * @return {!Object}
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.ondewo.s2t.TranscribeRequestConfig.toObject = function(includeInstance, msg) {
+  var f, obj = {
+    s2tPipelineId: jspb.Message.getFieldWithDefault(msg, 1, ""),
+    ctcDecoding: jspb.Message.getFieldWithDefault(msg, 2, 0),
+    languageModelName: jspb.Message.getFieldWithDefault(msg, 3, ""),
+    postProcessing: (f = msg.getPostProcessing()) && proto.ondewo.s2t.PostProcessingOptions.toObject(includeInstance, f),
+    utteranceDetection: (f = msg.getUtteranceDetection()) && proto.ondewo.s2t.UtteranceDetectionOptions.toObject(includeInstance, f),
+    pyannote: (f = msg.getPyannote()) && proto.ondewo.s2t.Pyannote.toObject(includeInstance, f),
+    matchbox: (f = msg.getMatchbox()) && proto.ondewo.s2t.Matchbox.toObject(includeInstance, f),
+    returnOptions: (f = msg.getReturnOptions()) && proto.ondewo.s2t.TranscriptionReturnOptions.toObject(includeInstance, f)
+  };
+
+  if (includeInstance) {
+    obj.$jspbMessageInstance = msg;
+  }
+  return obj;
+};
+}
+
+
+/**
+ * Deserializes binary data (in protobuf wire format).
+ * @param {jspb.ByteSource} bytes The bytes to deserialize.
+ * @return {!proto.ondewo.s2t.TranscribeRequestConfig}
+ */
+proto.ondewo.s2t.TranscribeRequestConfig.deserializeBinary = function(bytes) {
+  var reader = new jspb.BinaryReader(bytes);
+  var msg = new proto.ondewo.s2t.TranscribeRequestConfig;
+  return proto.ondewo.s2t.TranscribeRequestConfig.deserializeBinaryFromReader(msg, reader);
+};
+
+
+/**
+ * Deserializes binary data (in protobuf wire format) from the
+ * given reader into the given message object.
+ * @param {!proto.ondewo.s2t.TranscribeRequestConfig} msg The message object to deserialize into.
+ * @param {!jspb.BinaryReader} reader The BinaryReader to use.
+ * @return {!proto.ondewo.s2t.TranscribeRequestConfig}
+ */
+proto.ondewo.s2t.TranscribeRequestConfig.deserializeBinaryFromReader = function(msg, reader) {
+  while (reader.nextField()) {
+    if (reader.isEndGroup()) {
+      break;
+    }
+    var field = reader.getFieldNumber();
+    switch (field) {
+    case 1:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setS2tPipelineId(value);
+      break;
+    case 2:
+      var value = /** @type {!proto.ondewo.s2t.CTCDecoding} */ (reader.readEnum());
+      msg.setCtcDecoding(value);
+      break;
+    case 3:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setLanguageModelName(value);
+      break;
+    case 4:
+      var value = new proto.ondewo.s2t.PostProcessingOptions;
+      reader.readMessage(value,proto.ondewo.s2t.PostProcessingOptions.deserializeBinaryFromReader);
+      msg.setPostProcessing(value);
+      break;
+    case 5:
+      var value = new proto.ondewo.s2t.UtteranceDetectionOptions;
+      reader.readMessage(value,proto.ondewo.s2t.UtteranceDetectionOptions.deserializeBinaryFromReader);
+      msg.setUtteranceDetection(value);
+      break;
+    case 6:
+      var value = new proto.ondewo.s2t.Pyannote;
+      reader.readMessage(value,proto.ondewo.s2t.Pyannote.deserializeBinaryFromReader);
+      msg.setPyannote(value);
+      break;
+    case 7:
+      var value = new proto.ondewo.s2t.Matchbox;
+      reader.readMessage(value,proto.ondewo.s2t.Matchbox.deserializeBinaryFromReader);
+      msg.setMatchbox(value);
+      break;
+    case 8:
+      var value = new proto.ondewo.s2t.TranscriptionReturnOptions;
+      reader.readMessage(value,proto.ondewo.s2t.TranscriptionReturnOptions.deserializeBinaryFromReader);
+      msg.setReturnOptions(value);
+      break;
+    default:
+      reader.skipField();
+      break;
+    }
+  }
+  return msg;
+};
+
+
+/**
+ * Serializes the message to binary data (in protobuf wire format).
+ * @return {!Uint8Array}
+ */
+proto.ondewo.s2t.TranscribeRequestConfig.prototype.serializeBinary = function() {
+  var writer = new jspb.BinaryWriter();
+  proto.ondewo.s2t.TranscribeRequestConfig.serializeBinaryToWriter(this, writer);
+  return writer.getResultBuffer();
+};
+
+
+/**
+ * Serializes the given message to binary data (in protobuf wire
+ * format), writing to the given BinaryWriter.
+ * @param {!proto.ondewo.s2t.TranscribeRequestConfig} message
+ * @param {!jspb.BinaryWriter} writer
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.ondewo.s2t.TranscribeRequestConfig.serializeBinaryToWriter = function(message, writer) {
+  var f = undefined;
+  f = message.getS2tPipelineId();
+  if (f.length > 0) {
+    writer.writeString(
+      1,
+      f
+    );
+  }
+  f = message.getCtcDecoding();
+  if (f !== 0.0) {
+    writer.writeEnum(
+      2,
+      f
+    );
+  }
+  f = /** @type {string} */ (jspb.Message.getField(message, 3));
+  if (f != null) {
+    writer.writeString(
+      3,
+      f
+    );
+  }
+  f = message.getPostProcessing();
+  if (f != null) {
+    writer.writeMessage(
+      4,
+      f,
+      proto.ondewo.s2t.PostProcessingOptions.serializeBinaryToWriter
+    );
+  }
+  f = message.getUtteranceDetection();
+  if (f != null) {
+    writer.writeMessage(
+      5,
+      f,
+      proto.ondewo.s2t.UtteranceDetectionOptions.serializeBinaryToWriter
+    );
+  }
+  f = message.getPyannote();
+  if (f != null) {
+    writer.writeMessage(
+      6,
+      f,
+      proto.ondewo.s2t.Pyannote.serializeBinaryToWriter
+    );
+  }
+  f = message.getMatchbox();
+  if (f != null) {
+    writer.writeMessage(
+      7,
+      f,
+      proto.ondewo.s2t.Matchbox.serializeBinaryToWriter
+    );
+  }
+  f = message.getReturnOptions();
+  if (f != null) {
+    writer.writeMessage(
+      8,
+      f,
+      proto.ondewo.s2t.TranscriptionReturnOptions.serializeBinaryToWriter
+    );
+  }
+};
+
+
+/**
+ * optional string s2t_pipeline_id = 1;
+ * @return {string}
+ */
+proto.ondewo.s2t.TranscribeRequestConfig.prototype.getS2tPipelineId = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.ondewo.s2t.TranscribeRequestConfig} returns this
+ */
+proto.ondewo.s2t.TranscribeRequestConfig.prototype.setS2tPipelineId = function(value) {
+  return jspb.Message.setProto3StringField(this, 1, value);
+};
+
+
+/**
+ * optional CTCDecoding ctc_decoding = 2;
+ * @return {!proto.ondewo.s2t.CTCDecoding}
+ */
+proto.ondewo.s2t.TranscribeRequestConfig.prototype.getCtcDecoding = function() {
+  return /** @type {!proto.ondewo.s2t.CTCDecoding} */ (jspb.Message.getFieldWithDefault(this, 2, 0));
+};
+
+
+/**
+ * @param {!proto.ondewo.s2t.CTCDecoding} value
+ * @return {!proto.ondewo.s2t.TranscribeRequestConfig} returns this
+ */
+proto.ondewo.s2t.TranscribeRequestConfig.prototype.setCtcDecoding = function(value) {
+  return jspb.Message.setProto3EnumField(this, 2, value);
+};
+
+
+/**
+ * optional string language_model_name = 3;
+ * @return {string}
+ */
+proto.ondewo.s2t.TranscribeRequestConfig.prototype.getLanguageModelName = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 3, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.ondewo.s2t.TranscribeRequestConfig} returns this
+ */
+proto.ondewo.s2t.TranscribeRequestConfig.prototype.setLanguageModelName = function(value) {
+  return jspb.Message.setOneofField(this, 3, proto.ondewo.s2t.TranscribeRequestConfig.oneofGroups_[0], value);
+};
+
+
+/**
+ * Clears the field making it undefined.
+ * @return {!proto.ondewo.s2t.TranscribeRequestConfig} returns this
+ */
+proto.ondewo.s2t.TranscribeRequestConfig.prototype.clearLanguageModelName = function() {
+  return jspb.Message.setOneofField(this, 3, proto.ondewo.s2t.TranscribeRequestConfig.oneofGroups_[0], undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {boolean}
+ */
+proto.ondewo.s2t.TranscribeRequestConfig.prototype.hasLanguageModelName = function() {
+  return jspb.Message.getField(this, 3) != null;
+};
+
+
+/**
+ * optional PostProcessingOptions post_processing = 4;
+ * @return {?proto.ondewo.s2t.PostProcessingOptions}
+ */
+proto.ondewo.s2t.TranscribeRequestConfig.prototype.getPostProcessing = function() {
+  return /** @type{?proto.ondewo.s2t.PostProcessingOptions} */ (
+    jspb.Message.getWrapperField(this, proto.ondewo.s2t.PostProcessingOptions, 4));
+};
+
+
+/**
+ * @param {?proto.ondewo.s2t.PostProcessingOptions|undefined} value
+ * @return {!proto.ondewo.s2t.TranscribeRequestConfig} returns this
+*/
+proto.ondewo.s2t.TranscribeRequestConfig.prototype.setPostProcessing = function(value) {
+  return jspb.Message.setOneofWrapperField(this, 4, proto.ondewo.s2t.TranscribeRequestConfig.oneofGroups_[1], value);
+};
+
+
+/**
+ * Clears the message field making it undefined.
+ * @return {!proto.ondewo.s2t.TranscribeRequestConfig} returns this
+ */
+proto.ondewo.s2t.TranscribeRequestConfig.prototype.clearPostProcessing = function() {
+  return this.setPostProcessing(undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {boolean}
+ */
+proto.ondewo.s2t.TranscribeRequestConfig.prototype.hasPostProcessing = function() {
+  return jspb.Message.getField(this, 4) != null;
+};
+
+
+/**
+ * optional UtteranceDetectionOptions utterance_detection = 5;
+ * @return {?proto.ondewo.s2t.UtteranceDetectionOptions}
+ */
+proto.ondewo.s2t.TranscribeRequestConfig.prototype.getUtteranceDetection = function() {
+  return /** @type{?proto.ondewo.s2t.UtteranceDetectionOptions} */ (
+    jspb.Message.getWrapperField(this, proto.ondewo.s2t.UtteranceDetectionOptions, 5));
+};
+
+
+/**
+ * @param {?proto.ondewo.s2t.UtteranceDetectionOptions|undefined} value
+ * @return {!proto.ondewo.s2t.TranscribeRequestConfig} returns this
+*/
+proto.ondewo.s2t.TranscribeRequestConfig.prototype.setUtteranceDetection = function(value) {
+  return jspb.Message.setOneofWrapperField(this, 5, proto.ondewo.s2t.TranscribeRequestConfig.oneofGroups_[2], value);
+};
+
+
+/**
+ * Clears the message field making it undefined.
+ * @return {!proto.ondewo.s2t.TranscribeRequestConfig} returns this
+ */
+proto.ondewo.s2t.TranscribeRequestConfig.prototype.clearUtteranceDetection = function() {
+  return this.setUtteranceDetection(undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {boolean}
+ */
+proto.ondewo.s2t.TranscribeRequestConfig.prototype.hasUtteranceDetection = function() {
+  return jspb.Message.getField(this, 5) != null;
+};
+
+
+/**
+ * optional Pyannote pyannote = 6;
+ * @return {?proto.ondewo.s2t.Pyannote}
+ */
+proto.ondewo.s2t.TranscribeRequestConfig.prototype.getPyannote = function() {
+  return /** @type{?proto.ondewo.s2t.Pyannote} */ (
+    jspb.Message.getWrapperField(this, proto.ondewo.s2t.Pyannote, 6));
+};
+
+
+/**
+ * @param {?proto.ondewo.s2t.Pyannote|undefined} value
+ * @return {!proto.ondewo.s2t.TranscribeRequestConfig} returns this
+*/
+proto.ondewo.s2t.TranscribeRequestConfig.prototype.setPyannote = function(value) {
+  return jspb.Message.setOneofWrapperField(this, 6, proto.ondewo.s2t.TranscribeRequestConfig.oneofGroups_[3], value);
+};
+
+
+/**
+ * Clears the message field making it undefined.
+ * @return {!proto.ondewo.s2t.TranscribeRequestConfig} returns this
+ */
+proto.ondewo.s2t.TranscribeRequestConfig.prototype.clearPyannote = function() {
+  return this.setPyannote(undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {boolean}
+ */
+proto.ondewo.s2t.TranscribeRequestConfig.prototype.hasPyannote = function() {
+  return jspb.Message.getField(this, 6) != null;
+};
+
+
+/**
+ * optional Matchbox matchbox = 7;
+ * @return {?proto.ondewo.s2t.Matchbox}
+ */
+proto.ondewo.s2t.TranscribeRequestConfig.prototype.getMatchbox = function() {
+  return /** @type{?proto.ondewo.s2t.Matchbox} */ (
+    jspb.Message.getWrapperField(this, proto.ondewo.s2t.Matchbox, 7));
+};
+
+
+/**
+ * @param {?proto.ondewo.s2t.Matchbox|undefined} value
+ * @return {!proto.ondewo.s2t.TranscribeRequestConfig} returns this
+*/
+proto.ondewo.s2t.TranscribeRequestConfig.prototype.setMatchbox = function(value) {
+  return jspb.Message.setOneofWrapperField(this, 7, proto.ondewo.s2t.TranscribeRequestConfig.oneofGroups_[3], value);
+};
+
+
+/**
+ * Clears the message field making it undefined.
+ * @return {!proto.ondewo.s2t.TranscribeRequestConfig} returns this
+ */
+proto.ondewo.s2t.TranscribeRequestConfig.prototype.clearMatchbox = function() {
+  return this.setMatchbox(undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {boolean}
+ */
+proto.ondewo.s2t.TranscribeRequestConfig.prototype.hasMatchbox = function() {
+  return jspb.Message.getField(this, 7) != null;
+};
+
+
+/**
+ * optional TranscriptionReturnOptions return_options = 8;
+ * @return {?proto.ondewo.s2t.TranscriptionReturnOptions}
+ */
+proto.ondewo.s2t.TranscribeRequestConfig.prototype.getReturnOptions = function() {
+  return /** @type{?proto.ondewo.s2t.TranscriptionReturnOptions} */ (
+    jspb.Message.getWrapperField(this, proto.ondewo.s2t.TranscriptionReturnOptions, 8));
+};
+
+
+/**
+ * @param {?proto.ondewo.s2t.TranscriptionReturnOptions|undefined} value
+ * @return {!proto.ondewo.s2t.TranscribeRequestConfig} returns this
+*/
+proto.ondewo.s2t.TranscribeRequestConfig.prototype.setReturnOptions = function(value) {
+  return jspb.Message.setOneofWrapperField(this, 8, proto.ondewo.s2t.TranscribeRequestConfig.oneofGroups_[4], value);
+};
+
+
+/**
+ * Clears the message field making it undefined.
+ * @return {!proto.ondewo.s2t.TranscribeRequestConfig} returns this
+ */
+proto.ondewo.s2t.TranscribeRequestConfig.prototype.clearReturnOptions = function() {
+  return this.setReturnOptions(undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {boolean}
+ */
+proto.ondewo.s2t.TranscribeRequestConfig.prototype.hasReturnOptions = function() {
+  return jspb.Message.getField(this, 8) != null;
+};
+
+
+
+
+
+if (jspb.Message.GENERATE_TO_OBJECT) {
+/**
+ * Creates an object representation of this proto.
+ * Field names that are reserved in JavaScript and will be renamed to pb_name.
+ * Optional fields that are not set will be set to undefined.
+ * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
+ * For the list of reserved names please see:
+ *     net/proto2/compiler/js/internal/generator.cc#kKeyword.
+ * @param {boolean=} opt_includeInstance Deprecated. whether to include the
+ *     JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @return {!Object}
+ */
+proto.ondewo.s2t.TranscriptionReturnOptions.prototype.toObject = function(opt_includeInstance) {
+  return proto.ondewo.s2t.TranscriptionReturnOptions.toObject(opt_includeInstance, this);
+};
+
+
+/**
+ * Static version of the {@see toObject} method.
+ * @param {boolean|undefined} includeInstance Deprecated. Whether to include
+ *     the JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @param {!proto.ondewo.s2t.TranscriptionReturnOptions} msg The msg instance to transform.
+ * @return {!Object}
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.ondewo.s2t.TranscriptionReturnOptions.toObject = function(includeInstance, msg) {
+  var f, obj = {
+    returnStartOfSpeech: jspb.Message.getBooleanFieldWithDefault(msg, 1, false),
+    returnAudio: jspb.Message.getBooleanFieldWithDefault(msg, 2, false),
+    returnAlternativeTranscriptions: jspb.Message.getBooleanFieldWithDefault(msg, 3, false),
+    returnConfidenceScore: jspb.Message.getBooleanFieldWithDefault(msg, 4, false),
+    returnWordTiming: jspb.Message.getBooleanFieldWithDefault(msg, 8, false)
+  };
+
+  if (includeInstance) {
+    obj.$jspbMessageInstance = msg;
+  }
+  return obj;
+};
+}
+
+
+/**
+ * Deserializes binary data (in protobuf wire format).
+ * @param {jspb.ByteSource} bytes The bytes to deserialize.
+ * @return {!proto.ondewo.s2t.TranscriptionReturnOptions}
+ */
+proto.ondewo.s2t.TranscriptionReturnOptions.deserializeBinary = function(bytes) {
+  var reader = new jspb.BinaryReader(bytes);
+  var msg = new proto.ondewo.s2t.TranscriptionReturnOptions;
+  return proto.ondewo.s2t.TranscriptionReturnOptions.deserializeBinaryFromReader(msg, reader);
+};
+
+
+/**
+ * Deserializes binary data (in protobuf wire format) from the
+ * given reader into the given message object.
+ * @param {!proto.ondewo.s2t.TranscriptionReturnOptions} msg The message object to deserialize into.
+ * @param {!jspb.BinaryReader} reader The BinaryReader to use.
+ * @return {!proto.ondewo.s2t.TranscriptionReturnOptions}
+ */
+proto.ondewo.s2t.TranscriptionReturnOptions.deserializeBinaryFromReader = function(msg, reader) {
+  while (reader.nextField()) {
+    if (reader.isEndGroup()) {
+      break;
+    }
+    var field = reader.getFieldNumber();
+    switch (field) {
+    case 1:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setReturnStartOfSpeech(value);
+      break;
+    case 2:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setReturnAudio(value);
+      break;
+    case 3:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setReturnAlternativeTranscriptions(value);
+      break;
+    case 4:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setReturnConfidenceScore(value);
+      break;
+    case 8:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setReturnWordTiming(value);
+      break;
+    default:
+      reader.skipField();
+      break;
+    }
+  }
+  return msg;
+};
+
+
+/**
+ * Serializes the message to binary data (in protobuf wire format).
+ * @return {!Uint8Array}
+ */
+proto.ondewo.s2t.TranscriptionReturnOptions.prototype.serializeBinary = function() {
+  var writer = new jspb.BinaryWriter();
+  proto.ondewo.s2t.TranscriptionReturnOptions.serializeBinaryToWriter(this, writer);
+  return writer.getResultBuffer();
+};
+
+
+/**
+ * Serializes the given message to binary data (in protobuf wire
+ * format), writing to the given BinaryWriter.
+ * @param {!proto.ondewo.s2t.TranscriptionReturnOptions} message
+ * @param {!jspb.BinaryWriter} writer
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.ondewo.s2t.TranscriptionReturnOptions.serializeBinaryToWriter = function(message, writer) {
+  var f = undefined;
+  f = message.getReturnStartOfSpeech();
+  if (f) {
+    writer.writeBool(
+      1,
+      f
+    );
+  }
+  f = message.getReturnAudio();
+  if (f) {
+    writer.writeBool(
+      2,
+      f
+    );
+  }
+  f = message.getReturnAlternativeTranscriptions();
+  if (f) {
+    writer.writeBool(
+      3,
+      f
+    );
+  }
+  f = message.getReturnConfidenceScore();
+  if (f) {
+    writer.writeBool(
+      4,
+      f
+    );
+  }
+  f = message.getReturnWordTiming();
+  if (f) {
+    writer.writeBool(
+      8,
+      f
+    );
+  }
+};
+
+
+/**
+ * optional bool return_start_of_speech = 1;
+ * @return {boolean}
+ */
+proto.ondewo.s2t.TranscriptionReturnOptions.prototype.getReturnStartOfSpeech = function() {
+  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 1, false));
+};
+
+
+/**
+ * @param {boolean} value
+ * @return {!proto.ondewo.s2t.TranscriptionReturnOptions} returns this
+ */
+proto.ondewo.s2t.TranscriptionReturnOptions.prototype.setReturnStartOfSpeech = function(value) {
+  return jspb.Message.setProto3BooleanField(this, 1, value);
+};
+
+
+/**
+ * optional bool return_audio = 2;
+ * @return {boolean}
+ */
+proto.ondewo.s2t.TranscriptionReturnOptions.prototype.getReturnAudio = function() {
+  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 2, false));
+};
+
+
+/**
+ * @param {boolean} value
+ * @return {!proto.ondewo.s2t.TranscriptionReturnOptions} returns this
+ */
+proto.ondewo.s2t.TranscriptionReturnOptions.prototype.setReturnAudio = function(value) {
+  return jspb.Message.setProto3BooleanField(this, 2, value);
+};
+
+
+/**
+ * optional bool return_alternative_transcriptions = 3;
+ * @return {boolean}
+ */
+proto.ondewo.s2t.TranscriptionReturnOptions.prototype.getReturnAlternativeTranscriptions = function() {
+  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 3, false));
+};
+
+
+/**
+ * @param {boolean} value
+ * @return {!proto.ondewo.s2t.TranscriptionReturnOptions} returns this
+ */
+proto.ondewo.s2t.TranscriptionReturnOptions.prototype.setReturnAlternativeTranscriptions = function(value) {
+  return jspb.Message.setProto3BooleanField(this, 3, value);
+};
+
+
+/**
+ * optional bool return_confidence_score = 4;
+ * @return {boolean}
+ */
+proto.ondewo.s2t.TranscriptionReturnOptions.prototype.getReturnConfidenceScore = function() {
+  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 4, false));
+};
+
+
+/**
+ * @param {boolean} value
+ * @return {!proto.ondewo.s2t.TranscriptionReturnOptions} returns this
+ */
+proto.ondewo.s2t.TranscriptionReturnOptions.prototype.setReturnConfidenceScore = function(value) {
+  return jspb.Message.setProto3BooleanField(this, 4, value);
+};
+
+
+/**
+ * optional bool return_word_timing = 8;
+ * @return {boolean}
+ */
+proto.ondewo.s2t.TranscriptionReturnOptions.prototype.getReturnWordTiming = function() {
+  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 8, false));
+};
+
+
+/**
+ * @param {boolean} value
+ * @return {!proto.ondewo.s2t.TranscriptionReturnOptions} returns this
+ */
+proto.ondewo.s2t.TranscriptionReturnOptions.prototype.setReturnWordTiming = function(value) {
+  return jspb.Message.setProto3BooleanField(this, 8, value);
+};
+
+
+
+/**
+ * Oneof group definitions for this message. Each group defines the field
+ * numbers belonging to that group. When of these fields' value is set, all
+ * other fields in the group are cleared. During deserialization, if multiple
+ * fields are encountered for a group, only the last value seen will be kept.
+ * @private {!Array<!Array<number>>}
+ * @const
+ */
+proto.ondewo.s2t.UtteranceDetectionOptions.oneofGroups_ = [[1]];
+
+/**
+ * @enum {number}
+ */
+proto.ondewo.s2t.UtteranceDetectionOptions.OneofTranscribeNotFinalCase = {
+  ONEOF_TRANSCRIBE_NOT_FINAL_NOT_SET: 0,
+  TRANSCRIBE_NOT_FINAL: 1
+};
+
+/**
+ * @return {proto.ondewo.s2t.UtteranceDetectionOptions.OneofTranscribeNotFinalCase}
+ */
+proto.ondewo.s2t.UtteranceDetectionOptions.prototype.getOneofTranscribeNotFinalCase = function() {
+  return /** @type {proto.ondewo.s2t.UtteranceDetectionOptions.OneofTranscribeNotFinalCase} */(jspb.Message.computeOneofCase(this, proto.ondewo.s2t.UtteranceDetectionOptions.oneofGroups_[0]));
+};
+
+
+
+if (jspb.Message.GENERATE_TO_OBJECT) {
+/**
+ * Creates an object representation of this proto.
+ * Field names that are reserved in JavaScript and will be renamed to pb_name.
+ * Optional fields that are not set will be set to undefined.
+ * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
+ * For the list of reserved names please see:
+ *     net/proto2/compiler/js/internal/generator.cc#kKeyword.
+ * @param {boolean=} opt_includeInstance Deprecated. whether to include the
+ *     JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @return {!Object}
+ */
+proto.ondewo.s2t.UtteranceDetectionOptions.prototype.toObject = function(opt_includeInstance) {
+  return proto.ondewo.s2t.UtteranceDetectionOptions.toObject(opt_includeInstance, this);
+};
+
+
+/**
+ * Static version of the {@see toObject} method.
+ * @param {boolean|undefined} includeInstance Deprecated. Whether to include
+ *     the JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @param {!proto.ondewo.s2t.UtteranceDetectionOptions} msg The msg instance to transform.
+ * @return {!Object}
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.ondewo.s2t.UtteranceDetectionOptions.toObject = function(includeInstance, msg) {
+  var f, obj = {
+    transcribeNotFinal: jspb.Message.getBooleanFieldWithDefault(msg, 1, false),
+    startOfUtteranceThreshold: jspb.Message.getFloatingPointFieldWithDefault(msg, 2, 0.0),
+    endOfUtteranceThreshold: jspb.Message.getFloatingPointFieldWithDefault(msg, 3, 0.0),
+    nextChunkTimeout: jspb.Message.getFloatingPointFieldWithDefault(msg, 4, 0.0)
+  };
+
+  if (includeInstance) {
+    obj.$jspbMessageInstance = msg;
+  }
+  return obj;
+};
+}
+
+
+/**
+ * Deserializes binary data (in protobuf wire format).
+ * @param {jspb.ByteSource} bytes The bytes to deserialize.
+ * @return {!proto.ondewo.s2t.UtteranceDetectionOptions}
+ */
+proto.ondewo.s2t.UtteranceDetectionOptions.deserializeBinary = function(bytes) {
+  var reader = new jspb.BinaryReader(bytes);
+  var msg = new proto.ondewo.s2t.UtteranceDetectionOptions;
+  return proto.ondewo.s2t.UtteranceDetectionOptions.deserializeBinaryFromReader(msg, reader);
+};
+
+
+/**
+ * Deserializes binary data (in protobuf wire format) from the
+ * given reader into the given message object.
+ * @param {!proto.ondewo.s2t.UtteranceDetectionOptions} msg The message object to deserialize into.
+ * @param {!jspb.BinaryReader} reader The BinaryReader to use.
+ * @return {!proto.ondewo.s2t.UtteranceDetectionOptions}
+ */
+proto.ondewo.s2t.UtteranceDetectionOptions.deserializeBinaryFromReader = function(msg, reader) {
+  while (reader.nextField()) {
+    if (reader.isEndGroup()) {
+      break;
+    }
+    var field = reader.getFieldNumber();
+    switch (field) {
+    case 1:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setTranscribeNotFinal(value);
+      break;
+    case 2:
+      var value = /** @type {number} */ (reader.readFloat());
+      msg.setStartOfUtteranceThreshold(value);
+      break;
+    case 3:
+      var value = /** @type {number} */ (reader.readFloat());
+      msg.setEndOfUtteranceThreshold(value);
+      break;
+    case 4:
+      var value = /** @type {number} */ (reader.readFloat());
+      msg.setNextChunkTimeout(value);
+      break;
+    default:
+      reader.skipField();
+      break;
+    }
+  }
+  return msg;
+};
+
+
+/**
+ * Serializes the message to binary data (in protobuf wire format).
+ * @return {!Uint8Array}
+ */
+proto.ondewo.s2t.UtteranceDetectionOptions.prototype.serializeBinary = function() {
+  var writer = new jspb.BinaryWriter();
+  proto.ondewo.s2t.UtteranceDetectionOptions.serializeBinaryToWriter(this, writer);
+  return writer.getResultBuffer();
+};
+
+
+/**
+ * Serializes the given message to binary data (in protobuf wire
+ * format), writing to the given BinaryWriter.
+ * @param {!proto.ondewo.s2t.UtteranceDetectionOptions} message
+ * @param {!jspb.BinaryWriter} writer
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.ondewo.s2t.UtteranceDetectionOptions.serializeBinaryToWriter = function(message, writer) {
+  var f = undefined;
+  f = /** @type {boolean} */ (jspb.Message.getField(message, 1));
+  if (f != null) {
+    writer.writeBool(
+      1,
+      f
+    );
+  }
+  f = message.getStartOfUtteranceThreshold();
+  if (f !== 0.0) {
+    writer.writeFloat(
+      2,
+      f
+    );
+  }
+  f = message.getEndOfUtteranceThreshold();
+  if (f !== 0.0) {
+    writer.writeFloat(
+      3,
+      f
+    );
+  }
+  f = message.getNextChunkTimeout();
+  if (f !== 0.0) {
+    writer.writeFloat(
+      4,
+      f
+    );
+  }
+};
+
+
+/**
+ * optional bool transcribe_not_final = 1;
+ * @return {boolean}
+ */
+proto.ondewo.s2t.UtteranceDetectionOptions.prototype.getTranscribeNotFinal = function() {
+  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 1, false));
+};
+
+
+/**
+ * @param {boolean} value
+ * @return {!proto.ondewo.s2t.UtteranceDetectionOptions} returns this
+ */
+proto.ondewo.s2t.UtteranceDetectionOptions.prototype.setTranscribeNotFinal = function(value) {
+  return jspb.Message.setOneofField(this, 1, proto.ondewo.s2t.UtteranceDetectionOptions.oneofGroups_[0], value);
+};
+
+
+/**
+ * Clears the field making it undefined.
+ * @return {!proto.ondewo.s2t.UtteranceDetectionOptions} returns this
+ */
+proto.ondewo.s2t.UtteranceDetectionOptions.prototype.clearTranscribeNotFinal = function() {
+  return jspb.Message.setOneofField(this, 1, proto.ondewo.s2t.UtteranceDetectionOptions.oneofGroups_[0], undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {boolean}
+ */
+proto.ondewo.s2t.UtteranceDetectionOptions.prototype.hasTranscribeNotFinal = function() {
+  return jspb.Message.getField(this, 1) != null;
+};
+
+
+/**
+ * optional float start_of_utterance_threshold = 2;
+ * @return {number}
+ */
+proto.ondewo.s2t.UtteranceDetectionOptions.prototype.getStartOfUtteranceThreshold = function() {
+  return /** @type {number} */ (jspb.Message.getFloatingPointFieldWithDefault(this, 2, 0.0));
+};
+
+
+/**
+ * @param {number} value
+ * @return {!proto.ondewo.s2t.UtteranceDetectionOptions} returns this
+ */
+proto.ondewo.s2t.UtteranceDetectionOptions.prototype.setStartOfUtteranceThreshold = function(value) {
+  return jspb.Message.setProto3FloatField(this, 2, value);
+};
+
+
+/**
+ * optional float end_of_utterance_threshold = 3;
+ * @return {number}
+ */
+proto.ondewo.s2t.UtteranceDetectionOptions.prototype.getEndOfUtteranceThreshold = function() {
+  return /** @type {number} */ (jspb.Message.getFloatingPointFieldWithDefault(this, 3, 0.0));
+};
+
+
+/**
+ * @param {number} value
+ * @return {!proto.ondewo.s2t.UtteranceDetectionOptions} returns this
+ */
+proto.ondewo.s2t.UtteranceDetectionOptions.prototype.setEndOfUtteranceThreshold = function(value) {
+  return jspb.Message.setProto3FloatField(this, 3, value);
+};
+
+
+/**
+ * optional float next_chunk_timeout = 4;
+ * @return {number}
+ */
+proto.ondewo.s2t.UtteranceDetectionOptions.prototype.getNextChunkTimeout = function() {
+  return /** @type {number} */ (jspb.Message.getFloatingPointFieldWithDefault(this, 4, 0.0));
+};
+
+
+/**
+ * @param {number} value
+ * @return {!proto.ondewo.s2t.UtteranceDetectionOptions} returns this
+ */
+proto.ondewo.s2t.UtteranceDetectionOptions.prototype.setNextChunkTimeout = function(value) {
+  return jspb.Message.setProto3FloatField(this, 4, value);
+};
+
+
+
+
+
+if (jspb.Message.GENERATE_TO_OBJECT) {
+/**
+ * Creates an object representation of this proto.
+ * Field names that are reserved in JavaScript and will be renamed to pb_name.
+ * Optional fields that are not set will be set to undefined.
+ * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
+ * For the list of reserved names please see:
+ *     net/proto2/compiler/js/internal/generator.cc#kKeyword.
+ * @param {boolean=} opt_includeInstance Deprecated. whether to include the
+ *     JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @return {!Object}
+ */
+proto.ondewo.s2t.PostProcessingOptions.prototype.toObject = function(opt_includeInstance) {
+  return proto.ondewo.s2t.PostProcessingOptions.toObject(opt_includeInstance, this);
+};
+
+
+/**
+ * Static version of the {@see toObject} method.
+ * @param {boolean|undefined} includeInstance Deprecated. Whether to include
+ *     the JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @param {!proto.ondewo.s2t.PostProcessingOptions} msg The msg instance to transform.
+ * @return {!Object}
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.ondewo.s2t.PostProcessingOptions.toObject = function(includeInstance, msg) {
+  var f, obj = {
+    spellingCorrection: jspb.Message.getBooleanFieldWithDefault(msg, 1, false),
+    normalize: jspb.Message.getBooleanFieldWithDefault(msg, 2, false),
+    config: (f = msg.getConfig()) && proto.ondewo.s2t.PostProcessing.toObject(includeInstance, f)
+  };
+
+  if (includeInstance) {
+    obj.$jspbMessageInstance = msg;
+  }
+  return obj;
+};
+}
+
+
+/**
+ * Deserializes binary data (in protobuf wire format).
+ * @param {jspb.ByteSource} bytes The bytes to deserialize.
+ * @return {!proto.ondewo.s2t.PostProcessingOptions}
+ */
+proto.ondewo.s2t.PostProcessingOptions.deserializeBinary = function(bytes) {
+  var reader = new jspb.BinaryReader(bytes);
+  var msg = new proto.ondewo.s2t.PostProcessingOptions;
+  return proto.ondewo.s2t.PostProcessingOptions.deserializeBinaryFromReader(msg, reader);
+};
+
+
+/**
+ * Deserializes binary data (in protobuf wire format) from the
+ * given reader into the given message object.
+ * @param {!proto.ondewo.s2t.PostProcessingOptions} msg The message object to deserialize into.
+ * @param {!jspb.BinaryReader} reader The BinaryReader to use.
+ * @return {!proto.ondewo.s2t.PostProcessingOptions}
+ */
+proto.ondewo.s2t.PostProcessingOptions.deserializeBinaryFromReader = function(msg, reader) {
+  while (reader.nextField()) {
+    if (reader.isEndGroup()) {
+      break;
+    }
+    var field = reader.getFieldNumber();
+    switch (field) {
+    case 1:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setSpellingCorrection(value);
+      break;
+    case 2:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setNormalize(value);
+      break;
+    case 3:
+      var value = new proto.ondewo.s2t.PostProcessing;
+      reader.readMessage(value,proto.ondewo.s2t.PostProcessing.deserializeBinaryFromReader);
+      msg.setConfig(value);
+      break;
+    default:
+      reader.skipField();
+      break;
+    }
+  }
+  return msg;
+};
+
+
+/**
+ * Serializes the message to binary data (in protobuf wire format).
+ * @return {!Uint8Array}
+ */
+proto.ondewo.s2t.PostProcessingOptions.prototype.serializeBinary = function() {
+  var writer = new jspb.BinaryWriter();
+  proto.ondewo.s2t.PostProcessingOptions.serializeBinaryToWriter(this, writer);
+  return writer.getResultBuffer();
+};
+
+
+/**
+ * Serializes the given message to binary data (in protobuf wire
+ * format), writing to the given BinaryWriter.
+ * @param {!proto.ondewo.s2t.PostProcessingOptions} message
+ * @param {!jspb.BinaryWriter} writer
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.ondewo.s2t.PostProcessingOptions.serializeBinaryToWriter = function(message, writer) {
+  var f = undefined;
+  f = message.getSpellingCorrection();
+  if (f) {
+    writer.writeBool(
+      1,
+      f
+    );
+  }
+  f = message.getNormalize();
+  if (f) {
+    writer.writeBool(
+      2,
+      f
+    );
+  }
+  f = message.getConfig();
+  if (f != null) {
+    writer.writeMessage(
+      3,
+      f,
+      proto.ondewo.s2t.PostProcessing.serializeBinaryToWriter
+    );
+  }
+};
+
+
+/**
+ * optional bool spelling_correction = 1;
+ * @return {boolean}
+ */
+proto.ondewo.s2t.PostProcessingOptions.prototype.getSpellingCorrection = function() {
+  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 1, false));
+};
+
+
+/**
+ * @param {boolean} value
+ * @return {!proto.ondewo.s2t.PostProcessingOptions} returns this
+ */
+proto.ondewo.s2t.PostProcessingOptions.prototype.setSpellingCorrection = function(value) {
+  return jspb.Message.setProto3BooleanField(this, 1, value);
+};
+
+
+/**
+ * optional bool normalize = 2;
+ * @return {boolean}
+ */
+proto.ondewo.s2t.PostProcessingOptions.prototype.getNormalize = function() {
+  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 2, false));
+};
+
+
+/**
+ * @param {boolean} value
+ * @return {!proto.ondewo.s2t.PostProcessingOptions} returns this
+ */
+proto.ondewo.s2t.PostProcessingOptions.prototype.setNormalize = function(value) {
+  return jspb.Message.setProto3BooleanField(this, 2, value);
+};
+
+
+/**
+ * optional PostProcessing config = 3;
+ * @return {?proto.ondewo.s2t.PostProcessing}
+ */
+proto.ondewo.s2t.PostProcessingOptions.prototype.getConfig = function() {
+  return /** @type{?proto.ondewo.s2t.PostProcessing} */ (
+    jspb.Message.getWrapperField(this, proto.ondewo.s2t.PostProcessing, 3));
+};
+
+
+/**
+ * @param {?proto.ondewo.s2t.PostProcessing|undefined} value
+ * @return {!proto.ondewo.s2t.PostProcessingOptions} returns this
+*/
+proto.ondewo.s2t.PostProcessingOptions.prototype.setConfig = function(value) {
+  return jspb.Message.setWrapperField(this, 3, value);
+};
+
+
+/**
+ * Clears the message field making it undefined.
+ * @return {!proto.ondewo.s2t.PostProcessingOptions} returns this
+ */
+proto.ondewo.s2t.PostProcessingOptions.prototype.clearConfig = function() {
+  return this.setConfig(undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {boolean}
+ */
+proto.ondewo.s2t.PostProcessingOptions.prototype.hasConfig = function() {
+  return jspb.Message.getField(this, 3) != null;
+};
+
+
 
 
 
@@ -753,12 +2343,10 @@ proto.ondewo.s2t.TranscribeStreamRequest.prototype.toObject = function(opt_inclu
  */
 proto.ondewo.s2t.TranscribeStreamRequest.toObject = function(includeInstance, msg) {
   var f, obj = {
-    s2tPipelineId: jspb.Message.getFieldWithDefault(msg, 1, ""),
     audioChunk: msg.getAudioChunk_asB64(),
-    ctcDecoding: jspb.Message.getFieldWithDefault(msg, 3, 0),
-    spellingCorrection: jspb.Message.getBooleanFieldWithDefault(msg, 4, false),
-    disableNormalization: jspb.Message.getBooleanFieldWithDefault(msg, 5, false),
-    endOfStream: jspb.Message.getBooleanFieldWithDefault(msg, 6, false)
+    endOfStream: jspb.Message.getBooleanFieldWithDefault(msg, 2, false),
+    config: (f = msg.getConfig()) && proto.ondewo.s2t.TranscribeRequestConfig.toObject(includeInstance, f),
+    muteAudio: jspb.Message.getBooleanFieldWithDefault(msg, 4, false)
   };
 
   if (includeInstance) {
@@ -796,28 +2384,21 @@ proto.ondewo.s2t.TranscribeStreamRequest.deserializeBinaryFromReader = function(
     var field = reader.getFieldNumber();
     switch (field) {
     case 1:
-      var value = /** @type {string} */ (reader.readString());
-      msg.setS2tPipelineId(value);
-      break;
-    case 2:
       var value = /** @type {!Uint8Array} */ (reader.readBytes());
       msg.setAudioChunk(value);
       break;
+    case 2:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setEndOfStream(value);
+      break;
     case 3:
-      var value = /** @type {!proto.ondewo.s2t.CTCDecoding} */ (reader.readEnum());
-      msg.setCtcDecoding(value);
+      var value = new proto.ondewo.s2t.TranscribeRequestConfig;
+      reader.readMessage(value,proto.ondewo.s2t.TranscribeRequestConfig.deserializeBinaryFromReader);
+      msg.setConfig(value);
       break;
     case 4:
       var value = /** @type {boolean} */ (reader.readBool());
-      msg.setSpellingCorrection(value);
-      break;
-    case 5:
-      var value = /** @type {boolean} */ (reader.readBool());
-      msg.setDisableNormalization(value);
-      break;
-    case 6:
-      var value = /** @type {boolean} */ (reader.readBool());
-      msg.setEndOfStream(value);
+      msg.setMuteAudio(value);
       break;
     default:
       reader.skipField();
@@ -848,45 +2429,32 @@ proto.ondewo.s2t.TranscribeStreamRequest.prototype.serializeBinary = function() 
  */
 proto.ondewo.s2t.TranscribeStreamRequest.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
-  f = message.getS2tPipelineId();
-  if (f.length > 0) {
-    writer.writeString(
-      1,
-      f
-    );
-  }
   f = message.getAudioChunk_asU8();
   if (f.length > 0) {
     writer.writeBytes(
-      2,
-      f
-    );
-  }
-  f = message.getCtcDecoding();
-  if (f !== 0.0) {
-    writer.writeEnum(
-      3,
-      f
-    );
-  }
-  f = message.getSpellingCorrection();
-  if (f) {
-    writer.writeBool(
-      4,
-      f
-    );
-  }
-  f = message.getDisableNormalization();
-  if (f) {
-    writer.writeBool(
-      5,
+      1,
       f
     );
   }
   f = message.getEndOfStream();
   if (f) {
     writer.writeBool(
-      6,
+      2,
+      f
+    );
+  }
+  f = message.getConfig();
+  if (f != null) {
+    writer.writeMessage(
+      3,
+      f,
+      proto.ondewo.s2t.TranscribeRequestConfig.serializeBinaryToWriter
+    );
+  }
+  f = message.getMuteAudio();
+  if (f) {
+    writer.writeBool(
+      4,
       f
     );
   }
@@ -894,34 +2462,16 @@ proto.ondewo.s2t.TranscribeStreamRequest.serializeBinaryToWriter = function(mess
 
 
 /**
- * optional string s2t_pipeline_id = 1;
- * @return {string}
- */
-proto.ondewo.s2t.TranscribeStreamRequest.prototype.getS2tPipelineId = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
-};
-
-
-/**
- * @param {string} value
- * @return {!proto.ondewo.s2t.TranscribeStreamRequest} returns this
- */
-proto.ondewo.s2t.TranscribeStreamRequest.prototype.setS2tPipelineId = function(value) {
-  return jspb.Message.setProto3StringField(this, 1, value);
-};
-
-
-/**
- * optional bytes audio_chunk = 2;
+ * optional bytes audio_chunk = 1;
  * @return {!(string|Uint8Array)}
  */
 proto.ondewo.s2t.TranscribeStreamRequest.prototype.getAudioChunk = function() {
-  return /** @type {!(string|Uint8Array)} */ (jspb.Message.getFieldWithDefault(this, 2, ""));
+  return /** @type {!(string|Uint8Array)} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
 };
 
 
 /**
- * optional bytes audio_chunk = 2;
+ * optional bytes audio_chunk = 1;
  * This is a type-conversion wrapper around `getAudioChunk()`
  * @return {string}
  */
@@ -932,7 +2482,7 @@ proto.ondewo.s2t.TranscribeStreamRequest.prototype.getAudioChunk_asB64 = functio
 
 
 /**
- * optional bytes audio_chunk = 2;
+ * optional bytes audio_chunk = 1;
  * Note that Uint8Array is not supported on all browsers.
  * @see http://caniuse.com/Uint8Array
  * This is a type-conversion wrapper around `getAudioChunk()`
@@ -949,70 +2499,16 @@ proto.ondewo.s2t.TranscribeStreamRequest.prototype.getAudioChunk_asU8 = function
  * @return {!proto.ondewo.s2t.TranscribeStreamRequest} returns this
  */
 proto.ondewo.s2t.TranscribeStreamRequest.prototype.setAudioChunk = function(value) {
-  return jspb.Message.setProto3BytesField(this, 2, value);
+  return jspb.Message.setProto3BytesField(this, 1, value);
 };
 
 
 /**
- * optional CTCDecoding ctc_decoding = 3;
- * @return {!proto.ondewo.s2t.CTCDecoding}
- */
-proto.ondewo.s2t.TranscribeStreamRequest.prototype.getCtcDecoding = function() {
-  return /** @type {!proto.ondewo.s2t.CTCDecoding} */ (jspb.Message.getFieldWithDefault(this, 3, 0));
-};
-
-
-/**
- * @param {!proto.ondewo.s2t.CTCDecoding} value
- * @return {!proto.ondewo.s2t.TranscribeStreamRequest} returns this
- */
-proto.ondewo.s2t.TranscribeStreamRequest.prototype.setCtcDecoding = function(value) {
-  return jspb.Message.setProto3EnumField(this, 3, value);
-};
-
-
-/**
- * optional bool spelling_correction = 4;
- * @return {boolean}
- */
-proto.ondewo.s2t.TranscribeStreamRequest.prototype.getSpellingCorrection = function() {
-  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 4, false));
-};
-
-
-/**
- * @param {boolean} value
- * @return {!proto.ondewo.s2t.TranscribeStreamRequest} returns this
- */
-proto.ondewo.s2t.TranscribeStreamRequest.prototype.setSpellingCorrection = function(value) {
-  return jspb.Message.setProto3BooleanField(this, 4, value);
-};
-
-
-/**
- * optional bool disable_normalization = 5;
- * @return {boolean}
- */
-proto.ondewo.s2t.TranscribeStreamRequest.prototype.getDisableNormalization = function() {
-  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 5, false));
-};
-
-
-/**
- * @param {boolean} value
- * @return {!proto.ondewo.s2t.TranscribeStreamRequest} returns this
- */
-proto.ondewo.s2t.TranscribeStreamRequest.prototype.setDisableNormalization = function(value) {
-  return jspb.Message.setProto3BooleanField(this, 5, value);
-};
-
-
-/**
- * optional bool end_of_stream = 6;
+ * optional bool end_of_stream = 2;
  * @return {boolean}
  */
 proto.ondewo.s2t.TranscribeStreamRequest.prototype.getEndOfStream = function() {
-  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 6, false));
+  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 2, false));
 };
 
 
@@ -1021,10 +2517,257 @@ proto.ondewo.s2t.TranscribeStreamRequest.prototype.getEndOfStream = function() {
  * @return {!proto.ondewo.s2t.TranscribeStreamRequest} returns this
  */
 proto.ondewo.s2t.TranscribeStreamRequest.prototype.setEndOfStream = function(value) {
-  return jspb.Message.setProto3BooleanField(this, 6, value);
+  return jspb.Message.setProto3BooleanField(this, 2, value);
 };
 
 
+/**
+ * optional TranscribeRequestConfig config = 3;
+ * @return {?proto.ondewo.s2t.TranscribeRequestConfig}
+ */
+proto.ondewo.s2t.TranscribeStreamRequest.prototype.getConfig = function() {
+  return /** @type{?proto.ondewo.s2t.TranscribeRequestConfig} */ (
+    jspb.Message.getWrapperField(this, proto.ondewo.s2t.TranscribeRequestConfig, 3));
+};
+
+
+/**
+ * @param {?proto.ondewo.s2t.TranscribeRequestConfig|undefined} value
+ * @return {!proto.ondewo.s2t.TranscribeStreamRequest} returns this
+*/
+proto.ondewo.s2t.TranscribeStreamRequest.prototype.setConfig = function(value) {
+  return jspb.Message.setWrapperField(this, 3, value);
+};
+
+
+/**
+ * Clears the message field making it undefined.
+ * @return {!proto.ondewo.s2t.TranscribeStreamRequest} returns this
+ */
+proto.ondewo.s2t.TranscribeStreamRequest.prototype.clearConfig = function() {
+  return this.setConfig(undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {boolean}
+ */
+proto.ondewo.s2t.TranscribeStreamRequest.prototype.hasConfig = function() {
+  return jspb.Message.getField(this, 3) != null;
+};
+
+
+/**
+ * optional bool mute_audio = 4;
+ * @return {boolean}
+ */
+proto.ondewo.s2t.TranscribeStreamRequest.prototype.getMuteAudio = function() {
+  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 4, false));
+};
+
+
+/**
+ * @param {boolean} value
+ * @return {!proto.ondewo.s2t.TranscribeStreamRequest} returns this
+ */
+proto.ondewo.s2t.TranscribeStreamRequest.prototype.setMuteAudio = function(value) {
+  return jspb.Message.setProto3BooleanField(this, 4, value);
+};
+
+
+
+
+
+if (jspb.Message.GENERATE_TO_OBJECT) {
+/**
+ * Creates an object representation of this proto.
+ * Field names that are reserved in JavaScript and will be renamed to pb_name.
+ * Optional fields that are not set will be set to undefined.
+ * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
+ * For the list of reserved names please see:
+ *     net/proto2/compiler/js/internal/generator.cc#kKeyword.
+ * @param {boolean=} opt_includeInstance Deprecated. whether to include the
+ *     JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @return {!Object}
+ */
+proto.ondewo.s2t.Transcription.prototype.toObject = function(opt_includeInstance) {
+  return proto.ondewo.s2t.Transcription.toObject(opt_includeInstance, this);
+};
+
+
+/**
+ * Static version of the {@see toObject} method.
+ * @param {boolean|undefined} includeInstance Deprecated. Whether to include
+ *     the JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @param {!proto.ondewo.s2t.Transcription} msg The msg instance to transform.
+ * @return {!Object}
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.ondewo.s2t.Transcription.toObject = function(includeInstance, msg) {
+  var f, obj = {
+    transcription: jspb.Message.getFieldWithDefault(msg, 1, ""),
+    confidenceScore: jspb.Message.getFloatingPointFieldWithDefault(msg, 2, 0.0)
+  };
+
+  if (includeInstance) {
+    obj.$jspbMessageInstance = msg;
+  }
+  return obj;
+};
+}
+
+
+/**
+ * Deserializes binary data (in protobuf wire format).
+ * @param {jspb.ByteSource} bytes The bytes to deserialize.
+ * @return {!proto.ondewo.s2t.Transcription}
+ */
+proto.ondewo.s2t.Transcription.deserializeBinary = function(bytes) {
+  var reader = new jspb.BinaryReader(bytes);
+  var msg = new proto.ondewo.s2t.Transcription;
+  return proto.ondewo.s2t.Transcription.deserializeBinaryFromReader(msg, reader);
+};
+
+
+/**
+ * Deserializes binary data (in protobuf wire format) from the
+ * given reader into the given message object.
+ * @param {!proto.ondewo.s2t.Transcription} msg The message object to deserialize into.
+ * @param {!jspb.BinaryReader} reader The BinaryReader to use.
+ * @return {!proto.ondewo.s2t.Transcription}
+ */
+proto.ondewo.s2t.Transcription.deserializeBinaryFromReader = function(msg, reader) {
+  while (reader.nextField()) {
+    if (reader.isEndGroup()) {
+      break;
+    }
+    var field = reader.getFieldNumber();
+    switch (field) {
+    case 1:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setTranscription(value);
+      break;
+    case 2:
+      var value = /** @type {number} */ (reader.readFloat());
+      msg.setConfidenceScore(value);
+      break;
+    default:
+      reader.skipField();
+      break;
+    }
+  }
+  return msg;
+};
+
+
+/**
+ * Serializes the message to binary data (in protobuf wire format).
+ * @return {!Uint8Array}
+ */
+proto.ondewo.s2t.Transcription.prototype.serializeBinary = function() {
+  var writer = new jspb.BinaryWriter();
+  proto.ondewo.s2t.Transcription.serializeBinaryToWriter(this, writer);
+  return writer.getResultBuffer();
+};
+
+
+/**
+ * Serializes the given message to binary data (in protobuf wire
+ * format), writing to the given BinaryWriter.
+ * @param {!proto.ondewo.s2t.Transcription} message
+ * @param {!jspb.BinaryWriter} writer
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.ondewo.s2t.Transcription.serializeBinaryToWriter = function(message, writer) {
+  var f = undefined;
+  f = message.getTranscription();
+  if (f.length > 0) {
+    writer.writeString(
+      1,
+      f
+    );
+  }
+  f = message.getConfidenceScore();
+  if (f !== 0.0) {
+    writer.writeFloat(
+      2,
+      f
+    );
+  }
+};
+
+
+/**
+ * optional string transcription = 1;
+ * @return {string}
+ */
+proto.ondewo.s2t.Transcription.prototype.getTranscription = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.ondewo.s2t.Transcription} returns this
+ */
+proto.ondewo.s2t.Transcription.prototype.setTranscription = function(value) {
+  return jspb.Message.setProto3StringField(this, 1, value);
+};
+
+
+/**
+ * optional float confidence_score = 2;
+ * @return {number}
+ */
+proto.ondewo.s2t.Transcription.prototype.getConfidenceScore = function() {
+  return /** @type {number} */ (jspb.Message.getFloatingPointFieldWithDefault(this, 2, 0.0));
+};
+
+
+/**
+ * @param {number} value
+ * @return {!proto.ondewo.s2t.Transcription} returns this
+ */
+proto.ondewo.s2t.Transcription.prototype.setConfidenceScore = function(value) {
+  return jspb.Message.setProto3FloatField(this, 2, value);
+};
+
+
+
+/**
+ * List of repeated fields within this message type.
+ * @private {!Array<number>}
+ * @const
+ */
+proto.ondewo.s2t.TranscribeStreamResponse.repeatedFields_ = [1];
+
+/**
+ * Oneof group definitions for this message. Each group defines the field
+ * numbers belonging to that group. When of these fields' value is set, all
+ * other fields in the group are cleared. During deserialization, if multiple
+ * fields are encountered for a group, only the last value seen will be kept.
+ * @private {!Array<!Array<number>>}
+ * @const
+ */
+proto.ondewo.s2t.TranscribeStreamResponse.oneofGroups_ = [[8]];
+
+/**
+ * @enum {number}
+ */
+proto.ondewo.s2t.TranscribeStreamResponse.OneofConfigCase = {
+  ONEOF_CONFIG_NOT_SET: 0,
+  CONFIG: 8
+};
+
+/**
+ * @return {proto.ondewo.s2t.TranscribeStreamResponse.OneofConfigCase}
+ */
+proto.ondewo.s2t.TranscribeStreamResponse.prototype.getOneofConfigCase = function() {
+  return /** @type {proto.ondewo.s2t.TranscribeStreamResponse.OneofConfigCase} */(jspb.Message.computeOneofCase(this, proto.ondewo.s2t.TranscribeStreamResponse.oneofGroups_[0]));
+};
 
 
 
@@ -1057,9 +2800,15 @@ proto.ondewo.s2t.TranscribeStreamResponse.prototype.toObject = function(opt_incl
  */
 proto.ondewo.s2t.TranscribeStreamResponse.toObject = function(includeInstance, msg) {
   var f, obj = {
-    transcription: jspb.Message.getFieldWithDefault(msg, 1, ""),
+    transcriptionsList: jspb.Message.toObjectList(msg.getTranscriptionsList(),
+    proto.ondewo.s2t.Transcription.toObject, includeInstance),
     time: jspb.Message.getFloatingPointFieldWithDefault(msg, 2, 0.0),
-    pb_final: jspb.Message.getBooleanFieldWithDefault(msg, 3, false)
+    pb_final: jspb.Message.getBooleanFieldWithDefault(msg, 3, false),
+    returnAudio: jspb.Message.getBooleanFieldWithDefault(msg, 4, false),
+    audio: msg.getAudio_asB64(),
+    utteranceStart: jspb.Message.getBooleanFieldWithDefault(msg, 6, false),
+    audioUuid: jspb.Message.getFieldWithDefault(msg, 7, ""),
+    config: (f = msg.getConfig()) && proto.ondewo.s2t.TranscribeRequestConfig.toObject(includeInstance, f)
   };
 
   if (includeInstance) {
@@ -1097,8 +2846,9 @@ proto.ondewo.s2t.TranscribeStreamResponse.deserializeBinaryFromReader = function
     var field = reader.getFieldNumber();
     switch (field) {
     case 1:
-      var value = /** @type {string} */ (reader.readString());
-      msg.setTranscription(value);
+      var value = new proto.ondewo.s2t.Transcription;
+      reader.readMessage(value,proto.ondewo.s2t.Transcription.deserializeBinaryFromReader);
+      msg.addTranscriptions(value);
       break;
     case 2:
       var value = /** @type {number} */ (reader.readFloat());
@@ -1107,6 +2857,27 @@ proto.ondewo.s2t.TranscribeStreamResponse.deserializeBinaryFromReader = function
     case 3:
       var value = /** @type {boolean} */ (reader.readBool());
       msg.setFinal(value);
+      break;
+    case 4:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setReturnAudio(value);
+      break;
+    case 5:
+      var value = /** @type {!Uint8Array} */ (reader.readBytes());
+      msg.setAudio(value);
+      break;
+    case 6:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setUtteranceStart(value);
+      break;
+    case 7:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setAudioUuid(value);
+      break;
+    case 8:
+      var value = new proto.ondewo.s2t.TranscribeRequestConfig;
+      reader.readMessage(value,proto.ondewo.s2t.TranscribeRequestConfig.deserializeBinaryFromReader);
+      msg.setConfig(value);
       break;
     default:
       reader.skipField();
@@ -1137,11 +2908,12 @@ proto.ondewo.s2t.TranscribeStreamResponse.prototype.serializeBinary = function()
  */
 proto.ondewo.s2t.TranscribeStreamResponse.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
-  f = message.getTranscription();
+  f = message.getTranscriptionsList();
   if (f.length > 0) {
-    writer.writeString(
+    writer.writeRepeatedMessage(
       1,
-      f
+      f,
+      proto.ondewo.s2t.Transcription.serializeBinaryToWriter
     );
   }
   f = message.getTime();
@@ -1158,24 +2930,80 @@ proto.ondewo.s2t.TranscribeStreamResponse.serializeBinaryToWriter = function(mes
       f
     );
   }
+  f = message.getReturnAudio();
+  if (f) {
+    writer.writeBool(
+      4,
+      f
+    );
+  }
+  f = message.getAudio_asU8();
+  if (f.length > 0) {
+    writer.writeBytes(
+      5,
+      f
+    );
+  }
+  f = message.getUtteranceStart();
+  if (f) {
+    writer.writeBool(
+      6,
+      f
+    );
+  }
+  f = message.getAudioUuid();
+  if (f.length > 0) {
+    writer.writeString(
+      7,
+      f
+    );
+  }
+  f = message.getConfig();
+  if (f != null) {
+    writer.writeMessage(
+      8,
+      f,
+      proto.ondewo.s2t.TranscribeRequestConfig.serializeBinaryToWriter
+    );
+  }
 };
 
 
 /**
- * optional string transcription = 1;
- * @return {string}
+ * repeated Transcription transcriptions = 1;
+ * @return {!Array<!proto.ondewo.s2t.Transcription>}
  */
-proto.ondewo.s2t.TranscribeStreamResponse.prototype.getTranscription = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
+proto.ondewo.s2t.TranscribeStreamResponse.prototype.getTranscriptionsList = function() {
+  return /** @type{!Array<!proto.ondewo.s2t.Transcription>} */ (
+    jspb.Message.getRepeatedWrapperField(this, proto.ondewo.s2t.Transcription, 1));
 };
 
 
 /**
- * @param {string} value
+ * @param {!Array<!proto.ondewo.s2t.Transcription>} value
+ * @return {!proto.ondewo.s2t.TranscribeStreamResponse} returns this
+*/
+proto.ondewo.s2t.TranscribeStreamResponse.prototype.setTranscriptionsList = function(value) {
+  return jspb.Message.setRepeatedWrapperField(this, 1, value);
+};
+
+
+/**
+ * @param {!proto.ondewo.s2t.Transcription=} opt_value
+ * @param {number=} opt_index
+ * @return {!proto.ondewo.s2t.Transcription}
+ */
+proto.ondewo.s2t.TranscribeStreamResponse.prototype.addTranscriptions = function(opt_value, opt_index) {
+  return jspb.Message.addToRepeatedWrapperField(this, 1, opt_value, proto.ondewo.s2t.Transcription, opt_index);
+};
+
+
+/**
+ * Clears the list making it empty but non-null.
  * @return {!proto.ondewo.s2t.TranscribeStreamResponse} returns this
  */
-proto.ondewo.s2t.TranscribeStreamResponse.prototype.setTranscription = function(value) {
-  return jspb.Message.setProto3StringField(this, 1, value);
+proto.ondewo.s2t.TranscribeStreamResponse.prototype.clearTranscriptionsList = function() {
+  return this.setTranscriptionsList([]);
 };
 
 
@@ -1215,6 +3043,139 @@ proto.ondewo.s2t.TranscribeStreamResponse.prototype.setFinal = function(value) {
 };
 
 
+/**
+ * optional bool return_audio = 4;
+ * @return {boolean}
+ */
+proto.ondewo.s2t.TranscribeStreamResponse.prototype.getReturnAudio = function() {
+  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 4, false));
+};
+
+
+/**
+ * @param {boolean} value
+ * @return {!proto.ondewo.s2t.TranscribeStreamResponse} returns this
+ */
+proto.ondewo.s2t.TranscribeStreamResponse.prototype.setReturnAudio = function(value) {
+  return jspb.Message.setProto3BooleanField(this, 4, value);
+};
+
+
+/**
+ * optional bytes audio = 5;
+ * @return {!(string|Uint8Array)}
+ */
+proto.ondewo.s2t.TranscribeStreamResponse.prototype.getAudio = function() {
+  return /** @type {!(string|Uint8Array)} */ (jspb.Message.getFieldWithDefault(this, 5, ""));
+};
+
+
+/**
+ * optional bytes audio = 5;
+ * This is a type-conversion wrapper around `getAudio()`
+ * @return {string}
+ */
+proto.ondewo.s2t.TranscribeStreamResponse.prototype.getAudio_asB64 = function() {
+  return /** @type {string} */ (jspb.Message.bytesAsB64(
+      this.getAudio()));
+};
+
+
+/**
+ * optional bytes audio = 5;
+ * Note that Uint8Array is not supported on all browsers.
+ * @see http://caniuse.com/Uint8Array
+ * This is a type-conversion wrapper around `getAudio()`
+ * @return {!Uint8Array}
+ */
+proto.ondewo.s2t.TranscribeStreamResponse.prototype.getAudio_asU8 = function() {
+  return /** @type {!Uint8Array} */ (jspb.Message.bytesAsU8(
+      this.getAudio()));
+};
+
+
+/**
+ * @param {!(string|Uint8Array)} value
+ * @return {!proto.ondewo.s2t.TranscribeStreamResponse} returns this
+ */
+proto.ondewo.s2t.TranscribeStreamResponse.prototype.setAudio = function(value) {
+  return jspb.Message.setProto3BytesField(this, 5, value);
+};
+
+
+/**
+ * optional bool utterance_start = 6;
+ * @return {boolean}
+ */
+proto.ondewo.s2t.TranscribeStreamResponse.prototype.getUtteranceStart = function() {
+  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 6, false));
+};
+
+
+/**
+ * @param {boolean} value
+ * @return {!proto.ondewo.s2t.TranscribeStreamResponse} returns this
+ */
+proto.ondewo.s2t.TranscribeStreamResponse.prototype.setUtteranceStart = function(value) {
+  return jspb.Message.setProto3BooleanField(this, 6, value);
+};
+
+
+/**
+ * optional string audio_uuid = 7;
+ * @return {string}
+ */
+proto.ondewo.s2t.TranscribeStreamResponse.prototype.getAudioUuid = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 7, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.ondewo.s2t.TranscribeStreamResponse} returns this
+ */
+proto.ondewo.s2t.TranscribeStreamResponse.prototype.setAudioUuid = function(value) {
+  return jspb.Message.setProto3StringField(this, 7, value);
+};
+
+
+/**
+ * optional TranscribeRequestConfig config = 8;
+ * @return {?proto.ondewo.s2t.TranscribeRequestConfig}
+ */
+proto.ondewo.s2t.TranscribeStreamResponse.prototype.getConfig = function() {
+  return /** @type{?proto.ondewo.s2t.TranscribeRequestConfig} */ (
+    jspb.Message.getWrapperField(this, proto.ondewo.s2t.TranscribeRequestConfig, 8));
+};
+
+
+/**
+ * @param {?proto.ondewo.s2t.TranscribeRequestConfig|undefined} value
+ * @return {!proto.ondewo.s2t.TranscribeStreamResponse} returns this
+*/
+proto.ondewo.s2t.TranscribeStreamResponse.prototype.setConfig = function(value) {
+  return jspb.Message.setOneofWrapperField(this, 8, proto.ondewo.s2t.TranscribeStreamResponse.oneofGroups_[0], value);
+};
+
+
+/**
+ * Clears the message field making it undefined.
+ * @return {!proto.ondewo.s2t.TranscribeStreamResponse} returns this
+ */
+proto.ondewo.s2t.TranscribeStreamResponse.prototype.clearConfig = function() {
+  return this.setConfig(undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {boolean}
+ */
+proto.ondewo.s2t.TranscribeStreamResponse.prototype.hasConfig = function() {
+  return jspb.Message.getField(this, 8) != null;
+};
+
+
 
 
 
@@ -1247,12 +3208,8 @@ proto.ondewo.s2t.TranscribeFileRequest.prototype.toObject = function(opt_include
  */
 proto.ondewo.s2t.TranscribeFileRequest.toObject = function(includeInstance, msg) {
   var f, obj = {
-    s2tPipelineId: jspb.Message.getFieldWithDefault(msg, 1, ""),
     audioFile: msg.getAudioFile_asB64(),
-    ctcDecoding: jspb.Message.getFieldWithDefault(msg, 3, 0),
-    spellingCorrection: jspb.Message.getBooleanFieldWithDefault(msg, 4, false),
-    disableNormalization: jspb.Message.getBooleanFieldWithDefault(msg, 5, false),
-    includeTiming: jspb.Message.getBooleanFieldWithDefault(msg, 6, false)
+    config: (f = msg.getConfig()) && proto.ondewo.s2t.TranscribeRequestConfig.toObject(includeInstance, f)
   };
 
   if (includeInstance) {
@@ -1290,28 +3247,13 @@ proto.ondewo.s2t.TranscribeFileRequest.deserializeBinaryFromReader = function(ms
     var field = reader.getFieldNumber();
     switch (field) {
     case 1:
-      var value = /** @type {string} */ (reader.readString());
-      msg.setS2tPipelineId(value);
-      break;
-    case 2:
       var value = /** @type {!Uint8Array} */ (reader.readBytes());
       msg.setAudioFile(value);
       break;
-    case 3:
-      var value = /** @type {!proto.ondewo.s2t.CTCDecoding} */ (reader.readEnum());
-      msg.setCtcDecoding(value);
-      break;
-    case 4:
-      var value = /** @type {boolean} */ (reader.readBool());
-      msg.setSpellingCorrection(value);
-      break;
-    case 5:
-      var value = /** @type {boolean} */ (reader.readBool());
-      msg.setDisableNormalization(value);
-      break;
-    case 6:
-      var value = /** @type {boolean} */ (reader.readBool());
-      msg.setIncludeTiming(value);
+    case 2:
+      var value = new proto.ondewo.s2t.TranscribeRequestConfig;
+      reader.readMessage(value,proto.ondewo.s2t.TranscribeRequestConfig.deserializeBinaryFromReader);
+      msg.setConfig(value);
       break;
     default:
       reader.skipField();
@@ -1342,80 +3284,35 @@ proto.ondewo.s2t.TranscribeFileRequest.prototype.serializeBinary = function() {
  */
 proto.ondewo.s2t.TranscribeFileRequest.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
-  f = message.getS2tPipelineId();
+  f = message.getAudioFile_asU8();
   if (f.length > 0) {
-    writer.writeString(
+    writer.writeBytes(
       1,
       f
     );
   }
-  f = message.getAudioFile_asU8();
-  if (f.length > 0) {
-    writer.writeBytes(
+  f = message.getConfig();
+  if (f != null) {
+    writer.writeMessage(
       2,
-      f
-    );
-  }
-  f = message.getCtcDecoding();
-  if (f !== 0.0) {
-    writer.writeEnum(
-      3,
-      f
-    );
-  }
-  f = message.getSpellingCorrection();
-  if (f) {
-    writer.writeBool(
-      4,
-      f
-    );
-  }
-  f = message.getDisableNormalization();
-  if (f) {
-    writer.writeBool(
-      5,
-      f
-    );
-  }
-  f = message.getIncludeTiming();
-  if (f) {
-    writer.writeBool(
-      6,
-      f
+      f,
+      proto.ondewo.s2t.TranscribeRequestConfig.serializeBinaryToWriter
     );
   }
 };
 
 
 /**
- * optional string s2t_pipeline_id = 1;
- * @return {string}
- */
-proto.ondewo.s2t.TranscribeFileRequest.prototype.getS2tPipelineId = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
-};
-
-
-/**
- * @param {string} value
- * @return {!proto.ondewo.s2t.TranscribeFileRequest} returns this
- */
-proto.ondewo.s2t.TranscribeFileRequest.prototype.setS2tPipelineId = function(value) {
-  return jspb.Message.setProto3StringField(this, 1, value);
-};
-
-
-/**
- * optional bytes audio_file = 2;
+ * optional bytes audio_file = 1;
  * @return {!(string|Uint8Array)}
  */
 proto.ondewo.s2t.TranscribeFileRequest.prototype.getAudioFile = function() {
-  return /** @type {!(string|Uint8Array)} */ (jspb.Message.getFieldWithDefault(this, 2, ""));
+  return /** @type {!(string|Uint8Array)} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
 };
 
 
 /**
- * optional bytes audio_file = 2;
+ * optional bytes audio_file = 1;
  * This is a type-conversion wrapper around `getAudioFile()`
  * @return {string}
  */
@@ -1426,7 +3323,7 @@ proto.ondewo.s2t.TranscribeFileRequest.prototype.getAudioFile_asB64 = function()
 
 
 /**
- * optional bytes audio_file = 2;
+ * optional bytes audio_file = 1;
  * Note that Uint8Array is not supported on all browsers.
  * @see http://caniuse.com/Uint8Array
  * This is a type-conversion wrapper around `getAudioFile()`
@@ -1443,79 +3340,44 @@ proto.ondewo.s2t.TranscribeFileRequest.prototype.getAudioFile_asU8 = function() 
  * @return {!proto.ondewo.s2t.TranscribeFileRequest} returns this
  */
 proto.ondewo.s2t.TranscribeFileRequest.prototype.setAudioFile = function(value) {
-  return jspb.Message.setProto3BytesField(this, 2, value);
+  return jspb.Message.setProto3BytesField(this, 1, value);
 };
 
 
 /**
- * optional CTCDecoding ctc_decoding = 3;
- * @return {!proto.ondewo.s2t.CTCDecoding}
+ * optional TranscribeRequestConfig config = 2;
+ * @return {?proto.ondewo.s2t.TranscribeRequestConfig}
  */
-proto.ondewo.s2t.TranscribeFileRequest.prototype.getCtcDecoding = function() {
-  return /** @type {!proto.ondewo.s2t.CTCDecoding} */ (jspb.Message.getFieldWithDefault(this, 3, 0));
+proto.ondewo.s2t.TranscribeFileRequest.prototype.getConfig = function() {
+  return /** @type{?proto.ondewo.s2t.TranscribeRequestConfig} */ (
+    jspb.Message.getWrapperField(this, proto.ondewo.s2t.TranscribeRequestConfig, 2));
 };
 
 
 /**
- * @param {!proto.ondewo.s2t.CTCDecoding} value
+ * @param {?proto.ondewo.s2t.TranscribeRequestConfig|undefined} value
+ * @return {!proto.ondewo.s2t.TranscribeFileRequest} returns this
+*/
+proto.ondewo.s2t.TranscribeFileRequest.prototype.setConfig = function(value) {
+  return jspb.Message.setWrapperField(this, 2, value);
+};
+
+
+/**
+ * Clears the message field making it undefined.
  * @return {!proto.ondewo.s2t.TranscribeFileRequest} returns this
  */
-proto.ondewo.s2t.TranscribeFileRequest.prototype.setCtcDecoding = function(value) {
-  return jspb.Message.setProto3EnumField(this, 3, value);
+proto.ondewo.s2t.TranscribeFileRequest.prototype.clearConfig = function() {
+  return this.setConfig(undefined);
 };
 
 
 /**
- * optional bool spelling_correction = 4;
+ * Returns whether this field is set.
  * @return {boolean}
  */
-proto.ondewo.s2t.TranscribeFileRequest.prototype.getSpellingCorrection = function() {
-  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 4, false));
-};
-
-
-/**
- * @param {boolean} value
- * @return {!proto.ondewo.s2t.TranscribeFileRequest} returns this
- */
-proto.ondewo.s2t.TranscribeFileRequest.prototype.setSpellingCorrection = function(value) {
-  return jspb.Message.setProto3BooleanField(this, 4, value);
-};
-
-
-/**
- * optional bool disable_normalization = 5;
- * @return {boolean}
- */
-proto.ondewo.s2t.TranscribeFileRequest.prototype.getDisableNormalization = function() {
-  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 5, false));
-};
-
-
-/**
- * @param {boolean} value
- * @return {!proto.ondewo.s2t.TranscribeFileRequest} returns this
- */
-proto.ondewo.s2t.TranscribeFileRequest.prototype.setDisableNormalization = function(value) {
-  return jspb.Message.setProto3BooleanField(this, 5, value);
-};
-
-
-/**
- * optional bool include_timing = 6;
- * @return {boolean}
- */
-proto.ondewo.s2t.TranscribeFileRequest.prototype.getIncludeTiming = function() {
-  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 6, false));
-};
-
-
-/**
- * @param {boolean} value
- * @return {!proto.ondewo.s2t.TranscribeFileRequest} returns this
- */
-proto.ondewo.s2t.TranscribeFileRequest.prototype.setIncludeTiming = function(value) {
-  return jspb.Message.setProto3BooleanField(this, 6, value);
+proto.ondewo.s2t.TranscribeFileRequest.prototype.hasConfig = function() {
+  return jspb.Message.getField(this, 2) != null;
 };
 
 
@@ -1525,7 +3387,7 @@ proto.ondewo.s2t.TranscribeFileRequest.prototype.setIncludeTiming = function(val
  * @private {!Array<number>}
  * @const
  */
-proto.ondewo.s2t.TranscribeFileResponse.repeatedFields_ = [3];
+proto.ondewo.s2t.TranscribeFileResponse.repeatedFields_ = [1,3];
 
 
 
@@ -1558,10 +3420,12 @@ proto.ondewo.s2t.TranscribeFileResponse.prototype.toObject = function(opt_includ
  */
 proto.ondewo.s2t.TranscribeFileResponse.toObject = function(includeInstance, msg) {
   var f, obj = {
-    transcription: jspb.Message.getFieldWithDefault(msg, 1, ""),
+    transcriptionsList: jspb.Message.toObjectList(msg.getTranscriptionsList(),
+    proto.ondewo.s2t.Transcription.toObject, includeInstance),
     time: jspb.Message.getFloatingPointFieldWithDefault(msg, 2, 0.0),
     wordTimingList: jspb.Message.toObjectList(msg.getWordTimingList(),
-    proto.ondewo.s2t.WordTiming.toObject, includeInstance)
+    proto.ondewo.s2t.WordTiming.toObject, includeInstance),
+    audioUuid: jspb.Message.getFieldWithDefault(msg, 4, "")
   };
 
   if (includeInstance) {
@@ -1599,8 +3463,9 @@ proto.ondewo.s2t.TranscribeFileResponse.deserializeBinaryFromReader = function(m
     var field = reader.getFieldNumber();
     switch (field) {
     case 1:
-      var value = /** @type {string} */ (reader.readString());
-      msg.setTranscription(value);
+      var value = new proto.ondewo.s2t.Transcription;
+      reader.readMessage(value,proto.ondewo.s2t.Transcription.deserializeBinaryFromReader);
+      msg.addTranscriptions(value);
       break;
     case 2:
       var value = /** @type {number} */ (reader.readFloat());
@@ -1610,6 +3475,10 @@ proto.ondewo.s2t.TranscribeFileResponse.deserializeBinaryFromReader = function(m
       var value = new proto.ondewo.s2t.WordTiming;
       reader.readMessage(value,proto.ondewo.s2t.WordTiming.deserializeBinaryFromReader);
       msg.addWordTiming(value);
+      break;
+    case 4:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setAudioUuid(value);
       break;
     default:
       reader.skipField();
@@ -1640,11 +3509,12 @@ proto.ondewo.s2t.TranscribeFileResponse.prototype.serializeBinary = function() {
  */
 proto.ondewo.s2t.TranscribeFileResponse.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
-  f = message.getTranscription();
+  f = message.getTranscriptionsList();
   if (f.length > 0) {
-    writer.writeString(
+    writer.writeRepeatedMessage(
       1,
-      f
+      f,
+      proto.ondewo.s2t.Transcription.serializeBinaryToWriter
     );
   }
   f = message.getTime();
@@ -1662,24 +3532,51 @@ proto.ondewo.s2t.TranscribeFileResponse.serializeBinaryToWriter = function(messa
       proto.ondewo.s2t.WordTiming.serializeBinaryToWriter
     );
   }
+  f = message.getAudioUuid();
+  if (f.length > 0) {
+    writer.writeString(
+      4,
+      f
+    );
+  }
 };
 
 
 /**
- * optional string transcription = 1;
- * @return {string}
+ * repeated Transcription transcriptions = 1;
+ * @return {!Array<!proto.ondewo.s2t.Transcription>}
  */
-proto.ondewo.s2t.TranscribeFileResponse.prototype.getTranscription = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
+proto.ondewo.s2t.TranscribeFileResponse.prototype.getTranscriptionsList = function() {
+  return /** @type{!Array<!proto.ondewo.s2t.Transcription>} */ (
+    jspb.Message.getRepeatedWrapperField(this, proto.ondewo.s2t.Transcription, 1));
 };
 
 
 /**
- * @param {string} value
+ * @param {!Array<!proto.ondewo.s2t.Transcription>} value
+ * @return {!proto.ondewo.s2t.TranscribeFileResponse} returns this
+*/
+proto.ondewo.s2t.TranscribeFileResponse.prototype.setTranscriptionsList = function(value) {
+  return jspb.Message.setRepeatedWrapperField(this, 1, value);
+};
+
+
+/**
+ * @param {!proto.ondewo.s2t.Transcription=} opt_value
+ * @param {number=} opt_index
+ * @return {!proto.ondewo.s2t.Transcription}
+ */
+proto.ondewo.s2t.TranscribeFileResponse.prototype.addTranscriptions = function(opt_value, opt_index) {
+  return jspb.Message.addToRepeatedWrapperField(this, 1, opt_value, proto.ondewo.s2t.Transcription, opt_index);
+};
+
+
+/**
+ * Clears the list making it empty but non-null.
  * @return {!proto.ondewo.s2t.TranscribeFileResponse} returns this
  */
-proto.ondewo.s2t.TranscribeFileResponse.prototype.setTranscription = function(value) {
-  return jspb.Message.setProto3StringField(this, 1, value);
+proto.ondewo.s2t.TranscribeFileResponse.prototype.clearTranscriptionsList = function() {
+  return this.setTranscriptionsList([]);
 };
 
 
@@ -1736,6 +3633,24 @@ proto.ondewo.s2t.TranscribeFileResponse.prototype.addWordTiming = function(opt_v
  */
 proto.ondewo.s2t.TranscribeFileResponse.prototype.clearWordTimingList = function() {
   return this.setWordTimingList([]);
+};
+
+
+/**
+ * optional string audio_uuid = 4;
+ * @return {string}
+ */
+proto.ondewo.s2t.TranscribeFileResponse.prototype.getAudioUuid = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 4, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.ondewo.s2t.TranscribeFileResponse} returns this
+ */
+proto.ondewo.s2t.TranscribeFileResponse.prototype.setAudioUuid = function(value) {
+  return jspb.Message.setProto3StringField(this, 4, value);
 };
 
 
@@ -2100,7 +4015,8 @@ proto.ondewo.s2t.ListS2tPipelinesRequest.toObject = function(includeInstance, ms
   var f, obj = {
     languagesList: (f = jspb.Message.getRepeatedField(msg, 1)) == null ? undefined : f,
     pipelineOwnersList: (f = jspb.Message.getRepeatedField(msg, 2)) == null ? undefined : f,
-    domainsList: (f = jspb.Message.getRepeatedField(msg, 3)) == null ? undefined : f
+    domainsList: (f = jspb.Message.getRepeatedField(msg, 3)) == null ? undefined : f,
+    registeredOnly: jspb.Message.getBooleanFieldWithDefault(msg, 4, false)
   };
 
   if (includeInstance) {
@@ -2149,6 +4065,10 @@ proto.ondewo.s2t.ListS2tPipelinesRequest.deserializeBinaryFromReader = function(
       var value = /** @type {string} */ (reader.readString());
       msg.addDomains(value);
       break;
+    case 4:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setRegisteredOnly(value);
+      break;
     default:
       reader.skipField();
       break;
@@ -2196,6 +4116,13 @@ proto.ondewo.s2t.ListS2tPipelinesRequest.serializeBinaryToWriter = function(mess
   if (f.length > 0) {
     writer.writeRepeatedString(
       3,
+      f
+    );
+  }
+  f = message.getRegisteredOnly();
+  if (f) {
+    writer.writeBool(
+      4,
       f
     );
   }
@@ -2310,6 +4237,24 @@ proto.ondewo.s2t.ListS2tPipelinesRequest.prototype.addDomains = function(value, 
  */
 proto.ondewo.s2t.ListS2tPipelinesRequest.prototype.clearDomainsList = function() {
   return this.setDomainsList([]);
+};
+
+
+/**
+ * optional bool registered_only = 4;
+ * @return {boolean}
+ */
+proto.ondewo.s2t.ListS2tPipelinesRequest.prototype.getRegisteredOnly = function() {
+  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 4, false));
+};
+
+
+/**
+ * @param {boolean} value
+ * @return {!proto.ondewo.s2t.ListS2tPipelinesRequest} returns this
+ */
+proto.ondewo.s2t.ListS2tPipelinesRequest.prototype.setRegisteredOnly = function(value) {
+  return jspb.Message.setProto3BooleanField(this, 4, value);
 };
 
 
@@ -3211,6 +5156,136 @@ if (jspb.Message.GENERATE_TO_OBJECT) {
  *     http://goto/soy-param-migration
  * @return {!Object}
  */
+proto.ondewo.s2t.S2TGetServiceInfoResponse.prototype.toObject = function(opt_includeInstance) {
+  return proto.ondewo.s2t.S2TGetServiceInfoResponse.toObject(opt_includeInstance, this);
+};
+
+
+/**
+ * Static version of the {@see toObject} method.
+ * @param {boolean|undefined} includeInstance Deprecated. Whether to include
+ *     the JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @param {!proto.ondewo.s2t.S2TGetServiceInfoResponse} msg The msg instance to transform.
+ * @return {!Object}
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.ondewo.s2t.S2TGetServiceInfoResponse.toObject = function(includeInstance, msg) {
+  var f, obj = {
+    version: jspb.Message.getFieldWithDefault(msg, 1, "")
+  };
+
+  if (includeInstance) {
+    obj.$jspbMessageInstance = msg;
+  }
+  return obj;
+};
+}
+
+
+/**
+ * Deserializes binary data (in protobuf wire format).
+ * @param {jspb.ByteSource} bytes The bytes to deserialize.
+ * @return {!proto.ondewo.s2t.S2TGetServiceInfoResponse}
+ */
+proto.ondewo.s2t.S2TGetServiceInfoResponse.deserializeBinary = function(bytes) {
+  var reader = new jspb.BinaryReader(bytes);
+  var msg = new proto.ondewo.s2t.S2TGetServiceInfoResponse;
+  return proto.ondewo.s2t.S2TGetServiceInfoResponse.deserializeBinaryFromReader(msg, reader);
+};
+
+
+/**
+ * Deserializes binary data (in protobuf wire format) from the
+ * given reader into the given message object.
+ * @param {!proto.ondewo.s2t.S2TGetServiceInfoResponse} msg The message object to deserialize into.
+ * @param {!jspb.BinaryReader} reader The BinaryReader to use.
+ * @return {!proto.ondewo.s2t.S2TGetServiceInfoResponse}
+ */
+proto.ondewo.s2t.S2TGetServiceInfoResponse.deserializeBinaryFromReader = function(msg, reader) {
+  while (reader.nextField()) {
+    if (reader.isEndGroup()) {
+      break;
+    }
+    var field = reader.getFieldNumber();
+    switch (field) {
+    case 1:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setVersion(value);
+      break;
+    default:
+      reader.skipField();
+      break;
+    }
+  }
+  return msg;
+};
+
+
+/**
+ * Serializes the message to binary data (in protobuf wire format).
+ * @return {!Uint8Array}
+ */
+proto.ondewo.s2t.S2TGetServiceInfoResponse.prototype.serializeBinary = function() {
+  var writer = new jspb.BinaryWriter();
+  proto.ondewo.s2t.S2TGetServiceInfoResponse.serializeBinaryToWriter(this, writer);
+  return writer.getResultBuffer();
+};
+
+
+/**
+ * Serializes the given message to binary data (in protobuf wire
+ * format), writing to the given BinaryWriter.
+ * @param {!proto.ondewo.s2t.S2TGetServiceInfoResponse} message
+ * @param {!jspb.BinaryWriter} writer
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.ondewo.s2t.S2TGetServiceInfoResponse.serializeBinaryToWriter = function(message, writer) {
+  var f = undefined;
+  f = message.getVersion();
+  if (f.length > 0) {
+    writer.writeString(
+      1,
+      f
+    );
+  }
+};
+
+
+/**
+ * optional string version = 1;
+ * @return {string}
+ */
+proto.ondewo.s2t.S2TGetServiceInfoResponse.prototype.getVersion = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.ondewo.s2t.S2TGetServiceInfoResponse} returns this
+ */
+proto.ondewo.s2t.S2TGetServiceInfoResponse.prototype.setVersion = function(value) {
+  return jspb.Message.setProto3StringField(this, 1, value);
+};
+
+
+
+
+
+if (jspb.Message.GENERATE_TO_OBJECT) {
+/**
+ * Creates an object representation of this proto.
+ * Field names that are reserved in JavaScript and will be renamed to pb_name.
+ * Optional fields that are not set will be set to undefined.
+ * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
+ * For the list of reserved names please see:
+ *     net/proto2/compiler/js/internal/generator.cc#kKeyword.
+ * @param {boolean=} opt_includeInstance Deprecated. whether to include the
+ *     JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @return {!Object}
+ */
 proto.ondewo.s2t.Speech2TextConfig.prototype.toObject = function(opt_includeInstance) {
   return proto.ondewo.s2t.Speech2TextConfig.toObject(opt_includeInstance, this);
 };
@@ -3228,9 +5303,9 @@ proto.ondewo.s2t.Speech2TextConfig.prototype.toObject = function(opt_includeInst
 proto.ondewo.s2t.Speech2TextConfig.toObject = function(includeInstance, msg) {
   var f, obj = {
     id: jspb.Message.getFieldWithDefault(msg, 1, ""),
-    description: (f = msg.getDescription()) && proto.ondewo.s2t.Description.toObject(includeInstance, f),
+    description: (f = msg.getDescription()) && proto.ondewo.s2t.S2TDescription.toObject(includeInstance, f),
     active: jspb.Message.getBooleanFieldWithDefault(msg, 3, false),
-    inference: (f = msg.getInference()) && proto.ondewo.s2t.Inference.toObject(includeInstance, f),
+    inference: (f = msg.getInference()) && proto.ondewo.s2t.S2TInference.toObject(includeInstance, f),
     streamingServer: (f = msg.getStreamingServer()) && proto.ondewo.s2t.StreamingServer.toObject(includeInstance, f),
     voiceActivityDetection: (f = msg.getVoiceActivityDetection()) && proto.ondewo.s2t.VoiceActivityDetection.toObject(includeInstance, f),
     postProcessing: (f = msg.getPostProcessing()) && proto.ondewo.s2t.PostProcessing.toObject(includeInstance, f),
@@ -3276,8 +5351,8 @@ proto.ondewo.s2t.Speech2TextConfig.deserializeBinaryFromReader = function(msg, r
       msg.setId(value);
       break;
     case 2:
-      var value = new proto.ondewo.s2t.Description;
-      reader.readMessage(value,proto.ondewo.s2t.Description.deserializeBinaryFromReader);
+      var value = new proto.ondewo.s2t.S2TDescription;
+      reader.readMessage(value,proto.ondewo.s2t.S2TDescription.deserializeBinaryFromReader);
       msg.setDescription(value);
       break;
     case 3:
@@ -3285,8 +5360,8 @@ proto.ondewo.s2t.Speech2TextConfig.deserializeBinaryFromReader = function(msg, r
       msg.setActive(value);
       break;
     case 4:
-      var value = new proto.ondewo.s2t.Inference;
-      reader.readMessage(value,proto.ondewo.s2t.Inference.deserializeBinaryFromReader);
+      var value = new proto.ondewo.s2t.S2TInference;
+      reader.readMessage(value,proto.ondewo.s2t.S2TInference.deserializeBinaryFromReader);
       msg.setInference(value);
       break;
     case 5:
@@ -3350,7 +5425,7 @@ proto.ondewo.s2t.Speech2TextConfig.serializeBinaryToWriter = function(message, w
     writer.writeMessage(
       2,
       f,
-      proto.ondewo.s2t.Description.serializeBinaryToWriter
+      proto.ondewo.s2t.S2TDescription.serializeBinaryToWriter
     );
   }
   f = message.getActive();
@@ -3365,7 +5440,7 @@ proto.ondewo.s2t.Speech2TextConfig.serializeBinaryToWriter = function(message, w
     writer.writeMessage(
       4,
       f,
-      proto.ondewo.s2t.Inference.serializeBinaryToWriter
+      proto.ondewo.s2t.S2TInference.serializeBinaryToWriter
     );
   }
   f = message.getStreamingServer();
@@ -3422,17 +5497,17 @@ proto.ondewo.s2t.Speech2TextConfig.prototype.setId = function(value) {
 
 
 /**
- * optional Description description = 2;
- * @return {?proto.ondewo.s2t.Description}
+ * optional S2TDescription description = 2;
+ * @return {?proto.ondewo.s2t.S2TDescription}
  */
 proto.ondewo.s2t.Speech2TextConfig.prototype.getDescription = function() {
-  return /** @type{?proto.ondewo.s2t.Description} */ (
-    jspb.Message.getWrapperField(this, proto.ondewo.s2t.Description, 2));
+  return /** @type{?proto.ondewo.s2t.S2TDescription} */ (
+    jspb.Message.getWrapperField(this, proto.ondewo.s2t.S2TDescription, 2));
 };
 
 
 /**
- * @param {?proto.ondewo.s2t.Description|undefined} value
+ * @param {?proto.ondewo.s2t.S2TDescription|undefined} value
  * @return {!proto.ondewo.s2t.Speech2TextConfig} returns this
 */
 proto.ondewo.s2t.Speech2TextConfig.prototype.setDescription = function(value) {
@@ -3477,17 +5552,17 @@ proto.ondewo.s2t.Speech2TextConfig.prototype.setActive = function(value) {
 
 
 /**
- * optional Inference inference = 4;
- * @return {?proto.ondewo.s2t.Inference}
+ * optional S2TInference inference = 4;
+ * @return {?proto.ondewo.s2t.S2TInference}
  */
 proto.ondewo.s2t.Speech2TextConfig.prototype.getInference = function() {
-  return /** @type{?proto.ondewo.s2t.Inference} */ (
-    jspb.Message.getWrapperField(this, proto.ondewo.s2t.Inference, 4));
+  return /** @type{?proto.ondewo.s2t.S2TInference} */ (
+    jspb.Message.getWrapperField(this, proto.ondewo.s2t.S2TInference, 4));
 };
 
 
 /**
- * @param {?proto.ondewo.s2t.Inference|undefined} value
+ * @param {?proto.ondewo.s2t.S2TInference|undefined} value
  * @return {!proto.ondewo.s2t.Speech2TextConfig} returns this
 */
 proto.ondewo.s2t.Speech2TextConfig.prototype.setInference = function(value) {
@@ -3677,8 +5752,8 @@ if (jspb.Message.GENERATE_TO_OBJECT) {
  *     http://goto/soy-param-migration
  * @return {!Object}
  */
-proto.ondewo.s2t.Description.prototype.toObject = function(opt_includeInstance) {
-  return proto.ondewo.s2t.Description.toObject(opt_includeInstance, this);
+proto.ondewo.s2t.S2TDescription.prototype.toObject = function(opt_includeInstance) {
+  return proto.ondewo.s2t.S2TDescription.toObject(opt_includeInstance, this);
 };
 
 
@@ -3687,11 +5762,11 @@ proto.ondewo.s2t.Description.prototype.toObject = function(opt_includeInstance) 
  * @param {boolean|undefined} includeInstance Deprecated. Whether to include
  *     the JSPB instance for transitional soy proto support:
  *     http://goto/soy-param-migration
- * @param {!proto.ondewo.s2t.Description} msg The msg instance to transform.
+ * @param {!proto.ondewo.s2t.S2TDescription} msg The msg instance to transform.
  * @return {!Object}
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.ondewo.s2t.Description.toObject = function(includeInstance, msg) {
+proto.ondewo.s2t.S2TDescription.toObject = function(includeInstance, msg) {
   var f, obj = {
     language: jspb.Message.getFieldWithDefault(msg, 1, ""),
     pipelineOwner: jspb.Message.getFieldWithDefault(msg, 2, ""),
@@ -3710,23 +5785,23 @@ proto.ondewo.s2t.Description.toObject = function(includeInstance, msg) {
 /**
  * Deserializes binary data (in protobuf wire format).
  * @param {jspb.ByteSource} bytes The bytes to deserialize.
- * @return {!proto.ondewo.s2t.Description}
+ * @return {!proto.ondewo.s2t.S2TDescription}
  */
-proto.ondewo.s2t.Description.deserializeBinary = function(bytes) {
+proto.ondewo.s2t.S2TDescription.deserializeBinary = function(bytes) {
   var reader = new jspb.BinaryReader(bytes);
-  var msg = new proto.ondewo.s2t.Description;
-  return proto.ondewo.s2t.Description.deserializeBinaryFromReader(msg, reader);
+  var msg = new proto.ondewo.s2t.S2TDescription;
+  return proto.ondewo.s2t.S2TDescription.deserializeBinaryFromReader(msg, reader);
 };
 
 
 /**
  * Deserializes binary data (in protobuf wire format) from the
  * given reader into the given message object.
- * @param {!proto.ondewo.s2t.Description} msg The message object to deserialize into.
+ * @param {!proto.ondewo.s2t.S2TDescription} msg The message object to deserialize into.
  * @param {!jspb.BinaryReader} reader The BinaryReader to use.
- * @return {!proto.ondewo.s2t.Description}
+ * @return {!proto.ondewo.s2t.S2TDescription}
  */
-proto.ondewo.s2t.Description.deserializeBinaryFromReader = function(msg, reader) {
+proto.ondewo.s2t.S2TDescription.deserializeBinaryFromReader = function(msg, reader) {
   while (reader.nextField()) {
     if (reader.isEndGroup()) {
       break;
@@ -3762,9 +5837,9 @@ proto.ondewo.s2t.Description.deserializeBinaryFromReader = function(msg, reader)
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
-proto.ondewo.s2t.Description.prototype.serializeBinary = function() {
+proto.ondewo.s2t.S2TDescription.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  proto.ondewo.s2t.Description.serializeBinaryToWriter(this, writer);
+  proto.ondewo.s2t.S2TDescription.serializeBinaryToWriter(this, writer);
   return writer.getResultBuffer();
 };
 
@@ -3772,11 +5847,11 @@ proto.ondewo.s2t.Description.prototype.serializeBinary = function() {
 /**
  * Serializes the given message to binary data (in protobuf wire
  * format), writing to the given BinaryWriter.
- * @param {!proto.ondewo.s2t.Description} message
+ * @param {!proto.ondewo.s2t.S2TDescription} message
  * @param {!jspb.BinaryWriter} writer
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.ondewo.s2t.Description.serializeBinaryToWriter = function(message, writer) {
+proto.ondewo.s2t.S2TDescription.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
   f = message.getLanguage();
   if (f.length > 0) {
@@ -3813,16 +5888,16 @@ proto.ondewo.s2t.Description.serializeBinaryToWriter = function(message, writer)
  * optional string language = 1;
  * @return {string}
  */
-proto.ondewo.s2t.Description.prototype.getLanguage = function() {
+proto.ondewo.s2t.S2TDescription.prototype.getLanguage = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
 };
 
 
 /**
  * @param {string} value
- * @return {!proto.ondewo.s2t.Description} returns this
+ * @return {!proto.ondewo.s2t.S2TDescription} returns this
  */
-proto.ondewo.s2t.Description.prototype.setLanguage = function(value) {
+proto.ondewo.s2t.S2TDescription.prototype.setLanguage = function(value) {
   return jspb.Message.setProto3StringField(this, 1, value);
 };
 
@@ -3831,16 +5906,16 @@ proto.ondewo.s2t.Description.prototype.setLanguage = function(value) {
  * optional string pipeline_owner = 2;
  * @return {string}
  */
-proto.ondewo.s2t.Description.prototype.getPipelineOwner = function() {
+proto.ondewo.s2t.S2TDescription.prototype.getPipelineOwner = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 2, ""));
 };
 
 
 /**
  * @param {string} value
- * @return {!proto.ondewo.s2t.Description} returns this
+ * @return {!proto.ondewo.s2t.S2TDescription} returns this
  */
-proto.ondewo.s2t.Description.prototype.setPipelineOwner = function(value) {
+proto.ondewo.s2t.S2TDescription.prototype.setPipelineOwner = function(value) {
   return jspb.Message.setProto3StringField(this, 2, value);
 };
 
@@ -3849,16 +5924,16 @@ proto.ondewo.s2t.Description.prototype.setPipelineOwner = function(value) {
  * optional string domain = 3;
  * @return {string}
  */
-proto.ondewo.s2t.Description.prototype.getDomain = function() {
+proto.ondewo.s2t.S2TDescription.prototype.getDomain = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 3, ""));
 };
 
 
 /**
  * @param {string} value
- * @return {!proto.ondewo.s2t.Description} returns this
+ * @return {!proto.ondewo.s2t.S2TDescription} returns this
  */
-proto.ondewo.s2t.Description.prototype.setDomain = function(value) {
+proto.ondewo.s2t.S2TDescription.prototype.setDomain = function(value) {
   return jspb.Message.setProto3StringField(this, 3, value);
 };
 
@@ -3867,16 +5942,16 @@ proto.ondewo.s2t.Description.prototype.setDomain = function(value) {
  * optional string comments = 4;
  * @return {string}
  */
-proto.ondewo.s2t.Description.prototype.getComments = function() {
+proto.ondewo.s2t.S2TDescription.prototype.getComments = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 4, ""));
 };
 
 
 /**
  * @param {string} value
- * @return {!proto.ondewo.s2t.Description} returns this
+ * @return {!proto.ondewo.s2t.S2TDescription} returns this
  */
-proto.ondewo.s2t.Description.prototype.setComments = function(value) {
+proto.ondewo.s2t.S2TDescription.prototype.setComments = function(value) {
   return jspb.Message.setProto3StringField(this, 4, value);
 };
 
@@ -3897,8 +5972,8 @@ if (jspb.Message.GENERATE_TO_OBJECT) {
  *     http://goto/soy-param-migration
  * @return {!Object}
  */
-proto.ondewo.s2t.Inference.prototype.toObject = function(opt_includeInstance) {
-  return proto.ondewo.s2t.Inference.toObject(opt_includeInstance, this);
+proto.ondewo.s2t.S2TInference.prototype.toObject = function(opt_includeInstance) {
+  return proto.ondewo.s2t.S2TInference.toObject(opt_includeInstance, this);
 };
 
 
@@ -3907,14 +5982,14 @@ proto.ondewo.s2t.Inference.prototype.toObject = function(opt_includeInstance) {
  * @param {boolean|undefined} includeInstance Deprecated. Whether to include
  *     the JSPB instance for transitional soy proto support:
  *     http://goto/soy-param-migration
- * @param {!proto.ondewo.s2t.Inference} msg The msg instance to transform.
+ * @param {!proto.ondewo.s2t.S2TInference} msg The msg instance to transform.
  * @return {!Object}
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.ondewo.s2t.Inference.toObject = function(includeInstance, msg) {
+proto.ondewo.s2t.S2TInference.toObject = function(includeInstance, msg) {
   var f, obj = {
     ctcAcousticModels: (f = msg.getCtcAcousticModels()) && proto.ondewo.s2t.CtcAcousticModels.toObject(includeInstance, f),
-    languageModel: (f = msg.getLanguageModel()) && proto.ondewo.s2t.LanguageModel.toObject(includeInstance, f)
+    languageModels: (f = msg.getLanguageModels()) && proto.ondewo.s2t.LanguageModels.toObject(includeInstance, f)
   };
 
   if (includeInstance) {
@@ -3928,23 +6003,23 @@ proto.ondewo.s2t.Inference.toObject = function(includeInstance, msg) {
 /**
  * Deserializes binary data (in protobuf wire format).
  * @param {jspb.ByteSource} bytes The bytes to deserialize.
- * @return {!proto.ondewo.s2t.Inference}
+ * @return {!proto.ondewo.s2t.S2TInference}
  */
-proto.ondewo.s2t.Inference.deserializeBinary = function(bytes) {
+proto.ondewo.s2t.S2TInference.deserializeBinary = function(bytes) {
   var reader = new jspb.BinaryReader(bytes);
-  var msg = new proto.ondewo.s2t.Inference;
-  return proto.ondewo.s2t.Inference.deserializeBinaryFromReader(msg, reader);
+  var msg = new proto.ondewo.s2t.S2TInference;
+  return proto.ondewo.s2t.S2TInference.deserializeBinaryFromReader(msg, reader);
 };
 
 
 /**
  * Deserializes binary data (in protobuf wire format) from the
  * given reader into the given message object.
- * @param {!proto.ondewo.s2t.Inference} msg The message object to deserialize into.
+ * @param {!proto.ondewo.s2t.S2TInference} msg The message object to deserialize into.
  * @param {!jspb.BinaryReader} reader The BinaryReader to use.
- * @return {!proto.ondewo.s2t.Inference}
+ * @return {!proto.ondewo.s2t.S2TInference}
  */
-proto.ondewo.s2t.Inference.deserializeBinaryFromReader = function(msg, reader) {
+proto.ondewo.s2t.S2TInference.deserializeBinaryFromReader = function(msg, reader) {
   while (reader.nextField()) {
     if (reader.isEndGroup()) {
       break;
@@ -3957,9 +6032,9 @@ proto.ondewo.s2t.Inference.deserializeBinaryFromReader = function(msg, reader) {
       msg.setCtcAcousticModels(value);
       break;
     case 2:
-      var value = new proto.ondewo.s2t.LanguageModel;
-      reader.readMessage(value,proto.ondewo.s2t.LanguageModel.deserializeBinaryFromReader);
-      msg.setLanguageModel(value);
+      var value = new proto.ondewo.s2t.LanguageModels;
+      reader.readMessage(value,proto.ondewo.s2t.LanguageModels.deserializeBinaryFromReader);
+      msg.setLanguageModels(value);
       break;
     default:
       reader.skipField();
@@ -3974,9 +6049,9 @@ proto.ondewo.s2t.Inference.deserializeBinaryFromReader = function(msg, reader) {
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
-proto.ondewo.s2t.Inference.prototype.serializeBinary = function() {
+proto.ondewo.s2t.S2TInference.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  proto.ondewo.s2t.Inference.serializeBinaryToWriter(this, writer);
+  proto.ondewo.s2t.S2TInference.serializeBinaryToWriter(this, writer);
   return writer.getResultBuffer();
 };
 
@@ -3984,11 +6059,11 @@ proto.ondewo.s2t.Inference.prototype.serializeBinary = function() {
 /**
  * Serializes the given message to binary data (in protobuf wire
  * format), writing to the given BinaryWriter.
- * @param {!proto.ondewo.s2t.Inference} message
+ * @param {!proto.ondewo.s2t.S2TInference} message
  * @param {!jspb.BinaryWriter} writer
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.ondewo.s2t.Inference.serializeBinaryToWriter = function(message, writer) {
+proto.ondewo.s2t.S2TInference.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
   f = message.getCtcAcousticModels();
   if (f != null) {
@@ -3998,12 +6073,12 @@ proto.ondewo.s2t.Inference.serializeBinaryToWriter = function(message, writer) {
       proto.ondewo.s2t.CtcAcousticModels.serializeBinaryToWriter
     );
   }
-  f = message.getLanguageModel();
+  f = message.getLanguageModels();
   if (f != null) {
     writer.writeMessage(
       2,
       f,
-      proto.ondewo.s2t.LanguageModel.serializeBinaryToWriter
+      proto.ondewo.s2t.LanguageModels.serializeBinaryToWriter
     );
   }
 };
@@ -4013,7 +6088,7 @@ proto.ondewo.s2t.Inference.serializeBinaryToWriter = function(message, writer) {
  * optional CtcAcousticModels ctc_acoustic_models = 1;
  * @return {?proto.ondewo.s2t.CtcAcousticModels}
  */
-proto.ondewo.s2t.Inference.prototype.getCtcAcousticModels = function() {
+proto.ondewo.s2t.S2TInference.prototype.getCtcAcousticModels = function() {
   return /** @type{?proto.ondewo.s2t.CtcAcousticModels} */ (
     jspb.Message.getWrapperField(this, proto.ondewo.s2t.CtcAcousticModels, 1));
 };
@@ -4021,18 +6096,18 @@ proto.ondewo.s2t.Inference.prototype.getCtcAcousticModels = function() {
 
 /**
  * @param {?proto.ondewo.s2t.CtcAcousticModels|undefined} value
- * @return {!proto.ondewo.s2t.Inference} returns this
+ * @return {!proto.ondewo.s2t.S2TInference} returns this
 */
-proto.ondewo.s2t.Inference.prototype.setCtcAcousticModels = function(value) {
+proto.ondewo.s2t.S2TInference.prototype.setCtcAcousticModels = function(value) {
   return jspb.Message.setWrapperField(this, 1, value);
 };
 
 
 /**
  * Clears the message field making it undefined.
- * @return {!proto.ondewo.s2t.Inference} returns this
+ * @return {!proto.ondewo.s2t.S2TInference} returns this
  */
-proto.ondewo.s2t.Inference.prototype.clearCtcAcousticModels = function() {
+proto.ondewo.s2t.S2TInference.prototype.clearCtcAcousticModels = function() {
   return this.setCtcAcousticModels(undefined);
 };
 
@@ -4041,36 +6116,36 @@ proto.ondewo.s2t.Inference.prototype.clearCtcAcousticModels = function() {
  * Returns whether this field is set.
  * @return {boolean}
  */
-proto.ondewo.s2t.Inference.prototype.hasCtcAcousticModels = function() {
+proto.ondewo.s2t.S2TInference.prototype.hasCtcAcousticModels = function() {
   return jspb.Message.getField(this, 1) != null;
 };
 
 
 /**
- * optional LanguageModel language_model = 2;
- * @return {?proto.ondewo.s2t.LanguageModel}
+ * optional LanguageModels language_models = 2;
+ * @return {?proto.ondewo.s2t.LanguageModels}
  */
-proto.ondewo.s2t.Inference.prototype.getLanguageModel = function() {
-  return /** @type{?proto.ondewo.s2t.LanguageModel} */ (
-    jspb.Message.getWrapperField(this, proto.ondewo.s2t.LanguageModel, 2));
+proto.ondewo.s2t.S2TInference.prototype.getLanguageModels = function() {
+  return /** @type{?proto.ondewo.s2t.LanguageModels} */ (
+    jspb.Message.getWrapperField(this, proto.ondewo.s2t.LanguageModels, 2));
 };
 
 
 /**
- * @param {?proto.ondewo.s2t.LanguageModel|undefined} value
- * @return {!proto.ondewo.s2t.Inference} returns this
+ * @param {?proto.ondewo.s2t.LanguageModels|undefined} value
+ * @return {!proto.ondewo.s2t.S2TInference} returns this
 */
-proto.ondewo.s2t.Inference.prototype.setLanguageModel = function(value) {
+proto.ondewo.s2t.S2TInference.prototype.setLanguageModels = function(value) {
   return jspb.Message.setWrapperField(this, 2, value);
 };
 
 
 /**
  * Clears the message field making it undefined.
- * @return {!proto.ondewo.s2t.Inference} returns this
+ * @return {!proto.ondewo.s2t.S2TInference} returns this
  */
-proto.ondewo.s2t.Inference.prototype.clearLanguageModel = function() {
-  return this.setLanguageModel(undefined);
+proto.ondewo.s2t.S2TInference.prototype.clearLanguageModels = function() {
+  return this.setLanguageModels(undefined);
 };
 
 
@@ -4078,7 +6153,7 @@ proto.ondewo.s2t.Inference.prototype.clearLanguageModel = function() {
  * Returns whether this field is set.
  * @return {boolean}
  */
-proto.ondewo.s2t.Inference.prototype.hasLanguageModel = function() {
+proto.ondewo.s2t.S2TInference.prototype.hasLanguageModels = function() {
   return jspb.Message.getField(this, 2) != null;
 };
 
@@ -4118,7 +6193,8 @@ proto.ondewo.s2t.CtcAcousticModels.toObject = function(includeInstance, msg) {
     type: jspb.Message.getFieldWithDefault(msg, 1, ""),
     quartznet: (f = msg.getQuartznet()) && proto.ondewo.s2t.Quartznet.toObject(includeInstance, f),
     quartznetTriton: (f = msg.getQuartznetTriton()) && proto.ondewo.s2t.QuartznetTriton.toObject(includeInstance, f),
-    wav2vec: (f = msg.getWav2vec()) && proto.ondewo.s2t.Wav2Vec.toObject(includeInstance, f)
+    wav2vec: (f = msg.getWav2vec()) && proto.ondewo.s2t.Wav2Vec.toObject(includeInstance, f),
+    wav2vecTriton: (f = msg.getWav2vecTriton()) && proto.ondewo.s2t.Wav2VecTriton.toObject(includeInstance, f)
   };
 
   if (includeInstance) {
@@ -4173,6 +6249,11 @@ proto.ondewo.s2t.CtcAcousticModels.deserializeBinaryFromReader = function(msg, r
       var value = new proto.ondewo.s2t.Wav2Vec;
       reader.readMessage(value,proto.ondewo.s2t.Wav2Vec.deserializeBinaryFromReader);
       msg.setWav2vec(value);
+      break;
+    case 5:
+      var value = new proto.ondewo.s2t.Wav2VecTriton;
+      reader.readMessage(value,proto.ondewo.s2t.Wav2VecTriton.deserializeBinaryFromReader);
+      msg.setWav2vecTriton(value);
       break;
     default:
       reader.skipField();
@@ -4232,6 +6313,14 @@ proto.ondewo.s2t.CtcAcousticModels.serializeBinaryToWriter = function(message, w
       4,
       f,
       proto.ondewo.s2t.Wav2Vec.serializeBinaryToWriter
+    );
+  }
+  f = message.getWav2vecTriton();
+  if (f != null) {
+    writer.writeMessage(
+      5,
+      f,
+      proto.ondewo.s2t.Wav2VecTriton.serializeBinaryToWriter
     );
   }
 };
@@ -4363,6 +6452,43 @@ proto.ondewo.s2t.CtcAcousticModels.prototype.clearWav2vec = function() {
  */
 proto.ondewo.s2t.CtcAcousticModels.prototype.hasWav2vec = function() {
   return jspb.Message.getField(this, 4) != null;
+};
+
+
+/**
+ * optional Wav2VecTriton wav2vec_triton = 5;
+ * @return {?proto.ondewo.s2t.Wav2VecTriton}
+ */
+proto.ondewo.s2t.CtcAcousticModels.prototype.getWav2vecTriton = function() {
+  return /** @type{?proto.ondewo.s2t.Wav2VecTriton} */ (
+    jspb.Message.getWrapperField(this, proto.ondewo.s2t.Wav2VecTriton, 5));
+};
+
+
+/**
+ * @param {?proto.ondewo.s2t.Wav2VecTriton|undefined} value
+ * @return {!proto.ondewo.s2t.CtcAcousticModels} returns this
+*/
+proto.ondewo.s2t.CtcAcousticModels.prototype.setWav2vecTriton = function(value) {
+  return jspb.Message.setWrapperField(this, 5, value);
+};
+
+
+/**
+ * Clears the message field making it undefined.
+ * @return {!proto.ondewo.s2t.CtcAcousticModels} returns this
+ */
+proto.ondewo.s2t.CtcAcousticModels.prototype.clearWav2vecTriton = function() {
+  return this.setWav2vecTriton(undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {boolean}
+ */
+proto.ondewo.s2t.CtcAcousticModels.prototype.hasWav2vecTriton = function() {
+  return jspb.Message.getField(this, 5) != null;
 };
 
 
@@ -4542,6 +6668,226 @@ if (jspb.Message.GENERATE_TO_OBJECT) {
  *     http://goto/soy-param-migration
  * @return {!Object}
  */
+proto.ondewo.s2t.Wav2VecTriton.prototype.toObject = function(opt_includeInstance) {
+  return proto.ondewo.s2t.Wav2VecTriton.toObject(opt_includeInstance, this);
+};
+
+
+/**
+ * Static version of the {@see toObject} method.
+ * @param {boolean|undefined} includeInstance Deprecated. Whether to include
+ *     the JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @param {!proto.ondewo.s2t.Wav2VecTriton} msg The msg instance to transform.
+ * @return {!Object}
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.ondewo.s2t.Wav2VecTriton.toObject = function(includeInstance, msg) {
+  var f, obj = {
+    processorPath: jspb.Message.getFieldWithDefault(msg, 1, ""),
+    tritonModelName: jspb.Message.getFieldWithDefault(msg, 2, ""),
+    tritonModelVersion: jspb.Message.getFieldWithDefault(msg, 3, ""),
+    checkStatusTimeout: jspb.Message.getFieldWithDefault(msg, 4, 0)
+  };
+
+  if (includeInstance) {
+    obj.$jspbMessageInstance = msg;
+  }
+  return obj;
+};
+}
+
+
+/**
+ * Deserializes binary data (in protobuf wire format).
+ * @param {jspb.ByteSource} bytes The bytes to deserialize.
+ * @return {!proto.ondewo.s2t.Wav2VecTriton}
+ */
+proto.ondewo.s2t.Wav2VecTriton.deserializeBinary = function(bytes) {
+  var reader = new jspb.BinaryReader(bytes);
+  var msg = new proto.ondewo.s2t.Wav2VecTriton;
+  return proto.ondewo.s2t.Wav2VecTriton.deserializeBinaryFromReader(msg, reader);
+};
+
+
+/**
+ * Deserializes binary data (in protobuf wire format) from the
+ * given reader into the given message object.
+ * @param {!proto.ondewo.s2t.Wav2VecTriton} msg The message object to deserialize into.
+ * @param {!jspb.BinaryReader} reader The BinaryReader to use.
+ * @return {!proto.ondewo.s2t.Wav2VecTriton}
+ */
+proto.ondewo.s2t.Wav2VecTriton.deserializeBinaryFromReader = function(msg, reader) {
+  while (reader.nextField()) {
+    if (reader.isEndGroup()) {
+      break;
+    }
+    var field = reader.getFieldNumber();
+    switch (field) {
+    case 1:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setProcessorPath(value);
+      break;
+    case 2:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setTritonModelName(value);
+      break;
+    case 3:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setTritonModelVersion(value);
+      break;
+    case 4:
+      var value = /** @type {number} */ (reader.readInt64());
+      msg.setCheckStatusTimeout(value);
+      break;
+    default:
+      reader.skipField();
+      break;
+    }
+  }
+  return msg;
+};
+
+
+/**
+ * Serializes the message to binary data (in protobuf wire format).
+ * @return {!Uint8Array}
+ */
+proto.ondewo.s2t.Wav2VecTriton.prototype.serializeBinary = function() {
+  var writer = new jspb.BinaryWriter();
+  proto.ondewo.s2t.Wav2VecTriton.serializeBinaryToWriter(this, writer);
+  return writer.getResultBuffer();
+};
+
+
+/**
+ * Serializes the given message to binary data (in protobuf wire
+ * format), writing to the given BinaryWriter.
+ * @param {!proto.ondewo.s2t.Wav2VecTriton} message
+ * @param {!jspb.BinaryWriter} writer
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.ondewo.s2t.Wav2VecTriton.serializeBinaryToWriter = function(message, writer) {
+  var f = undefined;
+  f = message.getProcessorPath();
+  if (f.length > 0) {
+    writer.writeString(
+      1,
+      f
+    );
+  }
+  f = message.getTritonModelName();
+  if (f.length > 0) {
+    writer.writeString(
+      2,
+      f
+    );
+  }
+  f = message.getTritonModelVersion();
+  if (f.length > 0) {
+    writer.writeString(
+      3,
+      f
+    );
+  }
+  f = message.getCheckStatusTimeout();
+  if (f !== 0) {
+    writer.writeInt64(
+      4,
+      f
+    );
+  }
+};
+
+
+/**
+ * optional string processor_path = 1;
+ * @return {string}
+ */
+proto.ondewo.s2t.Wav2VecTriton.prototype.getProcessorPath = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.ondewo.s2t.Wav2VecTriton} returns this
+ */
+proto.ondewo.s2t.Wav2VecTriton.prototype.setProcessorPath = function(value) {
+  return jspb.Message.setProto3StringField(this, 1, value);
+};
+
+
+/**
+ * optional string triton_model_name = 2;
+ * @return {string}
+ */
+proto.ondewo.s2t.Wav2VecTriton.prototype.getTritonModelName = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 2, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.ondewo.s2t.Wav2VecTriton} returns this
+ */
+proto.ondewo.s2t.Wav2VecTriton.prototype.setTritonModelName = function(value) {
+  return jspb.Message.setProto3StringField(this, 2, value);
+};
+
+
+/**
+ * optional string triton_model_version = 3;
+ * @return {string}
+ */
+proto.ondewo.s2t.Wav2VecTriton.prototype.getTritonModelVersion = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 3, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.ondewo.s2t.Wav2VecTriton} returns this
+ */
+proto.ondewo.s2t.Wav2VecTriton.prototype.setTritonModelVersion = function(value) {
+  return jspb.Message.setProto3StringField(this, 3, value);
+};
+
+
+/**
+ * optional int64 check_status_timeout = 4;
+ * @return {number}
+ */
+proto.ondewo.s2t.Wav2VecTriton.prototype.getCheckStatusTimeout = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 4, 0));
+};
+
+
+/**
+ * @param {number} value
+ * @return {!proto.ondewo.s2t.Wav2VecTriton} returns this
+ */
+proto.ondewo.s2t.Wav2VecTriton.prototype.setCheckStatusTimeout = function(value) {
+  return jspb.Message.setProto3IntField(this, 4, value);
+};
+
+
+
+
+
+if (jspb.Message.GENERATE_TO_OBJECT) {
+/**
+ * Creates an object representation of this proto.
+ * Field names that are reserved in JavaScript and will be renamed to pb_name.
+ * Optional fields that are not set will be set to undefined.
+ * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
+ * For the list of reserved names please see:
+ *     net/proto2/compiler/js/internal/generator.cc#kKeyword.
+ * @param {boolean=} opt_includeInstance Deprecated. whether to include the
+ *     JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @return {!Object}
+ */
 proto.ondewo.s2t.Quartznet.prototype.toObject = function(opt_includeInstance) {
   return proto.ondewo.s2t.Quartznet.toObject(opt_includeInstance, this);
 };
@@ -4561,7 +6907,8 @@ proto.ondewo.s2t.Quartznet.toObject = function(includeInstance, msg) {
     configPath: jspb.Message.getFieldWithDefault(msg, 1, ""),
     loadType: jspb.Message.getFieldWithDefault(msg, 2, ""),
     ptFiles: (f = msg.getPtFiles()) && proto.ondewo.s2t.PtFiles.toObject(includeInstance, f),
-    ckptFile: (f = msg.getCkptFile()) && proto.ondewo.s2t.CkptFile.toObject(includeInstance, f)
+    ckptFile: (f = msg.getCkptFile()) && proto.ondewo.s2t.CkptFile.toObject(includeInstance, f),
+    useGpu: jspb.Message.getBooleanFieldWithDefault(msg, 5, false)
   };
 
   if (includeInstance) {
@@ -4615,6 +6962,10 @@ proto.ondewo.s2t.Quartznet.deserializeBinaryFromReader = function(msg, reader) {
       var value = new proto.ondewo.s2t.CkptFile;
       reader.readMessage(value,proto.ondewo.s2t.CkptFile.deserializeBinaryFromReader);
       msg.setCkptFile(value);
+      break;
+    case 5:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setUseGpu(value);
       break;
     default:
       reader.skipField();
@@ -4673,6 +7024,13 @@ proto.ondewo.s2t.Quartznet.serializeBinaryToWriter = function(message, writer) {
       4,
       f,
       proto.ondewo.s2t.CkptFile.serializeBinaryToWriter
+    );
+  }
+  f = message.getUseGpu();
+  if (f) {
+    writer.writeBool(
+      5,
+      f
     );
   }
 };
@@ -4785,6 +7143,24 @@ proto.ondewo.s2t.Quartznet.prototype.clearCkptFile = function() {
  */
 proto.ondewo.s2t.Quartznet.prototype.hasCkptFile = function() {
   return jspb.Message.getField(this, 4) != null;
+};
+
+
+/**
+ * optional bool use_gpu = 5;
+ * @return {boolean}
+ */
+proto.ondewo.s2t.Quartznet.prototype.getUseGpu = function() {
+  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 5, false));
+};
+
+
+/**
+ * @param {boolean} value
+ * @return {!proto.ondewo.s2t.Quartznet} returns this
+ */
+proto.ondewo.s2t.Quartznet.prototype.setUseGpu = function(value) {
+  return jspb.Message.setProto3BooleanField(this, 5, value);
 };
 
 
@@ -5284,8 +7660,8 @@ if (jspb.Message.GENERATE_TO_OBJECT) {
  *     http://goto/soy-param-migration
  * @return {!Object}
  */
-proto.ondewo.s2t.LanguageModel.prototype.toObject = function(opt_includeInstance) {
-  return proto.ondewo.s2t.LanguageModel.toObject(opt_includeInstance, this);
+proto.ondewo.s2t.LanguageModels.prototype.toObject = function(opt_includeInstance) {
+  return proto.ondewo.s2t.LanguageModels.toObject(opt_includeInstance, this);
 };
 
 
@@ -5294,16 +7670,17 @@ proto.ondewo.s2t.LanguageModel.prototype.toObject = function(opt_includeInstance
  * @param {boolean|undefined} includeInstance Deprecated. Whether to include
  *     the JSPB instance for transitional soy proto support:
  *     http://goto/soy-param-migration
- * @param {!proto.ondewo.s2t.LanguageModel} msg The msg instance to transform.
+ * @param {!proto.ondewo.s2t.LanguageModels} msg The msg instance to transform.
  * @return {!Object}
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.ondewo.s2t.LanguageModel.toObject = function(includeInstance, msg) {
+proto.ondewo.s2t.LanguageModels.toObject = function(includeInstance, msg) {
   var f, obj = {
     path: jspb.Message.getFieldWithDefault(msg, 1, ""),
     beamSize: jspb.Message.getFieldWithDefault(msg, 2, 0),
-    beamSearchScorerAlpha: jspb.Message.getFloatingPointFieldWithDefault(msg, 3, 0.0),
-    beamSearchScorerBeta: jspb.Message.getFloatingPointFieldWithDefault(msg, 4, 0.0)
+    defaultLm: jspb.Message.getFieldWithDefault(msg, 3, ""),
+    beamSearchScorerAlpha: jspb.Message.getFloatingPointFieldWithDefault(msg, 4, 0.0),
+    beamSearchScorerBeta: jspb.Message.getFloatingPointFieldWithDefault(msg, 5, 0.0)
   };
 
   if (includeInstance) {
@@ -5317,23 +7694,23 @@ proto.ondewo.s2t.LanguageModel.toObject = function(includeInstance, msg) {
 /**
  * Deserializes binary data (in protobuf wire format).
  * @param {jspb.ByteSource} bytes The bytes to deserialize.
- * @return {!proto.ondewo.s2t.LanguageModel}
+ * @return {!proto.ondewo.s2t.LanguageModels}
  */
-proto.ondewo.s2t.LanguageModel.deserializeBinary = function(bytes) {
+proto.ondewo.s2t.LanguageModels.deserializeBinary = function(bytes) {
   var reader = new jspb.BinaryReader(bytes);
-  var msg = new proto.ondewo.s2t.LanguageModel;
-  return proto.ondewo.s2t.LanguageModel.deserializeBinaryFromReader(msg, reader);
+  var msg = new proto.ondewo.s2t.LanguageModels;
+  return proto.ondewo.s2t.LanguageModels.deserializeBinaryFromReader(msg, reader);
 };
 
 
 /**
  * Deserializes binary data (in protobuf wire format) from the
  * given reader into the given message object.
- * @param {!proto.ondewo.s2t.LanguageModel} msg The message object to deserialize into.
+ * @param {!proto.ondewo.s2t.LanguageModels} msg The message object to deserialize into.
  * @param {!jspb.BinaryReader} reader The BinaryReader to use.
- * @return {!proto.ondewo.s2t.LanguageModel}
+ * @return {!proto.ondewo.s2t.LanguageModels}
  */
-proto.ondewo.s2t.LanguageModel.deserializeBinaryFromReader = function(msg, reader) {
+proto.ondewo.s2t.LanguageModels.deserializeBinaryFromReader = function(msg, reader) {
   while (reader.nextField()) {
     if (reader.isEndGroup()) {
       break;
@@ -5349,10 +7726,14 @@ proto.ondewo.s2t.LanguageModel.deserializeBinaryFromReader = function(msg, reade
       msg.setBeamSize(value);
       break;
     case 3:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setDefaultLm(value);
+      break;
+    case 4:
       var value = /** @type {number} */ (reader.readFloat());
       msg.setBeamSearchScorerAlpha(value);
       break;
-    case 4:
+    case 5:
       var value = /** @type {number} */ (reader.readFloat());
       msg.setBeamSearchScorerBeta(value);
       break;
@@ -5369,9 +7750,9 @@ proto.ondewo.s2t.LanguageModel.deserializeBinaryFromReader = function(msg, reade
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
-proto.ondewo.s2t.LanguageModel.prototype.serializeBinary = function() {
+proto.ondewo.s2t.LanguageModels.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  proto.ondewo.s2t.LanguageModel.serializeBinaryToWriter(this, writer);
+  proto.ondewo.s2t.LanguageModels.serializeBinaryToWriter(this, writer);
   return writer.getResultBuffer();
 };
 
@@ -5379,11 +7760,11 @@ proto.ondewo.s2t.LanguageModel.prototype.serializeBinary = function() {
 /**
  * Serializes the given message to binary data (in protobuf wire
  * format), writing to the given BinaryWriter.
- * @param {!proto.ondewo.s2t.LanguageModel} message
+ * @param {!proto.ondewo.s2t.LanguageModels} message
  * @param {!jspb.BinaryWriter} writer
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.ondewo.s2t.LanguageModel.serializeBinaryToWriter = function(message, writer) {
+proto.ondewo.s2t.LanguageModels.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
   f = message.getPath();
   if (f.length > 0) {
@@ -5399,17 +7780,24 @@ proto.ondewo.s2t.LanguageModel.serializeBinaryToWriter = function(message, write
       f
     );
   }
+  f = message.getDefaultLm();
+  if (f.length > 0) {
+    writer.writeString(
+      3,
+      f
+    );
+  }
   f = message.getBeamSearchScorerAlpha();
   if (f !== 0.0) {
     writer.writeFloat(
-      3,
+      4,
       f
     );
   }
   f = message.getBeamSearchScorerBeta();
   if (f !== 0.0) {
     writer.writeFloat(
-      4,
+      5,
       f
     );
   }
@@ -5420,16 +7808,16 @@ proto.ondewo.s2t.LanguageModel.serializeBinaryToWriter = function(message, write
  * optional string path = 1;
  * @return {string}
  */
-proto.ondewo.s2t.LanguageModel.prototype.getPath = function() {
+proto.ondewo.s2t.LanguageModels.prototype.getPath = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
 };
 
 
 /**
  * @param {string} value
- * @return {!proto.ondewo.s2t.LanguageModel} returns this
+ * @return {!proto.ondewo.s2t.LanguageModels} returns this
  */
-proto.ondewo.s2t.LanguageModel.prototype.setPath = function(value) {
+proto.ondewo.s2t.LanguageModels.prototype.setPath = function(value) {
   return jspb.Message.setProto3StringField(this, 1, value);
 };
 
@@ -5438,53 +7826,71 @@ proto.ondewo.s2t.LanguageModel.prototype.setPath = function(value) {
  * optional int64 beam_size = 2;
  * @return {number}
  */
-proto.ondewo.s2t.LanguageModel.prototype.getBeamSize = function() {
+proto.ondewo.s2t.LanguageModels.prototype.getBeamSize = function() {
   return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 2, 0));
 };
 
 
 /**
  * @param {number} value
- * @return {!proto.ondewo.s2t.LanguageModel} returns this
+ * @return {!proto.ondewo.s2t.LanguageModels} returns this
  */
-proto.ondewo.s2t.LanguageModel.prototype.setBeamSize = function(value) {
+proto.ondewo.s2t.LanguageModels.prototype.setBeamSize = function(value) {
   return jspb.Message.setProto3IntField(this, 2, value);
 };
 
 
 /**
- * optional float beam_search_scorer_alpha = 3;
- * @return {number}
+ * optional string default_lm = 3;
+ * @return {string}
  */
-proto.ondewo.s2t.LanguageModel.prototype.getBeamSearchScorerAlpha = function() {
-  return /** @type {number} */ (jspb.Message.getFloatingPointFieldWithDefault(this, 3, 0.0));
+proto.ondewo.s2t.LanguageModels.prototype.getDefaultLm = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 3, ""));
 };
 
 
 /**
- * @param {number} value
- * @return {!proto.ondewo.s2t.LanguageModel} returns this
+ * @param {string} value
+ * @return {!proto.ondewo.s2t.LanguageModels} returns this
  */
-proto.ondewo.s2t.LanguageModel.prototype.setBeamSearchScorerAlpha = function(value) {
-  return jspb.Message.setProto3FloatField(this, 3, value);
+proto.ondewo.s2t.LanguageModels.prototype.setDefaultLm = function(value) {
+  return jspb.Message.setProto3StringField(this, 3, value);
 };
 
 
 /**
- * optional float beam_search_scorer_beta = 4;
+ * optional float beam_search_scorer_alpha = 4;
  * @return {number}
  */
-proto.ondewo.s2t.LanguageModel.prototype.getBeamSearchScorerBeta = function() {
+proto.ondewo.s2t.LanguageModels.prototype.getBeamSearchScorerAlpha = function() {
   return /** @type {number} */ (jspb.Message.getFloatingPointFieldWithDefault(this, 4, 0.0));
 };
 
 
 /**
  * @param {number} value
- * @return {!proto.ondewo.s2t.LanguageModel} returns this
+ * @return {!proto.ondewo.s2t.LanguageModels} returns this
  */
-proto.ondewo.s2t.LanguageModel.prototype.setBeamSearchScorerBeta = function(value) {
+proto.ondewo.s2t.LanguageModels.prototype.setBeamSearchScorerAlpha = function(value) {
   return jspb.Message.setProto3FloatField(this, 4, value);
+};
+
+
+/**
+ * optional float beam_search_scorer_beta = 5;
+ * @return {number}
+ */
+proto.ondewo.s2t.LanguageModels.prototype.getBeamSearchScorerBeta = function() {
+  return /** @type {number} */ (jspb.Message.getFloatingPointFieldWithDefault(this, 5, 0.0));
+};
+
+
+/**
+ * @param {number} value
+ * @return {!proto.ondewo.s2t.LanguageModels} returns this
+ */
+proto.ondewo.s2t.LanguageModels.prototype.setBeamSearchScorerBeta = function(value) {
+  return jspb.Message.setProto3FloatField(this, 5, value);
 };
 
 
@@ -5766,7 +8172,8 @@ proto.ondewo.s2t.StreamingSpeechRecognition.toObject = function(includeInstance,
     samplingRate: jspb.Message.getFieldWithDefault(msg, 3, 0),
     minAudioChunkSize: jspb.Message.getFieldWithDefault(msg, 4, 0),
     startOfUtteranceThreshold: jspb.Message.getFloatingPointFieldWithDefault(msg, 5, 0.0),
-    endOfUtteranceThreshold: jspb.Message.getFloatingPointFieldWithDefault(msg, 6, 0.0)
+    endOfUtteranceThreshold: jspb.Message.getFloatingPointFieldWithDefault(msg, 6, 0.0),
+    nextChunkTimeout: jspb.Message.getFloatingPointFieldWithDefault(msg, 7, 0.0)
   };
 
   if (includeInstance) {
@@ -5826,6 +8233,10 @@ proto.ondewo.s2t.StreamingSpeechRecognition.deserializeBinaryFromReader = functi
     case 6:
       var value = /** @type {number} */ (reader.readFloat());
       msg.setEndOfUtteranceThreshold(value);
+      break;
+    case 7:
+      var value = /** @type {number} */ (reader.readFloat());
+      msg.setNextChunkTimeout(value);
       break;
     default:
       reader.skipField();
@@ -5895,6 +8306,13 @@ proto.ondewo.s2t.StreamingSpeechRecognition.serializeBinaryToWriter = function(m
   if (f !== 0.0) {
     writer.writeFloat(
       6,
+      f
+    );
+  }
+  f = message.getNextChunkTimeout();
+  if (f !== 0.0) {
+    writer.writeFloat(
+      7,
       f
     );
   }
@@ -6006,6 +8424,24 @@ proto.ondewo.s2t.StreamingSpeechRecognition.prototype.getEndOfUtteranceThreshold
  */
 proto.ondewo.s2t.StreamingSpeechRecognition.prototype.setEndOfUtteranceThreshold = function(value) {
   return jspb.Message.setProto3FloatField(this, 6, value);
+};
+
+
+/**
+ * optional float next_chunk_timeout = 7;
+ * @return {number}
+ */
+proto.ondewo.s2t.StreamingSpeechRecognition.prototype.getNextChunkTimeout = function() {
+  return /** @type {number} */ (jspb.Message.getFloatingPointFieldWithDefault(this, 7, 0.0));
+};
+
+
+/**
+ * @param {number} value
+ * @return {!proto.ondewo.s2t.StreamingSpeechRecognition} returns this
+ */
+proto.ondewo.s2t.StreamingSpeechRecognition.prototype.setNextChunkTimeout = function(value) {
+  return jspb.Message.setProto3FloatField(this, 7, value);
 };
 
 
@@ -6272,6 +8708,31 @@ proto.ondewo.s2t.VoiceActivityDetection.prototype.hasMatchbox = function() {
 
 
 
+/**
+ * Oneof group definitions for this message. Each group defines the field
+ * numbers belonging to that group. When of these fields' value is set, all
+ * other fields in the group are cleared. During deserialization, if multiple
+ * fields are encountered for a group, only the last value seen will be kept.
+ * @private {!Array<!Array<number>>}
+ * @const
+ */
+proto.ondewo.s2t.Pyannote.oneofGroups_ = [[5]];
+
+/**
+ * @enum {number}
+ */
+proto.ondewo.s2t.Pyannote.OneofLogScaleCase = {
+  ONEOF_LOG_SCALE_NOT_SET: 0,
+  LOG_SCALE: 5
+};
+
+/**
+ * @return {proto.ondewo.s2t.Pyannote.OneofLogScaleCase}
+ */
+proto.ondewo.s2t.Pyannote.prototype.getOneofLogScaleCase = function() {
+  return /** @type {proto.ondewo.s2t.Pyannote.OneofLogScaleCase} */(jspb.Message.computeOneofCase(this, proto.ondewo.s2t.Pyannote.oneofGroups_[0]));
+};
+
 
 
 if (jspb.Message.GENERATE_TO_OBJECT) {
@@ -6431,8 +8892,8 @@ proto.ondewo.s2t.Pyannote.serializeBinaryToWriter = function(message, writer) {
       f
     );
   }
-  f = message.getLogScale();
-  if (f) {
+  f = /** @type {boolean} */ (jspb.Message.getField(message, 5));
+  if (f != null) {
     writer.writeBool(
       5,
       f
@@ -6541,7 +9002,25 @@ proto.ondewo.s2t.Pyannote.prototype.getLogScale = function() {
  * @return {!proto.ondewo.s2t.Pyannote} returns this
  */
 proto.ondewo.s2t.Pyannote.prototype.setLogScale = function(value) {
-  return jspb.Message.setProto3BooleanField(this, 5, value);
+  return jspb.Message.setOneofField(this, 5, proto.ondewo.s2t.Pyannote.oneofGroups_[0], value);
+};
+
+
+/**
+ * Clears the field making it undefined.
+ * @return {!proto.ondewo.s2t.Pyannote} returns this
+ */
+proto.ondewo.s2t.Pyannote.prototype.clearLogScale = function() {
+  return jspb.Message.setOneofField(this, 5, proto.ondewo.s2t.Pyannote.oneofGroups_[0], undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {boolean}
+ */
+proto.ondewo.s2t.Pyannote.prototype.hasLogScale = function() {
+  return jspb.Message.getField(this, 5) != null;
 };
 
 
@@ -7011,7 +9490,7 @@ proto.ondewo.s2t.PostProcessors.prototype.toObject = function(opt_includeInstanc
 proto.ondewo.s2t.PostProcessors.toObject = function(includeInstance, msg) {
   var f, obj = {
     symSpell: (f = msg.getSymSpell()) && proto.ondewo.s2t.SymSpell.toObject(includeInstance, f),
-    normalization: (f = msg.getNormalization()) && proto.ondewo.s2t.Normalization.toObject(includeInstance, f)
+    normalization: (f = msg.getNormalization()) && proto.ondewo.s2t.S2TNormalization.toObject(includeInstance, f)
   };
 
   if (includeInstance) {
@@ -7054,8 +9533,8 @@ proto.ondewo.s2t.PostProcessors.deserializeBinaryFromReader = function(msg, read
       msg.setSymSpell(value);
       break;
     case 2:
-      var value = new proto.ondewo.s2t.Normalization;
-      reader.readMessage(value,proto.ondewo.s2t.Normalization.deserializeBinaryFromReader);
+      var value = new proto.ondewo.s2t.S2TNormalization;
+      reader.readMessage(value,proto.ondewo.s2t.S2TNormalization.deserializeBinaryFromReader);
       msg.setNormalization(value);
       break;
     default:
@@ -7100,7 +9579,7 @@ proto.ondewo.s2t.PostProcessors.serializeBinaryToWriter = function(message, writ
     writer.writeMessage(
       2,
       f,
-      proto.ondewo.s2t.Normalization.serializeBinaryToWriter
+      proto.ondewo.s2t.S2TNormalization.serializeBinaryToWriter
     );
   }
 };
@@ -7144,17 +9623,17 @@ proto.ondewo.s2t.PostProcessors.prototype.hasSymSpell = function() {
 
 
 /**
- * optional Normalization normalization = 2;
- * @return {?proto.ondewo.s2t.Normalization}
+ * optional S2TNormalization normalization = 2;
+ * @return {?proto.ondewo.s2t.S2TNormalization}
  */
 proto.ondewo.s2t.PostProcessors.prototype.getNormalization = function() {
-  return /** @type{?proto.ondewo.s2t.Normalization} */ (
-    jspb.Message.getWrapperField(this, proto.ondewo.s2t.Normalization, 2));
+  return /** @type{?proto.ondewo.s2t.S2TNormalization} */ (
+    jspb.Message.getWrapperField(this, proto.ondewo.s2t.S2TNormalization, 2));
 };
 
 
 /**
- * @param {?proto.ondewo.s2t.Normalization|undefined} value
+ * @param {?proto.ondewo.s2t.S2TNormalization|undefined} value
  * @return {!proto.ondewo.s2t.PostProcessors} returns this
 */
 proto.ondewo.s2t.PostProcessors.prototype.setNormalization = function(value) {
@@ -7386,8 +9865,8 @@ if (jspb.Message.GENERATE_TO_OBJECT) {
  *     http://goto/soy-param-migration
  * @return {!Object}
  */
-proto.ondewo.s2t.Normalization.prototype.toObject = function(opt_includeInstance) {
-  return proto.ondewo.s2t.Normalization.toObject(opt_includeInstance, this);
+proto.ondewo.s2t.S2TNormalization.prototype.toObject = function(opt_includeInstance) {
+  return proto.ondewo.s2t.S2TNormalization.toObject(opt_includeInstance, this);
 };
 
 
@@ -7396,11 +9875,11 @@ proto.ondewo.s2t.Normalization.prototype.toObject = function(opt_includeInstance
  * @param {boolean|undefined} includeInstance Deprecated. Whether to include
  *     the JSPB instance for transitional soy proto support:
  *     http://goto/soy-param-migration
- * @param {!proto.ondewo.s2t.Normalization} msg The msg instance to transform.
+ * @param {!proto.ondewo.s2t.S2TNormalization} msg The msg instance to transform.
  * @return {!Object}
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.ondewo.s2t.Normalization.toObject = function(includeInstance, msg) {
+proto.ondewo.s2t.S2TNormalization.toObject = function(includeInstance, msg) {
   var f, obj = {
     language: jspb.Message.getFieldWithDefault(msg, 1, "")
   };
@@ -7416,23 +9895,23 @@ proto.ondewo.s2t.Normalization.toObject = function(includeInstance, msg) {
 /**
  * Deserializes binary data (in protobuf wire format).
  * @param {jspb.ByteSource} bytes The bytes to deserialize.
- * @return {!proto.ondewo.s2t.Normalization}
+ * @return {!proto.ondewo.s2t.S2TNormalization}
  */
-proto.ondewo.s2t.Normalization.deserializeBinary = function(bytes) {
+proto.ondewo.s2t.S2TNormalization.deserializeBinary = function(bytes) {
   var reader = new jspb.BinaryReader(bytes);
-  var msg = new proto.ondewo.s2t.Normalization;
-  return proto.ondewo.s2t.Normalization.deserializeBinaryFromReader(msg, reader);
+  var msg = new proto.ondewo.s2t.S2TNormalization;
+  return proto.ondewo.s2t.S2TNormalization.deserializeBinaryFromReader(msg, reader);
 };
 
 
 /**
  * Deserializes binary data (in protobuf wire format) from the
  * given reader into the given message object.
- * @param {!proto.ondewo.s2t.Normalization} msg The message object to deserialize into.
+ * @param {!proto.ondewo.s2t.S2TNormalization} msg The message object to deserialize into.
  * @param {!jspb.BinaryReader} reader The BinaryReader to use.
- * @return {!proto.ondewo.s2t.Normalization}
+ * @return {!proto.ondewo.s2t.S2TNormalization}
  */
-proto.ondewo.s2t.Normalization.deserializeBinaryFromReader = function(msg, reader) {
+proto.ondewo.s2t.S2TNormalization.deserializeBinaryFromReader = function(msg, reader) {
   while (reader.nextField()) {
     if (reader.isEndGroup()) {
       break;
@@ -7456,9 +9935,9 @@ proto.ondewo.s2t.Normalization.deserializeBinaryFromReader = function(msg, reade
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
-proto.ondewo.s2t.Normalization.prototype.serializeBinary = function() {
+proto.ondewo.s2t.S2TNormalization.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  proto.ondewo.s2t.Normalization.serializeBinaryToWriter(this, writer);
+  proto.ondewo.s2t.S2TNormalization.serializeBinaryToWriter(this, writer);
   return writer.getResultBuffer();
 };
 
@@ -7466,11 +9945,11 @@ proto.ondewo.s2t.Normalization.prototype.serializeBinary = function() {
 /**
  * Serializes the given message to binary data (in protobuf wire
  * format), writing to the given BinaryWriter.
- * @param {!proto.ondewo.s2t.Normalization} message
+ * @param {!proto.ondewo.s2t.S2TNormalization} message
  * @param {!jspb.BinaryWriter} writer
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.ondewo.s2t.Normalization.serializeBinaryToWriter = function(message, writer) {
+proto.ondewo.s2t.S2TNormalization.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
   f = message.getLanguage();
   if (f.length > 0) {
@@ -7486,16 +9965,16 @@ proto.ondewo.s2t.Normalization.serializeBinaryToWriter = function(message, write
  * optional string language = 1;
  * @return {string}
  */
-proto.ondewo.s2t.Normalization.prototype.getLanguage = function() {
+proto.ondewo.s2t.S2TNormalization.prototype.getLanguage = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
 };
 
 
 /**
  * @param {string} value
- * @return {!proto.ondewo.s2t.Normalization} returns this
+ * @return {!proto.ondewo.s2t.S2TNormalization} returns this
  */
-proto.ondewo.s2t.Normalization.prototype.setLanguage = function(value) {
+proto.ondewo.s2t.S2TNormalization.prototype.setLanguage = function(value) {
   return jspb.Message.setProto3StringField(this, 1, value);
 };
 
@@ -7660,12 +10139,1119 @@ proto.ondewo.s2t.Logging.prototype.setPath = function(value) {
 };
 
 
+
+/**
+ * List of repeated fields within this message type.
+ * @private {!Array<number>}
+ * @const
+ */
+proto.ondewo.s2t.ListS2tLanguageModelsRequest.repeatedFields_ = [1];
+
+
+
+if (jspb.Message.GENERATE_TO_OBJECT) {
+/**
+ * Creates an object representation of this proto.
+ * Field names that are reserved in JavaScript and will be renamed to pb_name.
+ * Optional fields that are not set will be set to undefined.
+ * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
+ * For the list of reserved names please see:
+ *     net/proto2/compiler/js/internal/generator.cc#kKeyword.
+ * @param {boolean=} opt_includeInstance Deprecated. whether to include the
+ *     JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @return {!Object}
+ */
+proto.ondewo.s2t.ListS2tLanguageModelsRequest.prototype.toObject = function(opt_includeInstance) {
+  return proto.ondewo.s2t.ListS2tLanguageModelsRequest.toObject(opt_includeInstance, this);
+};
+
+
+/**
+ * Static version of the {@see toObject} method.
+ * @param {boolean|undefined} includeInstance Deprecated. Whether to include
+ *     the JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @param {!proto.ondewo.s2t.ListS2tLanguageModelsRequest} msg The msg instance to transform.
+ * @return {!Object}
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.ondewo.s2t.ListS2tLanguageModelsRequest.toObject = function(includeInstance, msg) {
+  var f, obj = {
+    idsList: (f = jspb.Message.getRepeatedField(msg, 1)) == null ? undefined : f
+  };
+
+  if (includeInstance) {
+    obj.$jspbMessageInstance = msg;
+  }
+  return obj;
+};
+}
+
+
+/**
+ * Deserializes binary data (in protobuf wire format).
+ * @param {jspb.ByteSource} bytes The bytes to deserialize.
+ * @return {!proto.ondewo.s2t.ListS2tLanguageModelsRequest}
+ */
+proto.ondewo.s2t.ListS2tLanguageModelsRequest.deserializeBinary = function(bytes) {
+  var reader = new jspb.BinaryReader(bytes);
+  var msg = new proto.ondewo.s2t.ListS2tLanguageModelsRequest;
+  return proto.ondewo.s2t.ListS2tLanguageModelsRequest.deserializeBinaryFromReader(msg, reader);
+};
+
+
+/**
+ * Deserializes binary data (in protobuf wire format) from the
+ * given reader into the given message object.
+ * @param {!proto.ondewo.s2t.ListS2tLanguageModelsRequest} msg The message object to deserialize into.
+ * @param {!jspb.BinaryReader} reader The BinaryReader to use.
+ * @return {!proto.ondewo.s2t.ListS2tLanguageModelsRequest}
+ */
+proto.ondewo.s2t.ListS2tLanguageModelsRequest.deserializeBinaryFromReader = function(msg, reader) {
+  while (reader.nextField()) {
+    if (reader.isEndGroup()) {
+      break;
+    }
+    var field = reader.getFieldNumber();
+    switch (field) {
+    case 1:
+      var value = /** @type {string} */ (reader.readString());
+      msg.addIds(value);
+      break;
+    default:
+      reader.skipField();
+      break;
+    }
+  }
+  return msg;
+};
+
+
+/**
+ * Serializes the message to binary data (in protobuf wire format).
+ * @return {!Uint8Array}
+ */
+proto.ondewo.s2t.ListS2tLanguageModelsRequest.prototype.serializeBinary = function() {
+  var writer = new jspb.BinaryWriter();
+  proto.ondewo.s2t.ListS2tLanguageModelsRequest.serializeBinaryToWriter(this, writer);
+  return writer.getResultBuffer();
+};
+
+
+/**
+ * Serializes the given message to binary data (in protobuf wire
+ * format), writing to the given BinaryWriter.
+ * @param {!proto.ondewo.s2t.ListS2tLanguageModelsRequest} message
+ * @param {!jspb.BinaryWriter} writer
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.ondewo.s2t.ListS2tLanguageModelsRequest.serializeBinaryToWriter = function(message, writer) {
+  var f = undefined;
+  f = message.getIdsList();
+  if (f.length > 0) {
+    writer.writeRepeatedString(
+      1,
+      f
+    );
+  }
+};
+
+
+/**
+ * repeated string ids = 1;
+ * @return {!Array<string>}
+ */
+proto.ondewo.s2t.ListS2tLanguageModelsRequest.prototype.getIdsList = function() {
+  return /** @type {!Array<string>} */ (jspb.Message.getRepeatedField(this, 1));
+};
+
+
+/**
+ * @param {!Array<string>} value
+ * @return {!proto.ondewo.s2t.ListS2tLanguageModelsRequest} returns this
+ */
+proto.ondewo.s2t.ListS2tLanguageModelsRequest.prototype.setIdsList = function(value) {
+  return jspb.Message.setField(this, 1, value || []);
+};
+
+
+/**
+ * @param {string} value
+ * @param {number=} opt_index
+ * @return {!proto.ondewo.s2t.ListS2tLanguageModelsRequest} returns this
+ */
+proto.ondewo.s2t.ListS2tLanguageModelsRequest.prototype.addIds = function(value, opt_index) {
+  return jspb.Message.addToRepeatedField(this, 1, value, opt_index);
+};
+
+
+/**
+ * Clears the list making it empty but non-null.
+ * @return {!proto.ondewo.s2t.ListS2tLanguageModelsRequest} returns this
+ */
+proto.ondewo.s2t.ListS2tLanguageModelsRequest.prototype.clearIdsList = function() {
+  return this.setIdsList([]);
+};
+
+
+
+/**
+ * List of repeated fields within this message type.
+ * @private {!Array<number>}
+ * @const
+ */
+proto.ondewo.s2t.LanguageModelPipelineId.repeatedFields_ = [2];
+
+
+
+if (jspb.Message.GENERATE_TO_OBJECT) {
+/**
+ * Creates an object representation of this proto.
+ * Field names that are reserved in JavaScript and will be renamed to pb_name.
+ * Optional fields that are not set will be set to undefined.
+ * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
+ * For the list of reserved names please see:
+ *     net/proto2/compiler/js/internal/generator.cc#kKeyword.
+ * @param {boolean=} opt_includeInstance Deprecated. whether to include the
+ *     JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @return {!Object}
+ */
+proto.ondewo.s2t.LanguageModelPipelineId.prototype.toObject = function(opt_includeInstance) {
+  return proto.ondewo.s2t.LanguageModelPipelineId.toObject(opt_includeInstance, this);
+};
+
+
+/**
+ * Static version of the {@see toObject} method.
+ * @param {boolean|undefined} includeInstance Deprecated. Whether to include
+ *     the JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @param {!proto.ondewo.s2t.LanguageModelPipelineId} msg The msg instance to transform.
+ * @return {!Object}
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.ondewo.s2t.LanguageModelPipelineId.toObject = function(includeInstance, msg) {
+  var f, obj = {
+    pipelineId: jspb.Message.getFieldWithDefault(msg, 1, ""),
+    modelNamesList: (f = jspb.Message.getRepeatedField(msg, 2)) == null ? undefined : f
+  };
+
+  if (includeInstance) {
+    obj.$jspbMessageInstance = msg;
+  }
+  return obj;
+};
+}
+
+
+/**
+ * Deserializes binary data (in protobuf wire format).
+ * @param {jspb.ByteSource} bytes The bytes to deserialize.
+ * @return {!proto.ondewo.s2t.LanguageModelPipelineId}
+ */
+proto.ondewo.s2t.LanguageModelPipelineId.deserializeBinary = function(bytes) {
+  var reader = new jspb.BinaryReader(bytes);
+  var msg = new proto.ondewo.s2t.LanguageModelPipelineId;
+  return proto.ondewo.s2t.LanguageModelPipelineId.deserializeBinaryFromReader(msg, reader);
+};
+
+
+/**
+ * Deserializes binary data (in protobuf wire format) from the
+ * given reader into the given message object.
+ * @param {!proto.ondewo.s2t.LanguageModelPipelineId} msg The message object to deserialize into.
+ * @param {!jspb.BinaryReader} reader The BinaryReader to use.
+ * @return {!proto.ondewo.s2t.LanguageModelPipelineId}
+ */
+proto.ondewo.s2t.LanguageModelPipelineId.deserializeBinaryFromReader = function(msg, reader) {
+  while (reader.nextField()) {
+    if (reader.isEndGroup()) {
+      break;
+    }
+    var field = reader.getFieldNumber();
+    switch (field) {
+    case 1:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setPipelineId(value);
+      break;
+    case 2:
+      var value = /** @type {string} */ (reader.readString());
+      msg.addModelNames(value);
+      break;
+    default:
+      reader.skipField();
+      break;
+    }
+  }
+  return msg;
+};
+
+
+/**
+ * Serializes the message to binary data (in protobuf wire format).
+ * @return {!Uint8Array}
+ */
+proto.ondewo.s2t.LanguageModelPipelineId.prototype.serializeBinary = function() {
+  var writer = new jspb.BinaryWriter();
+  proto.ondewo.s2t.LanguageModelPipelineId.serializeBinaryToWriter(this, writer);
+  return writer.getResultBuffer();
+};
+
+
+/**
+ * Serializes the given message to binary data (in protobuf wire
+ * format), writing to the given BinaryWriter.
+ * @param {!proto.ondewo.s2t.LanguageModelPipelineId} message
+ * @param {!jspb.BinaryWriter} writer
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.ondewo.s2t.LanguageModelPipelineId.serializeBinaryToWriter = function(message, writer) {
+  var f = undefined;
+  f = message.getPipelineId();
+  if (f.length > 0) {
+    writer.writeString(
+      1,
+      f
+    );
+  }
+  f = message.getModelNamesList();
+  if (f.length > 0) {
+    writer.writeRepeatedString(
+      2,
+      f
+    );
+  }
+};
+
+
+/**
+ * optional string pipeline_id = 1;
+ * @return {string}
+ */
+proto.ondewo.s2t.LanguageModelPipelineId.prototype.getPipelineId = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.ondewo.s2t.LanguageModelPipelineId} returns this
+ */
+proto.ondewo.s2t.LanguageModelPipelineId.prototype.setPipelineId = function(value) {
+  return jspb.Message.setProto3StringField(this, 1, value);
+};
+
+
+/**
+ * repeated string model_names = 2;
+ * @return {!Array<string>}
+ */
+proto.ondewo.s2t.LanguageModelPipelineId.prototype.getModelNamesList = function() {
+  return /** @type {!Array<string>} */ (jspb.Message.getRepeatedField(this, 2));
+};
+
+
+/**
+ * @param {!Array<string>} value
+ * @return {!proto.ondewo.s2t.LanguageModelPipelineId} returns this
+ */
+proto.ondewo.s2t.LanguageModelPipelineId.prototype.setModelNamesList = function(value) {
+  return jspb.Message.setField(this, 2, value || []);
+};
+
+
+/**
+ * @param {string} value
+ * @param {number=} opt_index
+ * @return {!proto.ondewo.s2t.LanguageModelPipelineId} returns this
+ */
+proto.ondewo.s2t.LanguageModelPipelineId.prototype.addModelNames = function(value, opt_index) {
+  return jspb.Message.addToRepeatedField(this, 2, value, opt_index);
+};
+
+
+/**
+ * Clears the list making it empty but non-null.
+ * @return {!proto.ondewo.s2t.LanguageModelPipelineId} returns this
+ */
+proto.ondewo.s2t.LanguageModelPipelineId.prototype.clearModelNamesList = function() {
+  return this.setModelNamesList([]);
+};
+
+
+
+/**
+ * List of repeated fields within this message type.
+ * @private {!Array<number>}
+ * @const
+ */
+proto.ondewo.s2t.ListS2tLanguageModelsResponse.repeatedFields_ = [1];
+
+
+
+if (jspb.Message.GENERATE_TO_OBJECT) {
+/**
+ * Creates an object representation of this proto.
+ * Field names that are reserved in JavaScript and will be renamed to pb_name.
+ * Optional fields that are not set will be set to undefined.
+ * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
+ * For the list of reserved names please see:
+ *     net/proto2/compiler/js/internal/generator.cc#kKeyword.
+ * @param {boolean=} opt_includeInstance Deprecated. whether to include the
+ *     JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @return {!Object}
+ */
+proto.ondewo.s2t.ListS2tLanguageModelsResponse.prototype.toObject = function(opt_includeInstance) {
+  return proto.ondewo.s2t.ListS2tLanguageModelsResponse.toObject(opt_includeInstance, this);
+};
+
+
+/**
+ * Static version of the {@see toObject} method.
+ * @param {boolean|undefined} includeInstance Deprecated. Whether to include
+ *     the JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @param {!proto.ondewo.s2t.ListS2tLanguageModelsResponse} msg The msg instance to transform.
+ * @return {!Object}
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.ondewo.s2t.ListS2tLanguageModelsResponse.toObject = function(includeInstance, msg) {
+  var f, obj = {
+    lmPipelineIdsList: jspb.Message.toObjectList(msg.getLmPipelineIdsList(),
+    proto.ondewo.s2t.LanguageModelPipelineId.toObject, includeInstance)
+  };
+
+  if (includeInstance) {
+    obj.$jspbMessageInstance = msg;
+  }
+  return obj;
+};
+}
+
+
+/**
+ * Deserializes binary data (in protobuf wire format).
+ * @param {jspb.ByteSource} bytes The bytes to deserialize.
+ * @return {!proto.ondewo.s2t.ListS2tLanguageModelsResponse}
+ */
+proto.ondewo.s2t.ListS2tLanguageModelsResponse.deserializeBinary = function(bytes) {
+  var reader = new jspb.BinaryReader(bytes);
+  var msg = new proto.ondewo.s2t.ListS2tLanguageModelsResponse;
+  return proto.ondewo.s2t.ListS2tLanguageModelsResponse.deserializeBinaryFromReader(msg, reader);
+};
+
+
+/**
+ * Deserializes binary data (in protobuf wire format) from the
+ * given reader into the given message object.
+ * @param {!proto.ondewo.s2t.ListS2tLanguageModelsResponse} msg The message object to deserialize into.
+ * @param {!jspb.BinaryReader} reader The BinaryReader to use.
+ * @return {!proto.ondewo.s2t.ListS2tLanguageModelsResponse}
+ */
+proto.ondewo.s2t.ListS2tLanguageModelsResponse.deserializeBinaryFromReader = function(msg, reader) {
+  while (reader.nextField()) {
+    if (reader.isEndGroup()) {
+      break;
+    }
+    var field = reader.getFieldNumber();
+    switch (field) {
+    case 1:
+      var value = new proto.ondewo.s2t.LanguageModelPipelineId;
+      reader.readMessage(value,proto.ondewo.s2t.LanguageModelPipelineId.deserializeBinaryFromReader);
+      msg.addLmPipelineIds(value);
+      break;
+    default:
+      reader.skipField();
+      break;
+    }
+  }
+  return msg;
+};
+
+
+/**
+ * Serializes the message to binary data (in protobuf wire format).
+ * @return {!Uint8Array}
+ */
+proto.ondewo.s2t.ListS2tLanguageModelsResponse.prototype.serializeBinary = function() {
+  var writer = new jspb.BinaryWriter();
+  proto.ondewo.s2t.ListS2tLanguageModelsResponse.serializeBinaryToWriter(this, writer);
+  return writer.getResultBuffer();
+};
+
+
+/**
+ * Serializes the given message to binary data (in protobuf wire
+ * format), writing to the given BinaryWriter.
+ * @param {!proto.ondewo.s2t.ListS2tLanguageModelsResponse} message
+ * @param {!jspb.BinaryWriter} writer
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.ondewo.s2t.ListS2tLanguageModelsResponse.serializeBinaryToWriter = function(message, writer) {
+  var f = undefined;
+  f = message.getLmPipelineIdsList();
+  if (f.length > 0) {
+    writer.writeRepeatedMessage(
+      1,
+      f,
+      proto.ondewo.s2t.LanguageModelPipelineId.serializeBinaryToWriter
+    );
+  }
+};
+
+
+/**
+ * repeated LanguageModelPipelineId lm_pipeline_ids = 1;
+ * @return {!Array<!proto.ondewo.s2t.LanguageModelPipelineId>}
+ */
+proto.ondewo.s2t.ListS2tLanguageModelsResponse.prototype.getLmPipelineIdsList = function() {
+  return /** @type{!Array<!proto.ondewo.s2t.LanguageModelPipelineId>} */ (
+    jspb.Message.getRepeatedWrapperField(this, proto.ondewo.s2t.LanguageModelPipelineId, 1));
+};
+
+
+/**
+ * @param {!Array<!proto.ondewo.s2t.LanguageModelPipelineId>} value
+ * @return {!proto.ondewo.s2t.ListS2tLanguageModelsResponse} returns this
+*/
+proto.ondewo.s2t.ListS2tLanguageModelsResponse.prototype.setLmPipelineIdsList = function(value) {
+  return jspb.Message.setRepeatedWrapperField(this, 1, value);
+};
+
+
+/**
+ * @param {!proto.ondewo.s2t.LanguageModelPipelineId=} opt_value
+ * @param {number=} opt_index
+ * @return {!proto.ondewo.s2t.LanguageModelPipelineId}
+ */
+proto.ondewo.s2t.ListS2tLanguageModelsResponse.prototype.addLmPipelineIds = function(opt_value, opt_index) {
+  return jspb.Message.addToRepeatedWrapperField(this, 1, opt_value, proto.ondewo.s2t.LanguageModelPipelineId, opt_index);
+};
+
+
+/**
+ * Clears the list making it empty but non-null.
+ * @return {!proto.ondewo.s2t.ListS2tLanguageModelsResponse} returns this
+ */
+proto.ondewo.s2t.ListS2tLanguageModelsResponse.prototype.clearLmPipelineIdsList = function() {
+  return this.setLmPipelineIdsList([]);
+};
+
+
+
+
+
+if (jspb.Message.GENERATE_TO_OBJECT) {
+/**
+ * Creates an object representation of this proto.
+ * Field names that are reserved in JavaScript and will be renamed to pb_name.
+ * Optional fields that are not set will be set to undefined.
+ * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
+ * For the list of reserved names please see:
+ *     net/proto2/compiler/js/internal/generator.cc#kKeyword.
+ * @param {boolean=} opt_includeInstance Deprecated. whether to include the
+ *     JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @return {!Object}
+ */
+proto.ondewo.s2t.CreateUserLanguageModelRequest.prototype.toObject = function(opt_includeInstance) {
+  return proto.ondewo.s2t.CreateUserLanguageModelRequest.toObject(opt_includeInstance, this);
+};
+
+
+/**
+ * Static version of the {@see toObject} method.
+ * @param {boolean|undefined} includeInstance Deprecated. Whether to include
+ *     the JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @param {!proto.ondewo.s2t.CreateUserLanguageModelRequest} msg The msg instance to transform.
+ * @return {!Object}
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.ondewo.s2t.CreateUserLanguageModelRequest.toObject = function(includeInstance, msg) {
+  var f, obj = {
+    languageModelName: jspb.Message.getFieldWithDefault(msg, 1, "")
+  };
+
+  if (includeInstance) {
+    obj.$jspbMessageInstance = msg;
+  }
+  return obj;
+};
+}
+
+
+/**
+ * Deserializes binary data (in protobuf wire format).
+ * @param {jspb.ByteSource} bytes The bytes to deserialize.
+ * @return {!proto.ondewo.s2t.CreateUserLanguageModelRequest}
+ */
+proto.ondewo.s2t.CreateUserLanguageModelRequest.deserializeBinary = function(bytes) {
+  var reader = new jspb.BinaryReader(bytes);
+  var msg = new proto.ondewo.s2t.CreateUserLanguageModelRequest;
+  return proto.ondewo.s2t.CreateUserLanguageModelRequest.deserializeBinaryFromReader(msg, reader);
+};
+
+
+/**
+ * Deserializes binary data (in protobuf wire format) from the
+ * given reader into the given message object.
+ * @param {!proto.ondewo.s2t.CreateUserLanguageModelRequest} msg The message object to deserialize into.
+ * @param {!jspb.BinaryReader} reader The BinaryReader to use.
+ * @return {!proto.ondewo.s2t.CreateUserLanguageModelRequest}
+ */
+proto.ondewo.s2t.CreateUserLanguageModelRequest.deserializeBinaryFromReader = function(msg, reader) {
+  while (reader.nextField()) {
+    if (reader.isEndGroup()) {
+      break;
+    }
+    var field = reader.getFieldNumber();
+    switch (field) {
+    case 1:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setLanguageModelName(value);
+      break;
+    default:
+      reader.skipField();
+      break;
+    }
+  }
+  return msg;
+};
+
+
+/**
+ * Serializes the message to binary data (in protobuf wire format).
+ * @return {!Uint8Array}
+ */
+proto.ondewo.s2t.CreateUserLanguageModelRequest.prototype.serializeBinary = function() {
+  var writer = new jspb.BinaryWriter();
+  proto.ondewo.s2t.CreateUserLanguageModelRequest.serializeBinaryToWriter(this, writer);
+  return writer.getResultBuffer();
+};
+
+
+/**
+ * Serializes the given message to binary data (in protobuf wire
+ * format), writing to the given BinaryWriter.
+ * @param {!proto.ondewo.s2t.CreateUserLanguageModelRequest} message
+ * @param {!jspb.BinaryWriter} writer
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.ondewo.s2t.CreateUserLanguageModelRequest.serializeBinaryToWriter = function(message, writer) {
+  var f = undefined;
+  f = message.getLanguageModelName();
+  if (f.length > 0) {
+    writer.writeString(
+      1,
+      f
+    );
+  }
+};
+
+
+/**
+ * optional string language_model_name = 1;
+ * @return {string}
+ */
+proto.ondewo.s2t.CreateUserLanguageModelRequest.prototype.getLanguageModelName = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.ondewo.s2t.CreateUserLanguageModelRequest} returns this
+ */
+proto.ondewo.s2t.CreateUserLanguageModelRequest.prototype.setLanguageModelName = function(value) {
+  return jspb.Message.setProto3StringField(this, 1, value);
+};
+
+
+
+
+
+if (jspb.Message.GENERATE_TO_OBJECT) {
+/**
+ * Creates an object representation of this proto.
+ * Field names that are reserved in JavaScript and will be renamed to pb_name.
+ * Optional fields that are not set will be set to undefined.
+ * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
+ * For the list of reserved names please see:
+ *     net/proto2/compiler/js/internal/generator.cc#kKeyword.
+ * @param {boolean=} opt_includeInstance Deprecated. whether to include the
+ *     JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @return {!Object}
+ */
+proto.ondewo.s2t.DeleteUserLanguageModelRequest.prototype.toObject = function(opt_includeInstance) {
+  return proto.ondewo.s2t.DeleteUserLanguageModelRequest.toObject(opt_includeInstance, this);
+};
+
+
+/**
+ * Static version of the {@see toObject} method.
+ * @param {boolean|undefined} includeInstance Deprecated. Whether to include
+ *     the JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @param {!proto.ondewo.s2t.DeleteUserLanguageModelRequest} msg The msg instance to transform.
+ * @return {!Object}
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.ondewo.s2t.DeleteUserLanguageModelRequest.toObject = function(includeInstance, msg) {
+  var f, obj = {
+    languageModelName: jspb.Message.getFieldWithDefault(msg, 1, "")
+  };
+
+  if (includeInstance) {
+    obj.$jspbMessageInstance = msg;
+  }
+  return obj;
+};
+}
+
+
+/**
+ * Deserializes binary data (in protobuf wire format).
+ * @param {jspb.ByteSource} bytes The bytes to deserialize.
+ * @return {!proto.ondewo.s2t.DeleteUserLanguageModelRequest}
+ */
+proto.ondewo.s2t.DeleteUserLanguageModelRequest.deserializeBinary = function(bytes) {
+  var reader = new jspb.BinaryReader(bytes);
+  var msg = new proto.ondewo.s2t.DeleteUserLanguageModelRequest;
+  return proto.ondewo.s2t.DeleteUserLanguageModelRequest.deserializeBinaryFromReader(msg, reader);
+};
+
+
+/**
+ * Deserializes binary data (in protobuf wire format) from the
+ * given reader into the given message object.
+ * @param {!proto.ondewo.s2t.DeleteUserLanguageModelRequest} msg The message object to deserialize into.
+ * @param {!jspb.BinaryReader} reader The BinaryReader to use.
+ * @return {!proto.ondewo.s2t.DeleteUserLanguageModelRequest}
+ */
+proto.ondewo.s2t.DeleteUserLanguageModelRequest.deserializeBinaryFromReader = function(msg, reader) {
+  while (reader.nextField()) {
+    if (reader.isEndGroup()) {
+      break;
+    }
+    var field = reader.getFieldNumber();
+    switch (field) {
+    case 1:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setLanguageModelName(value);
+      break;
+    default:
+      reader.skipField();
+      break;
+    }
+  }
+  return msg;
+};
+
+
+/**
+ * Serializes the message to binary data (in protobuf wire format).
+ * @return {!Uint8Array}
+ */
+proto.ondewo.s2t.DeleteUserLanguageModelRequest.prototype.serializeBinary = function() {
+  var writer = new jspb.BinaryWriter();
+  proto.ondewo.s2t.DeleteUserLanguageModelRequest.serializeBinaryToWriter(this, writer);
+  return writer.getResultBuffer();
+};
+
+
+/**
+ * Serializes the given message to binary data (in protobuf wire
+ * format), writing to the given BinaryWriter.
+ * @param {!proto.ondewo.s2t.DeleteUserLanguageModelRequest} message
+ * @param {!jspb.BinaryWriter} writer
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.ondewo.s2t.DeleteUserLanguageModelRequest.serializeBinaryToWriter = function(message, writer) {
+  var f = undefined;
+  f = message.getLanguageModelName();
+  if (f.length > 0) {
+    writer.writeString(
+      1,
+      f
+    );
+  }
+};
+
+
+/**
+ * optional string language_model_name = 1;
+ * @return {string}
+ */
+proto.ondewo.s2t.DeleteUserLanguageModelRequest.prototype.getLanguageModelName = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.ondewo.s2t.DeleteUserLanguageModelRequest} returns this
+ */
+proto.ondewo.s2t.DeleteUserLanguageModelRequest.prototype.setLanguageModelName = function(value) {
+  return jspb.Message.setProto3StringField(this, 1, value);
+};
+
+
+
+
+
+if (jspb.Message.GENERATE_TO_OBJECT) {
+/**
+ * Creates an object representation of this proto.
+ * Field names that are reserved in JavaScript and will be renamed to pb_name.
+ * Optional fields that are not set will be set to undefined.
+ * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
+ * For the list of reserved names please see:
+ *     net/proto2/compiler/js/internal/generator.cc#kKeyword.
+ * @param {boolean=} opt_includeInstance Deprecated. whether to include the
+ *     JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @return {!Object}
+ */
+proto.ondewo.s2t.AddDataToUserLanguageModelRequest.prototype.toObject = function(opt_includeInstance) {
+  return proto.ondewo.s2t.AddDataToUserLanguageModelRequest.toObject(opt_includeInstance, this);
+};
+
+
+/**
+ * Static version of the {@see toObject} method.
+ * @param {boolean|undefined} includeInstance Deprecated. Whether to include
+ *     the JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @param {!proto.ondewo.s2t.AddDataToUserLanguageModelRequest} msg The msg instance to transform.
+ * @return {!Object}
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.ondewo.s2t.AddDataToUserLanguageModelRequest.toObject = function(includeInstance, msg) {
+  var f, obj = {
+    languageModelName: jspb.Message.getFieldWithDefault(msg, 1, ""),
+    zippedData: msg.getZippedData_asB64()
+  };
+
+  if (includeInstance) {
+    obj.$jspbMessageInstance = msg;
+  }
+  return obj;
+};
+}
+
+
+/**
+ * Deserializes binary data (in protobuf wire format).
+ * @param {jspb.ByteSource} bytes The bytes to deserialize.
+ * @return {!proto.ondewo.s2t.AddDataToUserLanguageModelRequest}
+ */
+proto.ondewo.s2t.AddDataToUserLanguageModelRequest.deserializeBinary = function(bytes) {
+  var reader = new jspb.BinaryReader(bytes);
+  var msg = new proto.ondewo.s2t.AddDataToUserLanguageModelRequest;
+  return proto.ondewo.s2t.AddDataToUserLanguageModelRequest.deserializeBinaryFromReader(msg, reader);
+};
+
+
+/**
+ * Deserializes binary data (in protobuf wire format) from the
+ * given reader into the given message object.
+ * @param {!proto.ondewo.s2t.AddDataToUserLanguageModelRequest} msg The message object to deserialize into.
+ * @param {!jspb.BinaryReader} reader The BinaryReader to use.
+ * @return {!proto.ondewo.s2t.AddDataToUserLanguageModelRequest}
+ */
+proto.ondewo.s2t.AddDataToUserLanguageModelRequest.deserializeBinaryFromReader = function(msg, reader) {
+  while (reader.nextField()) {
+    if (reader.isEndGroup()) {
+      break;
+    }
+    var field = reader.getFieldNumber();
+    switch (field) {
+    case 1:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setLanguageModelName(value);
+      break;
+    case 2:
+      var value = /** @type {!Uint8Array} */ (reader.readBytes());
+      msg.setZippedData(value);
+      break;
+    default:
+      reader.skipField();
+      break;
+    }
+  }
+  return msg;
+};
+
+
+/**
+ * Serializes the message to binary data (in protobuf wire format).
+ * @return {!Uint8Array}
+ */
+proto.ondewo.s2t.AddDataToUserLanguageModelRequest.prototype.serializeBinary = function() {
+  var writer = new jspb.BinaryWriter();
+  proto.ondewo.s2t.AddDataToUserLanguageModelRequest.serializeBinaryToWriter(this, writer);
+  return writer.getResultBuffer();
+};
+
+
+/**
+ * Serializes the given message to binary data (in protobuf wire
+ * format), writing to the given BinaryWriter.
+ * @param {!proto.ondewo.s2t.AddDataToUserLanguageModelRequest} message
+ * @param {!jspb.BinaryWriter} writer
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.ondewo.s2t.AddDataToUserLanguageModelRequest.serializeBinaryToWriter = function(message, writer) {
+  var f = undefined;
+  f = message.getLanguageModelName();
+  if (f.length > 0) {
+    writer.writeString(
+      1,
+      f
+    );
+  }
+  f = message.getZippedData_asU8();
+  if (f.length > 0) {
+    writer.writeBytes(
+      2,
+      f
+    );
+  }
+};
+
+
+/**
+ * optional string language_model_name = 1;
+ * @return {string}
+ */
+proto.ondewo.s2t.AddDataToUserLanguageModelRequest.prototype.getLanguageModelName = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.ondewo.s2t.AddDataToUserLanguageModelRequest} returns this
+ */
+proto.ondewo.s2t.AddDataToUserLanguageModelRequest.prototype.setLanguageModelName = function(value) {
+  return jspb.Message.setProto3StringField(this, 1, value);
+};
+
+
+/**
+ * optional bytes zipped_data = 2;
+ * @return {!(string|Uint8Array)}
+ */
+proto.ondewo.s2t.AddDataToUserLanguageModelRequest.prototype.getZippedData = function() {
+  return /** @type {!(string|Uint8Array)} */ (jspb.Message.getFieldWithDefault(this, 2, ""));
+};
+
+
+/**
+ * optional bytes zipped_data = 2;
+ * This is a type-conversion wrapper around `getZippedData()`
+ * @return {string}
+ */
+proto.ondewo.s2t.AddDataToUserLanguageModelRequest.prototype.getZippedData_asB64 = function() {
+  return /** @type {string} */ (jspb.Message.bytesAsB64(
+      this.getZippedData()));
+};
+
+
+/**
+ * optional bytes zipped_data = 2;
+ * Note that Uint8Array is not supported on all browsers.
+ * @see http://caniuse.com/Uint8Array
+ * This is a type-conversion wrapper around `getZippedData()`
+ * @return {!Uint8Array}
+ */
+proto.ondewo.s2t.AddDataToUserLanguageModelRequest.prototype.getZippedData_asU8 = function() {
+  return /** @type {!Uint8Array} */ (jspb.Message.bytesAsU8(
+      this.getZippedData()));
+};
+
+
+/**
+ * @param {!(string|Uint8Array)} value
+ * @return {!proto.ondewo.s2t.AddDataToUserLanguageModelRequest} returns this
+ */
+proto.ondewo.s2t.AddDataToUserLanguageModelRequest.prototype.setZippedData = function(value) {
+  return jspb.Message.setProto3BytesField(this, 2, value);
+};
+
+
+
+
+
+if (jspb.Message.GENERATE_TO_OBJECT) {
+/**
+ * Creates an object representation of this proto.
+ * Field names that are reserved in JavaScript and will be renamed to pb_name.
+ * Optional fields that are not set will be set to undefined.
+ * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
+ * For the list of reserved names please see:
+ *     net/proto2/compiler/js/internal/generator.cc#kKeyword.
+ * @param {boolean=} opt_includeInstance Deprecated. whether to include the
+ *     JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @return {!Object}
+ */
+proto.ondewo.s2t.TrainUserLanguageModelRequest.prototype.toObject = function(opt_includeInstance) {
+  return proto.ondewo.s2t.TrainUserLanguageModelRequest.toObject(opt_includeInstance, this);
+};
+
+
+/**
+ * Static version of the {@see toObject} method.
+ * @param {boolean|undefined} includeInstance Deprecated. Whether to include
+ *     the JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @param {!proto.ondewo.s2t.TrainUserLanguageModelRequest} msg The msg instance to transform.
+ * @return {!Object}
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.ondewo.s2t.TrainUserLanguageModelRequest.toObject = function(includeInstance, msg) {
+  var f, obj = {
+    languageModelName: jspb.Message.getFieldWithDefault(msg, 1, ""),
+    order: jspb.Message.getFieldWithDefault(msg, 2, 0)
+  };
+
+  if (includeInstance) {
+    obj.$jspbMessageInstance = msg;
+  }
+  return obj;
+};
+}
+
+
+/**
+ * Deserializes binary data (in protobuf wire format).
+ * @param {jspb.ByteSource} bytes The bytes to deserialize.
+ * @return {!proto.ondewo.s2t.TrainUserLanguageModelRequest}
+ */
+proto.ondewo.s2t.TrainUserLanguageModelRequest.deserializeBinary = function(bytes) {
+  var reader = new jspb.BinaryReader(bytes);
+  var msg = new proto.ondewo.s2t.TrainUserLanguageModelRequest;
+  return proto.ondewo.s2t.TrainUserLanguageModelRequest.deserializeBinaryFromReader(msg, reader);
+};
+
+
+/**
+ * Deserializes binary data (in protobuf wire format) from the
+ * given reader into the given message object.
+ * @param {!proto.ondewo.s2t.TrainUserLanguageModelRequest} msg The message object to deserialize into.
+ * @param {!jspb.BinaryReader} reader The BinaryReader to use.
+ * @return {!proto.ondewo.s2t.TrainUserLanguageModelRequest}
+ */
+proto.ondewo.s2t.TrainUserLanguageModelRequest.deserializeBinaryFromReader = function(msg, reader) {
+  while (reader.nextField()) {
+    if (reader.isEndGroup()) {
+      break;
+    }
+    var field = reader.getFieldNumber();
+    switch (field) {
+    case 1:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setLanguageModelName(value);
+      break;
+    case 2:
+      var value = /** @type {number} */ (reader.readInt64());
+      msg.setOrder(value);
+      break;
+    default:
+      reader.skipField();
+      break;
+    }
+  }
+  return msg;
+};
+
+
+/**
+ * Serializes the message to binary data (in protobuf wire format).
+ * @return {!Uint8Array}
+ */
+proto.ondewo.s2t.TrainUserLanguageModelRequest.prototype.serializeBinary = function() {
+  var writer = new jspb.BinaryWriter();
+  proto.ondewo.s2t.TrainUserLanguageModelRequest.serializeBinaryToWriter(this, writer);
+  return writer.getResultBuffer();
+};
+
+
+/**
+ * Serializes the given message to binary data (in protobuf wire
+ * format), writing to the given BinaryWriter.
+ * @param {!proto.ondewo.s2t.TrainUserLanguageModelRequest} message
+ * @param {!jspb.BinaryWriter} writer
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.ondewo.s2t.TrainUserLanguageModelRequest.serializeBinaryToWriter = function(message, writer) {
+  var f = undefined;
+  f = message.getLanguageModelName();
+  if (f.length > 0) {
+    writer.writeString(
+      1,
+      f
+    );
+  }
+  f = message.getOrder();
+  if (f !== 0) {
+    writer.writeInt64(
+      2,
+      f
+    );
+  }
+};
+
+
+/**
+ * optional string language_model_name = 1;
+ * @return {string}
+ */
+proto.ondewo.s2t.TrainUserLanguageModelRequest.prototype.getLanguageModelName = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.ondewo.s2t.TrainUserLanguageModelRequest} returns this
+ */
+proto.ondewo.s2t.TrainUserLanguageModelRequest.prototype.setLanguageModelName = function(value) {
+  return jspb.Message.setProto3StringField(this, 1, value);
+};
+
+
+/**
+ * optional int64 order = 2;
+ * @return {number}
+ */
+proto.ondewo.s2t.TrainUserLanguageModelRequest.prototype.getOrder = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 2, 0));
+};
+
+
+/**
+ * @param {number} value
+ * @return {!proto.ondewo.s2t.TrainUserLanguageModelRequest} returns this
+ */
+proto.ondewo.s2t.TrainUserLanguageModelRequest.prototype.setOrder = function(value) {
+  return jspb.Message.setProto3IntField(this, 2, value);
+};
+
+
 /**
  * @enum {number}
  */
 proto.ondewo.s2t.CTCDecoding = {
-  GREEDY: 0,
-  BEAM_SEARCH_WITH_LM: 1
+  DEFAULT: 0,
+  GREEDY: 1,
+  BEAM_SEARCH_WITH_LM: 2
 };
 
 goog.object.extend(exports, proto.ondewo.s2t);

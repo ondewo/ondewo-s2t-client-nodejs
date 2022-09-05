@@ -1,4 +1,11 @@
 # Release History
+
+***************** 
+## Release ONDEWO S2T Nodejs Client 3.3.0 
+ 
+### Improvements 
+ * Tracking API Version 3.3.0 
+
 *****************
 
 ## Release ONDEWO S2T Nodejs Client 3.3.0

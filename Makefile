@@ -18,7 +18,7 @@ export
 ONDEWO_S2T_VERSION = 3.3.0
 
 S2T_API_GIT_BRANCH=tags/3.3.0
-ONDEWO_PROTO_COMPILER_GIT_BRANCH=master
+ONDEWO_PROTO_COMPILER_GIT_BRANCH=tags/4.1.1
 ONDEWO_PROTO_COMPILER_DIR=ondewo-proto-compiler
 S2T_APIS_DIR=src/ondewo-s2t-api
 S2T_PROTOS_DIR=${S2T_APIS_DIR}/ondewo
@@ -82,6 +82,11 @@ check_build: ## Checks if proto-code was generated correctly
 	done
 	@rm -rf build_check.txt
 
+run_examples:
+	@for example in `find examples -iname "*_*"`; do\
+		npx ts-node $${example};\
+	done
+	
 ########################################################
 #       Repo Specific Make Targets
 ########################################################

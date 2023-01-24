@@ -10,8 +10,8 @@ import * as google_protobuf_empty_pb from 'google-protobuf/google/protobuf/empty
 export class TranscribeRequestConfig extends jspb.Message {
 	getS2tPipelineId(): string;
 	setS2tPipelineId(value: string): TranscribeRequestConfig;
-	getCtcDecoding(): CTCDecoding;
-	setCtcDecoding(value: CTCDecoding): TranscribeRequestConfig;
+	getDecoding(): Decoding;
+	setDecoding(value: Decoding): TranscribeRequestConfig;
 
 	hasLanguageModelName(): boolean;
 	clearLanguageModelName(): void;
@@ -65,7 +65,7 @@ export class TranscribeRequestConfig extends jspb.Message {
 export namespace TranscribeRequestConfig {
 	export type AsObject = {
 		s2tPipelineId: string;
-		ctcDecoding: CTCDecoding;
+		decoding: Decoding;
 		languageModelName: string;
 		postProcessing?: PostProcessingOptions.AsObject;
 		utteranceDetection?: UtteranceDetectionOptions.AsObject;
@@ -716,10 +716,10 @@ export namespace S2TDescription {
 }
 
 export class S2TInference extends jspb.Message {
-	hasCtcAcousticModels(): boolean;
-	clearCtcAcousticModels(): void;
-	getCtcAcousticModels(): CtcAcousticModels | undefined;
-	setCtcAcousticModels(value?: CtcAcousticModels): S2TInference;
+	hasAcousticModels(): boolean;
+	clearAcousticModels(): void;
+	getAcousticModels(): AcousticModels | undefined;
+	setAcousticModels(value?: AcousticModels): S2TInference;
 
 	hasLanguageModels(): boolean;
 	clearLanguageModels(): void;
@@ -738,52 +738,119 @@ export class S2TInference extends jspb.Message {
 
 export namespace S2TInference {
 	export type AsObject = {
-		ctcAcousticModels?: CtcAcousticModels.AsObject;
+		acousticModels?: AcousticModels.AsObject;
 		languageModels?: LanguageModels.AsObject;
 	};
 }
 
-export class CtcAcousticModels extends jspb.Message {
+export class AcousticModels extends jspb.Message {
 	getType(): string;
-	setType(value: string): CtcAcousticModels;
+	setType(value: string): AcousticModels;
 
 	hasQuartznet(): boolean;
 	clearQuartznet(): void;
 	getQuartznet(): Quartznet | undefined;
-	setQuartznet(value?: Quartznet): CtcAcousticModels;
+	setQuartznet(value?: Quartznet): AcousticModels;
 
 	hasQuartznetTriton(): boolean;
 	clearQuartznetTriton(): void;
 	getQuartznetTriton(): QuartznetTriton | undefined;
-	setQuartznetTriton(value?: QuartznetTriton): CtcAcousticModels;
+	setQuartznetTriton(value?: QuartznetTriton): AcousticModels;
 
 	hasWav2vec(): boolean;
 	clearWav2vec(): void;
 	getWav2vec(): Wav2Vec | undefined;
-	setWav2vec(value?: Wav2Vec): CtcAcousticModels;
+	setWav2vec(value?: Wav2Vec): AcousticModels;
 
 	hasWav2vecTriton(): boolean;
 	clearWav2vecTriton(): void;
 	getWav2vecTriton(): Wav2VecTriton | undefined;
-	setWav2vecTriton(value?: Wav2VecTriton): CtcAcousticModels;
+	setWav2vecTriton(value?: Wav2VecTriton): AcousticModels;
+
+	hasWhisper(): boolean;
+	clearWhisper(): void;
+	getWhisper(): Whisper | undefined;
+	setWhisper(value?: Whisper): AcousticModels;
+
+	hasWhisperTriton(): boolean;
+	clearWhisperTriton(): void;
+	getWhisperTriton(): WhisperTriton | undefined;
+	setWhisperTriton(value?: WhisperTriton): AcousticModels;
 
 	serializeBinary(): Uint8Array;
-	toObject(includeInstance?: boolean): CtcAcousticModels.AsObject;
-	static toObject(includeInstance: boolean, msg: CtcAcousticModels): CtcAcousticModels.AsObject;
+	toObject(includeInstance?: boolean): AcousticModels.AsObject;
+	static toObject(includeInstance: boolean, msg: AcousticModels): AcousticModels.AsObject;
 	static extensions: { [key: number]: jspb.ExtensionFieldInfo<jspb.Message> };
 	static extensionsBinary: { [key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message> };
-	static serializeBinaryToWriter(message: CtcAcousticModels, writer: jspb.BinaryWriter): void;
-	static deserializeBinary(bytes: Uint8Array): CtcAcousticModels;
-	static deserializeBinaryFromReader(message: CtcAcousticModels, reader: jspb.BinaryReader): CtcAcousticModels;
+	static serializeBinaryToWriter(message: AcousticModels, writer: jspb.BinaryWriter): void;
+	static deserializeBinary(bytes: Uint8Array): AcousticModels;
+	static deserializeBinaryFromReader(message: AcousticModels, reader: jspb.BinaryReader): AcousticModels;
 }
 
-export namespace CtcAcousticModels {
+export namespace AcousticModels {
 	export type AsObject = {
 		type: string;
 		quartznet?: Quartznet.AsObject;
 		quartznetTriton?: QuartznetTriton.AsObject;
 		wav2vec?: Wav2Vec.AsObject;
 		wav2vecTriton?: Wav2VecTriton.AsObject;
+		whisper?: Whisper.AsObject;
+		whisperTriton?: WhisperTriton.AsObject;
+	};
+}
+
+export class Whisper extends jspb.Message {
+	getModelPath(): string;
+	setModelPath(value: string): Whisper;
+	getUseGpu(): boolean;
+	setUseGpu(value: boolean): Whisper;
+	getLanguage(): string;
+	setLanguage(value: string): Whisper;
+
+	serializeBinary(): Uint8Array;
+	toObject(includeInstance?: boolean): Whisper.AsObject;
+	static toObject(includeInstance: boolean, msg: Whisper): Whisper.AsObject;
+	static extensions: { [key: number]: jspb.ExtensionFieldInfo<jspb.Message> };
+	static extensionsBinary: { [key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message> };
+	static serializeBinaryToWriter(message: Whisper, writer: jspb.BinaryWriter): void;
+	static deserializeBinary(bytes: Uint8Array): Whisper;
+	static deserializeBinaryFromReader(message: Whisper, reader: jspb.BinaryReader): Whisper;
+}
+
+export namespace Whisper {
+	export type AsObject = {
+		modelPath: string;
+		useGpu: boolean;
+		language: string;
+	};
+}
+
+export class WhisperTriton extends jspb.Message {
+	getProcessorPath(): string;
+	setProcessorPath(value: string): WhisperTriton;
+	getTritonModelName(): string;
+	setTritonModelName(value: string): WhisperTriton;
+	getTritonModelVersion(): string;
+	setTritonModelVersion(value: string): WhisperTriton;
+	getCheckStatusTimeout(): number;
+	setCheckStatusTimeout(value: number): WhisperTriton;
+
+	serializeBinary(): Uint8Array;
+	toObject(includeInstance?: boolean): WhisperTriton.AsObject;
+	static toObject(includeInstance: boolean, msg: WhisperTriton): WhisperTriton.AsObject;
+	static extensions: { [key: number]: jspb.ExtensionFieldInfo<jspb.Message> };
+	static extensionsBinary: { [key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message> };
+	static serializeBinaryToWriter(message: WhisperTriton, writer: jspb.BinaryWriter): void;
+	static deserializeBinary(bytes: Uint8Array): WhisperTriton;
+	static deserializeBinaryFromReader(message: WhisperTriton, reader: jspb.BinaryReader): WhisperTriton;
+}
+
+export namespace WhisperTriton {
+	export type AsObject = {
+		processorPath: string;
+		tritonModelName: string;
+		tritonModelVersion: string;
+		checkStatusTimeout: number;
 	};
 }
 
@@ -1013,8 +1080,8 @@ export namespace StreamingServer {
 export class StreamingSpeechRecognition extends jspb.Message {
 	getTranscribeNotFinal(): boolean;
 	setTranscribeNotFinal(value: boolean): StreamingSpeechRecognition;
-	getCtcDecodingMethod(): string;
-	setCtcDecodingMethod(value: string): StreamingSpeechRecognition;
+	getDecodingMethod(): string;
+	setDecodingMethod(value: string): StreamingSpeechRecognition;
 	getSamplingRate(): number;
 	setSamplingRate(value: number): StreamingSpeechRecognition;
 	getMinAudioChunkSize(): number;
@@ -1042,7 +1109,7 @@ export class StreamingSpeechRecognition extends jspb.Message {
 export namespace StreamingSpeechRecognition {
 	export type AsObject = {
 		transcribeNotFinal: boolean;
-		ctcDecodingMethod: string;
+		decodingMethod: string;
 		samplingRate: number;
 		minAudioChunkSize: number;
 		startOfUtteranceThreshold: number;
@@ -1475,8 +1542,9 @@ export namespace TrainUserLanguageModelRequest {
 	};
 }
 
-export enum CTCDecoding {
+export enum Decoding {
 	DEFAULT = 0,
 	GREEDY = 1,
-	BEAM_SEARCH_WITH_LM = 2
+	BEAM_SEARCH_WITH_LM = 2,
+	BEAM_SEARCH = 3
 }

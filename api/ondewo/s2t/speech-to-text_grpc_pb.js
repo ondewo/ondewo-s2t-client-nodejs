@@ -1,7 +1,7 @@
 // GENERATED CODE -- DO NOT EDIT!
 
 // Original file comments:
-// Copyright 2020 ONDEWO GmbH
+// Copyright 2023 ONDEWO GmbH
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -240,8 +240,9 @@ function deserialize_ondewo_s2t_TranscribeStreamResponse(buffer_arg) {
 	return ondewo_s2t_speech$to$text_pb.TranscribeStreamResponse.deserializeBinary(new Uint8Array(buffer_arg));
 }
 
-// endpoints of speech-to-text service
+// Speech-to-text service
 var Speech2TextService = (exports.Speech2TextService = {
+	// Transcribes an audio file
 	transcribeFile: {
 		path: '/ondewo.s2t.Speech2Text/TranscribeFile',
 		requestStream: false,

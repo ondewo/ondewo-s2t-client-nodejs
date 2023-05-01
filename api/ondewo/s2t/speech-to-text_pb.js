@@ -37,6 +37,7 @@ goog.exportSymbol('proto.ondewo.s2t.CkptFile', null, global);
 goog.exportSymbol('proto.ondewo.s2t.CreateUserLanguageModelRequest', null, global);
 goog.exportSymbol('proto.ondewo.s2t.Decoding', null, global);
 goog.exportSymbol('proto.ondewo.s2t.DeleteUserLanguageModelRequest', null, global);
+goog.exportSymbol('proto.ondewo.s2t.InferenceBackend', null, global);
 goog.exportSymbol('proto.ondewo.s2t.LanguageModelPipelineId', null, global);
 goog.exportSymbol('proto.ondewo.s2t.LanguageModels', null, global);
 goog.exportSymbol('proto.ondewo.s2t.ListS2tDomainsRequest', null, global);
@@ -1633,8 +1634,11 @@ if (jspb.Message.GENERATE_TO_OBJECT) {
 			obj = {
 				returnStartOfSpeech: jspb.Message.getBooleanFieldWithDefault(msg, 1, false),
 				returnAudio: jspb.Message.getBooleanFieldWithDefault(msg, 2, false),
-				returnAlternativeTranscriptions: jspb.Message.getBooleanFieldWithDefault(msg, 3, false),
-				returnConfidenceScore: jspb.Message.getBooleanFieldWithDefault(msg, 4, false),
+				returnConfidenceScore: jspb.Message.getBooleanFieldWithDefault(msg, 3, false),
+				returnAlternativeTranscriptions: jspb.Message.getBooleanFieldWithDefault(msg, 4, false),
+				returnAlternativeTranscriptionsNr: jspb.Message.getFieldWithDefault(msg, 5, 0),
+				returnAlternativeWords: jspb.Message.getBooleanFieldWithDefault(msg, 6, false),
+				returnAlternativeWordsNr: jspb.Message.getFieldWithDefault(msg, 7, 0),
 				returnWordTiming: jspb.Message.getBooleanFieldWithDefault(msg, 8, false)
 			};
 
@@ -1680,11 +1684,23 @@ proto.ondewo.s2t.TranscriptionReturnOptions.deserializeBinaryFromReader = functi
 				break;
 			case 3:
 				var value = /** @type {boolean} */ (reader.readBool());
-				msg.setReturnAlternativeTranscriptions(value);
+				msg.setReturnConfidenceScore(value);
 				break;
 			case 4:
 				var value = /** @type {boolean} */ (reader.readBool());
-				msg.setReturnConfidenceScore(value);
+				msg.setReturnAlternativeTranscriptions(value);
+				break;
+			case 5:
+				var value = /** @type {number} */ (reader.readInt32());
+				msg.setReturnAlternativeTranscriptionsNr(value);
+				break;
+			case 6:
+				var value = /** @type {boolean} */ (reader.readBool());
+				msg.setReturnAlternativeWords(value);
+				break;
+			case 7:
+				var value = /** @type {number} */ (reader.readInt32());
+				msg.setReturnAlternativeWordsNr(value);
 				break;
 			case 8:
 				var value = /** @type {boolean} */ (reader.readBool());
@@ -1725,13 +1741,25 @@ proto.ondewo.s2t.TranscriptionReturnOptions.serializeBinaryToWriter = function (
 	if (f) {
 		writer.writeBool(2, f);
 	}
-	f = message.getReturnAlternativeTranscriptions();
+	f = message.getReturnConfidenceScore();
 	if (f) {
 		writer.writeBool(3, f);
 	}
-	f = message.getReturnConfidenceScore();
+	f = message.getReturnAlternativeTranscriptions();
 	if (f) {
 		writer.writeBool(4, f);
+	}
+	f = message.getReturnAlternativeTranscriptionsNr();
+	if (f !== 0) {
+		writer.writeInt32(5, f);
+	}
+	f = message.getReturnAlternativeWords();
+	if (f) {
+		writer.writeBool(6, f);
+	}
+	f = message.getReturnAlternativeWordsNr();
+	if (f !== 0) {
+		writer.writeInt32(7, f);
 	}
 	f = message.getReturnWordTiming();
 	if (f) {
@@ -1772,10 +1800,10 @@ proto.ondewo.s2t.TranscriptionReturnOptions.prototype.setReturnAudio = function 
 };
 
 /**
- * optional bool return_alternative_transcriptions = 3;
+ * optional bool return_confidence_score = 3;
  * @return {boolean}
  */
-proto.ondewo.s2t.TranscriptionReturnOptions.prototype.getReturnAlternativeTranscriptions = function () {
+proto.ondewo.s2t.TranscriptionReturnOptions.prototype.getReturnConfidenceScore = function () {
 	return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 3, false));
 };
 
@@ -1783,15 +1811,15 @@ proto.ondewo.s2t.TranscriptionReturnOptions.prototype.getReturnAlternativeTransc
  * @param {boolean} value
  * @return {!proto.ondewo.s2t.TranscriptionReturnOptions} returns this
  */
-proto.ondewo.s2t.TranscriptionReturnOptions.prototype.setReturnAlternativeTranscriptions = function (value) {
+proto.ondewo.s2t.TranscriptionReturnOptions.prototype.setReturnConfidenceScore = function (value) {
 	return jspb.Message.setProto3BooleanField(this, 3, value);
 };
 
 /**
- * optional bool return_confidence_score = 4;
+ * optional bool return_alternative_transcriptions = 4;
  * @return {boolean}
  */
-proto.ondewo.s2t.TranscriptionReturnOptions.prototype.getReturnConfidenceScore = function () {
+proto.ondewo.s2t.TranscriptionReturnOptions.prototype.getReturnAlternativeTranscriptions = function () {
 	return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 4, false));
 };
 
@@ -1799,8 +1827,56 @@ proto.ondewo.s2t.TranscriptionReturnOptions.prototype.getReturnConfidenceScore =
  * @param {boolean} value
  * @return {!proto.ondewo.s2t.TranscriptionReturnOptions} returns this
  */
-proto.ondewo.s2t.TranscriptionReturnOptions.prototype.setReturnConfidenceScore = function (value) {
+proto.ondewo.s2t.TranscriptionReturnOptions.prototype.setReturnAlternativeTranscriptions = function (value) {
 	return jspb.Message.setProto3BooleanField(this, 4, value);
+};
+
+/**
+ * optional int32 return_alternative_transcriptions_nr = 5;
+ * @return {number}
+ */
+proto.ondewo.s2t.TranscriptionReturnOptions.prototype.getReturnAlternativeTranscriptionsNr = function () {
+	return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 5, 0));
+};
+
+/**
+ * @param {number} value
+ * @return {!proto.ondewo.s2t.TranscriptionReturnOptions} returns this
+ */
+proto.ondewo.s2t.TranscriptionReturnOptions.prototype.setReturnAlternativeTranscriptionsNr = function (value) {
+	return jspb.Message.setProto3IntField(this, 5, value);
+};
+
+/**
+ * optional bool return_alternative_words = 6;
+ * @return {boolean}
+ */
+proto.ondewo.s2t.TranscriptionReturnOptions.prototype.getReturnAlternativeWords = function () {
+	return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 6, false));
+};
+
+/**
+ * @param {boolean} value
+ * @return {!proto.ondewo.s2t.TranscriptionReturnOptions} returns this
+ */
+proto.ondewo.s2t.TranscriptionReturnOptions.prototype.setReturnAlternativeWords = function (value) {
+	return jspb.Message.setProto3BooleanField(this, 6, value);
+};
+
+/**
+ * optional int32 return_alternative_words_nr = 7;
+ * @return {number}
+ */
+proto.ondewo.s2t.TranscriptionReturnOptions.prototype.getReturnAlternativeWordsNr = function () {
+	return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 7, 0));
+};
+
+/**
+ * @param {number} value
+ * @return {!proto.ondewo.s2t.TranscriptionReturnOptions} returns this
+ */
+proto.ondewo.s2t.TranscriptionReturnOptions.prototype.setReturnAlternativeWordsNr = function (value) {
+	return jspb.Message.setProto3IntField(this, 7, value);
 };
 
 /**
@@ -5505,7 +5581,8 @@ if (jspb.Message.GENERATE_TO_OBJECT) {
 		var f,
 			obj = {
 				acousticModels: (f = msg.getAcousticModels()) && proto.ondewo.s2t.AcousticModels.toObject(includeInstance, f),
-				languageModels: (f = msg.getLanguageModels()) && proto.ondewo.s2t.LanguageModels.toObject(includeInstance, f)
+				languageModels: (f = msg.getLanguageModels()) && proto.ondewo.s2t.LanguageModels.toObject(includeInstance, f),
+				inferenceBackend: jspb.Message.getFieldWithDefault(msg, 3, 0)
 			};
 
 		if (includeInstance) {
@@ -5550,6 +5627,10 @@ proto.ondewo.s2t.S2TInference.deserializeBinaryFromReader = function (msg, reade
 				reader.readMessage(value, proto.ondewo.s2t.LanguageModels.deserializeBinaryFromReader);
 				msg.setLanguageModels(value);
 				break;
+			case 3:
+				var value = /** @type {!proto.ondewo.s2t.InferenceBackend} */ (reader.readEnum());
+				msg.setInferenceBackend(value);
+				break;
 			default:
 				reader.skipField();
 				break;
@@ -5584,6 +5665,10 @@ proto.ondewo.s2t.S2TInference.serializeBinaryToWriter = function (message, write
 	f = message.getLanguageModels();
 	if (f != null) {
 		writer.writeMessage(2, f, proto.ondewo.s2t.LanguageModels.serializeBinaryToWriter);
+	}
+	f = message.getInferenceBackend();
+	if (f !== 0.0) {
+		writer.writeEnum(3, f);
 	}
 };
 
@@ -5653,6 +5738,22 @@ proto.ondewo.s2t.S2TInference.prototype.clearLanguageModels = function () {
  */
 proto.ondewo.s2t.S2TInference.prototype.hasLanguageModels = function () {
 	return jspb.Message.getField(this, 2) != null;
+};
+
+/**
+ * optional InferenceBackend inference_backend = 3;
+ * @return {!proto.ondewo.s2t.InferenceBackend}
+ */
+proto.ondewo.s2t.S2TInference.prototype.getInferenceBackend = function () {
+	return /** @type {!proto.ondewo.s2t.InferenceBackend} */ (jspb.Message.getFieldWithDefault(this, 3, 0));
+};
+
+/**
+ * @param {!proto.ondewo.s2t.InferenceBackend} value
+ * @return {!proto.ondewo.s2t.S2TInference} returns this
+ */
+proto.ondewo.s2t.S2TInference.prototype.setInferenceBackend = function (value) {
+	return jspb.Message.setProto3EnumField(this, 3, value);
 };
 
 if (jspb.Message.GENERATE_TO_OBJECT) {
@@ -10587,6 +10688,15 @@ proto.ondewo.s2t.TrainUserLanguageModelRequest.prototype.getOrder = function () 
  */
 proto.ondewo.s2t.TrainUserLanguageModelRequest.prototype.setOrder = function (value) {
 	return jspb.Message.setProto3IntField(this, 2, value);
+};
+
+/**
+ * @enum {number}
+ */
+proto.ondewo.s2t.InferenceBackend = {
+	INFERENCE_BACKEND_UNKNOWN: 0,
+	INFERENCE_BACKEND_PYTORCH: 1,
+	INFERENCE_BACKEND_FLAX: 2
 };
 
 /**

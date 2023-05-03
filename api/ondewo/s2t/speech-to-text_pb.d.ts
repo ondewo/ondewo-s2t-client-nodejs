@@ -215,6 +215,127 @@ export namespace PostProcessingOptions {
 	};
 }
 
+export class Transcription extends jspb.Message {
+	getTranscription(): string;
+	setTranscription(value: string): Transcription;
+	getConfidenceScore(): number;
+	setConfidenceScore(value: number): Transcription;
+	clearWordsList(): void;
+	getWordsList(): Array<WordDetail>;
+	setWordsList(value: Array<WordDetail>): Transcription;
+	addWords(value?: WordDetail, index?: number): WordDetail;
+	clearAlternativesList(): void;
+	getAlternativesList(): Array<TranscriptionAlternative>;
+	setAlternativesList(value: Array<TranscriptionAlternative>): Transcription;
+	addAlternatives(value?: TranscriptionAlternative, index?: number): TranscriptionAlternative;
+
+	serializeBinary(): Uint8Array;
+	toObject(includeInstance?: boolean): Transcription.AsObject;
+	static toObject(includeInstance: boolean, msg: Transcription): Transcription.AsObject;
+	static extensions: { [key: number]: jspb.ExtensionFieldInfo<jspb.Message> };
+	static extensionsBinary: { [key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message> };
+	static serializeBinaryToWriter(message: Transcription, writer: jspb.BinaryWriter): void;
+	static deserializeBinary(bytes: Uint8Array): Transcription;
+	static deserializeBinaryFromReader(message: Transcription, reader: jspb.BinaryReader): Transcription;
+}
+
+export namespace Transcription {
+	export type AsObject = {
+		transcription: string;
+		confidenceScore: number;
+		wordsList: Array<WordDetail.AsObject>;
+		alternativesList: Array<TranscriptionAlternative.AsObject>;
+	};
+}
+
+export class TranscriptionAlternative extends jspb.Message {
+	getTranscript(): string;
+	setTranscript(value: string): TranscriptionAlternative;
+	getConfidence(): number;
+	setConfidence(value: number): TranscriptionAlternative;
+	clearWordsList(): void;
+	getWordsList(): Array<WordDetail>;
+	setWordsList(value: Array<WordDetail>): TranscriptionAlternative;
+	addWords(value?: WordDetail, index?: number): WordDetail;
+
+	serializeBinary(): Uint8Array;
+	toObject(includeInstance?: boolean): TranscriptionAlternative.AsObject;
+	static toObject(includeInstance: boolean, msg: TranscriptionAlternative): TranscriptionAlternative.AsObject;
+	static extensions: { [key: number]: jspb.ExtensionFieldInfo<jspb.Message> };
+	static extensionsBinary: { [key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message> };
+	static serializeBinaryToWriter(message: TranscriptionAlternative, writer: jspb.BinaryWriter): void;
+	static deserializeBinary(bytes: Uint8Array): TranscriptionAlternative;
+	static deserializeBinaryFromReader(
+		message: TranscriptionAlternative,
+		reader: jspb.BinaryReader
+	): TranscriptionAlternative;
+}
+
+export namespace TranscriptionAlternative {
+	export type AsObject = {
+		transcript: string;
+		confidence: number;
+		wordsList: Array<WordDetail.AsObject>;
+	};
+}
+
+export class WordDetail extends jspb.Message {
+	getStartTime(): number;
+	setStartTime(value: number): WordDetail;
+	getEndTime(): number;
+	setEndTime(value: number): WordDetail;
+	getWord(): string;
+	setWord(value: string): WordDetail;
+	getConfidence(): number;
+	setConfidence(value: number): WordDetail;
+	clearWordAlternativesList(): void;
+	getWordAlternativesList(): Array<WordAlternative>;
+	setWordAlternativesList(value: Array<WordAlternative>): WordDetail;
+	addWordAlternatives(value?: WordAlternative, index?: number): WordAlternative;
+
+	serializeBinary(): Uint8Array;
+	toObject(includeInstance?: boolean): WordDetail.AsObject;
+	static toObject(includeInstance: boolean, msg: WordDetail): WordDetail.AsObject;
+	static extensions: { [key: number]: jspb.ExtensionFieldInfo<jspb.Message> };
+	static extensionsBinary: { [key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message> };
+	static serializeBinaryToWriter(message: WordDetail, writer: jspb.BinaryWriter): void;
+	static deserializeBinary(bytes: Uint8Array): WordDetail;
+	static deserializeBinaryFromReader(message: WordDetail, reader: jspb.BinaryReader): WordDetail;
+}
+
+export namespace WordDetail {
+	export type AsObject = {
+		startTime: number;
+		endTime: number;
+		word: string;
+		confidence: number;
+		wordAlternativesList: Array<WordAlternative.AsObject>;
+	};
+}
+
+export class WordAlternative extends jspb.Message {
+	getWord(): string;
+	setWord(value: string): WordAlternative;
+	getConfidence(): number;
+	setConfidence(value: number): WordAlternative;
+
+	serializeBinary(): Uint8Array;
+	toObject(includeInstance?: boolean): WordAlternative.AsObject;
+	static toObject(includeInstance: boolean, msg: WordAlternative): WordAlternative.AsObject;
+	static extensions: { [key: number]: jspb.ExtensionFieldInfo<jspb.Message> };
+	static extensionsBinary: { [key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message> };
+	static serializeBinaryToWriter(message: WordAlternative, writer: jspb.BinaryWriter): void;
+	static deserializeBinary(bytes: Uint8Array): WordAlternative;
+	static deserializeBinaryFromReader(message: WordAlternative, reader: jspb.BinaryReader): WordAlternative;
+}
+
+export namespace WordAlternative {
+	export type AsObject = {
+		word: string;
+		confidence: number;
+	};
+}
+
 export class TranscribeStreamRequest extends jspb.Message {
 	getAudioChunk(): Uint8Array | string;
 	getAudioChunk_asU8(): Uint8Array;
@@ -249,29 +370,6 @@ export namespace TranscribeStreamRequest {
 		endOfStream: boolean;
 		config?: TranscribeRequestConfig.AsObject;
 		muteAudio: boolean;
-	};
-}
-
-export class Transcription extends jspb.Message {
-	getTranscription(): string;
-	setTranscription(value: string): Transcription;
-	getConfidenceScore(): number;
-	setConfidenceScore(value: number): Transcription;
-
-	serializeBinary(): Uint8Array;
-	toObject(includeInstance?: boolean): Transcription.AsObject;
-	static toObject(includeInstance: boolean, msg: Transcription): Transcription.AsObject;
-	static extensions: { [key: number]: jspb.ExtensionFieldInfo<jspb.Message> };
-	static extensionsBinary: { [key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message> };
-	static serializeBinaryToWriter(message: Transcription, writer: jspb.BinaryWriter): void;
-	static deserializeBinary(bytes: Uint8Array): Transcription;
-	static deserializeBinaryFromReader(message: Transcription, reader: jspb.BinaryReader): Transcription;
-}
-
-export namespace Transcription {
-	export type AsObject = {
-		transcription: string;
-		confidenceScore: number;
 	};
 }
 
@@ -368,10 +466,6 @@ export class TranscribeFileResponse extends jspb.Message {
 	addTranscriptions(value?: Transcription, index?: number): Transcription;
 	getTime(): number;
 	setTime(value: number): TranscribeFileResponse;
-	clearWordTimingList(): void;
-	getWordTimingList(): Array<WordTiming>;
-	setWordTimingList(value: Array<WordTiming>): TranscribeFileResponse;
-	addWordTiming(value?: WordTiming, index?: number): WordTiming;
 	getAudioUuid(): string;
 	setAudioUuid(value: string): TranscribeFileResponse;
 
@@ -392,34 +486,7 @@ export namespace TranscribeFileResponse {
 	export type AsObject = {
 		transcriptionsList: Array<Transcription.AsObject>;
 		time: number;
-		wordTimingList: Array<WordTiming.AsObject>;
 		audioUuid: string;
-	};
-}
-
-export class WordTiming extends jspb.Message {
-	getWord(): string;
-	setWord(value: string): WordTiming;
-	getBegin(): number;
-	setBegin(value: number): WordTiming;
-	getEnd(): number;
-	setEnd(value: number): WordTiming;
-
-	serializeBinary(): Uint8Array;
-	toObject(includeInstance?: boolean): WordTiming.AsObject;
-	static toObject(includeInstance: boolean, msg: WordTiming): WordTiming.AsObject;
-	static extensions: { [key: number]: jspb.ExtensionFieldInfo<jspb.Message> };
-	static extensionsBinary: { [key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message> };
-	static serializeBinaryToWriter(message: WordTiming, writer: jspb.BinaryWriter): void;
-	static deserializeBinary(bytes: Uint8Array): WordTiming;
-	static deserializeBinaryFromReader(message: WordTiming, reader: jspb.BinaryReader): WordTiming;
-}
-
-export namespace WordTiming {
-	export type AsObject = {
-		word: string;
-		begin: number;
-		end: number;
 	};
 }
 
@@ -1554,15 +1621,15 @@ export namespace TrainUserLanguageModelRequest {
 	};
 }
 
-export enum InferenceBackend {
-	INFERENCE_BACKEND_UNKNOWN = 0,
-	INFERENCE_BACKEND_PYTORCH = 1,
-	INFERENCE_BACKEND_FLAX = 2
-}
-
 export enum Decoding {
 	DEFAULT = 0,
 	GREEDY = 1,
 	BEAM_SEARCH_WITH_LM = 2,
 	BEAM_SEARCH = 3
+}
+
+export enum InferenceBackend {
+	INFERENCE_BACKEND_UNKNOWN = 0,
+	INFERENCE_BACKEND_PYTORCH = 1,
+	INFERENCE_BACKEND_FLAX = 2
 }

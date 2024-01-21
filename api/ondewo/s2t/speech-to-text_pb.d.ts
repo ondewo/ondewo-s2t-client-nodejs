@@ -33,15 +33,20 @@ export class TranscribeRequestConfig extends jspb.Message {
 	getPyannote(): Pyannote | undefined;
 	setPyannote(value?: Pyannote): TranscribeRequestConfig;
 
-	hasMatchbox(): boolean;
-	clearMatchbox(): void;
-	getMatchbox(): Matchbox | undefined;
-	setMatchbox(value?: Matchbox): TranscribeRequestConfig;
-
 	hasReturnOptions(): boolean;
 	clearReturnOptions(): void;
 	getReturnOptions(): TranscriptionReturnOptions | undefined;
 	setReturnOptions(value?: TranscriptionReturnOptions): TranscribeRequestConfig;
+
+	hasLanguage(): boolean;
+	clearLanguage(): void;
+	getLanguage(): string | undefined;
+	setLanguage(value: string): TranscribeRequestConfig;
+
+	hasTask(): boolean;
+	clearTask(): void;
+	getTask(): string | undefined;
+	setTask(value: string): TranscribeRequestConfig;
 
 	getOneofLanguageModelNameCase(): TranscribeRequestConfig.OneofLanguageModelNameCase;
 	getOneofPostProcessingCase(): TranscribeRequestConfig.OneofPostProcessingCase;
@@ -70,8 +75,9 @@ export namespace TranscribeRequestConfig {
 		postProcessing?: PostProcessingOptions.AsObject;
 		utteranceDetection?: UtteranceDetectionOptions.AsObject;
 		pyannote?: Pyannote.AsObject;
-		matchbox?: Matchbox.AsObject;
 		returnOptions?: TranscriptionReturnOptions.AsObject;
+		language?: string;
+		task?: string;
 	};
 
 	export enum OneofLanguageModelNameCase {
@@ -91,8 +97,7 @@ export namespace TranscribeRequestConfig {
 
 	export enum VoiceActivityDetectionCase {
 		VOICE_ACTIVITY_DETECTION_NOT_SET = 0,
-		PYANNOTE = 6,
-		MATCHBOX = 7
+		PYANNOTE = 6
 	}
 
 	export enum OneofReturnOptionsCase {
@@ -826,16 +831,6 @@ export class AcousticModels extends jspb.Message {
 	getType(): string;
 	setType(value: string): AcousticModels;
 
-	hasQuartznet(): boolean;
-	clearQuartznet(): void;
-	getQuartznet(): Quartznet | undefined;
-	setQuartznet(value?: Quartznet): AcousticModels;
-
-	hasQuartznetTriton(): boolean;
-	clearQuartznetTriton(): void;
-	getQuartznetTriton(): QuartznetTriton | undefined;
-	setQuartznetTriton(value?: QuartznetTriton): AcousticModels;
-
 	hasWav2vec(): boolean;
 	clearWav2vec(): void;
 	getWav2vec(): Wav2Vec | undefined;
@@ -869,8 +864,6 @@ export class AcousticModels extends jspb.Message {
 export namespace AcousticModels {
 	export type AsObject = {
 		type: string;
-		quartznet?: Quartznet.AsObject;
-		quartznetTriton?: QuartznetTriton.AsObject;
 		wav2vec?: Wav2Vec.AsObject;
 		wav2vecTriton?: Wav2VecTriton.AsObject;
 		whisper?: Whisper.AsObject;
@@ -885,6 +878,8 @@ export class Whisper extends jspb.Message {
 	setUseGpu(value: boolean): Whisper;
 	getLanguage(): string;
 	setLanguage(value: string): Whisper;
+	getTask(): string;
+	setTask(value: string): Whisper;
 
 	serializeBinary(): Uint8Array;
 	toObject(includeInstance?: boolean): Whisper.AsObject;
@@ -901,6 +896,7 @@ export namespace Whisper {
 		modelPath: string;
 		useGpu: boolean;
 		language: string;
+		task: string;
 	};
 }
 
@@ -913,6 +909,14 @@ export class WhisperTriton extends jspb.Message {
 	setTritonModelVersion(value: string): WhisperTriton;
 	getCheckStatusTimeout(): number;
 	setCheckStatusTimeout(value: number): WhisperTriton;
+	getLanguage(): string;
+	setLanguage(value: string): WhisperTriton;
+	getTask(): string;
+	setTask(value: string): WhisperTriton;
+	getTritonServerHost(): string;
+	setTritonServerHost(value: string): WhisperTriton;
+	getTritonServerPort(): number;
+	setTritonServerPort(value: number): WhisperTriton;
 
 	serializeBinary(): Uint8Array;
 	toObject(includeInstance?: boolean): WhisperTriton.AsObject;
@@ -930,6 +934,10 @@ export namespace WhisperTriton {
 		tritonModelName: string;
 		tritonModelVersion: string;
 		checkStatusTimeout: number;
+		language: string;
+		task: string;
+		tritonServerHost: string;
+		tritonServerPort: number;
 	};
 }
 
@@ -965,6 +973,10 @@ export class Wav2VecTriton extends jspb.Message {
 	setTritonModelVersion(value: string): Wav2VecTriton;
 	getCheckStatusTimeout(): number;
 	setCheckStatusTimeout(value: number): Wav2VecTriton;
+	getTritonServerHost(): string;
+	setTritonServerHost(value: string): Wav2VecTriton;
+	getTritonServerPort(): number;
+	setTritonServerPort(value: number): Wav2VecTriton;
 
 	serializeBinary(): Uint8Array;
 	toObject(includeInstance?: boolean): Wav2VecTriton.AsObject;
@@ -982,44 +994,8 @@ export namespace Wav2VecTriton {
 		tritonModelName: string;
 		tritonModelVersion: string;
 		checkStatusTimeout: number;
-	};
-}
-
-export class Quartznet extends jspb.Message {
-	getConfigPath(): string;
-	setConfigPath(value: string): Quartznet;
-	getLoadType(): string;
-	setLoadType(value: string): Quartznet;
-
-	hasPtFiles(): boolean;
-	clearPtFiles(): void;
-	getPtFiles(): PtFiles | undefined;
-	setPtFiles(value?: PtFiles): Quartznet;
-
-	hasCkptFile(): boolean;
-	clearCkptFile(): void;
-	getCkptFile(): CkptFile | undefined;
-	setCkptFile(value?: CkptFile): Quartznet;
-	getUseGpu(): boolean;
-	setUseGpu(value: boolean): Quartznet;
-
-	serializeBinary(): Uint8Array;
-	toObject(includeInstance?: boolean): Quartznet.AsObject;
-	static toObject(includeInstance: boolean, msg: Quartznet): Quartznet.AsObject;
-	static extensions: { [key: number]: jspb.ExtensionFieldInfo<jspb.Message> };
-	static extensionsBinary: { [key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message> };
-	static serializeBinaryToWriter(message: Quartznet, writer: jspb.BinaryWriter): void;
-	static deserializeBinary(bytes: Uint8Array): Quartznet;
-	static deserializeBinaryFromReader(message: Quartznet, reader: jspb.BinaryReader): Quartznet;
-}
-
-export namespace Quartznet {
-	export type AsObject = {
-		configPath: string;
-		loadType: string;
-		ptFiles?: PtFiles.AsObject;
-		ckptFile?: CkptFile.AsObject;
-		useGpu: boolean;
+		tritonServerHost: string;
+		tritonServerPort: number;
 	};
 }
 
@@ -1063,32 +1039,6 @@ export class CkptFile extends jspb.Message {
 export namespace CkptFile {
 	export type AsObject = {
 		path: string;
-	};
-}
-
-export class QuartznetTriton extends jspb.Message {
-	getConfigPath(): string;
-	setConfigPath(value: string): QuartznetTriton;
-	getTritonUrl(): string;
-	setTritonUrl(value: string): QuartznetTriton;
-	getTritonModel(): string;
-	setTritonModel(value: string): QuartznetTriton;
-
-	serializeBinary(): Uint8Array;
-	toObject(includeInstance?: boolean): QuartznetTriton.AsObject;
-	static toObject(includeInstance: boolean, msg: QuartznetTriton): QuartznetTriton.AsObject;
-	static extensions: { [key: number]: jspb.ExtensionFieldInfo<jspb.Message> };
-	static extensionsBinary: { [key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message> };
-	static serializeBinaryToWriter(message: QuartznetTriton, writer: jspb.BinaryWriter): void;
-	static deserializeBinary(bytes: Uint8Array): QuartznetTriton;
-	static deserializeBinaryFromReader(message: QuartznetTriton, reader: jspb.BinaryReader): QuartznetTriton;
-}
-
-export namespace QuartznetTriton {
-	export type AsObject = {
-		configPath: string;
-		tritonUrl: string;
-		tritonModel: string;
 	};
 }
 
@@ -1208,11 +1158,6 @@ export class VoiceActivityDetection extends jspb.Message {
 	getPyannote(): Pyannote | undefined;
 	setPyannote(value?: Pyannote): VoiceActivityDetection;
 
-	hasMatchbox(): boolean;
-	clearMatchbox(): void;
-	getMatchbox(): Matchbox | undefined;
-	setMatchbox(value?: Matchbox): VoiceActivityDetection;
-
 	serializeBinary(): Uint8Array;
 	toObject(includeInstance?: boolean): VoiceActivityDetection.AsObject;
 	static toObject(includeInstance: boolean, msg: VoiceActivityDetection): VoiceActivityDetection.AsObject;
@@ -1231,30 +1176,22 @@ export namespace VoiceActivityDetection {
 		active: string;
 		samplingRate: number;
 		pyannote?: Pyannote.AsObject;
-		matchbox?: Matchbox.AsObject;
 	};
 }
 
 export class Pyannote extends jspb.Message {
-	getModelPath(): string;
-	setModelPath(value: string): Pyannote;
+	getModelName(): string;
+	setModelName(value: string): Pyannote;
 	getMinAudioSize(): number;
 	setMinAudioSize(value: number): Pyannote;
-	getOffset(): number;
-	setOffset(value: number): Pyannote;
-	getOnset(): number;
-	setOnset(value: number): Pyannote;
-
-	hasLogScale(): boolean;
-	clearLogScale(): void;
-	getLogScale(): boolean;
-	setLogScale(value: boolean): Pyannote;
 	getMinDurationOff(): number;
 	setMinDurationOff(value: number): Pyannote;
 	getMinDurationOn(): number;
 	setMinDurationOn(value: number): Pyannote;
-
-	getOneofLogScaleCase(): Pyannote.OneofLogScaleCase;
+	getTritonServerHost(): string;
+	setTritonServerHost(value: string): Pyannote;
+	getTritonServerPort(): number;
+	setTritonServerPort(value: number): Pyannote;
 
 	serializeBinary(): Uint8Array;
 	toObject(includeInstance?: boolean): Pyannote.AsObject;
@@ -1268,44 +1205,12 @@ export class Pyannote extends jspb.Message {
 
 export namespace Pyannote {
 	export type AsObject = {
-		modelPath: string;
+		modelName: string;
 		minAudioSize: number;
-		offset: number;
-		onset: number;
-		logScale: boolean;
 		minDurationOff: number;
 		minDurationOn: number;
-	};
-
-	export enum OneofLogScaleCase {
-		ONEOF_LOG_SCALE_NOT_SET = 0,
-		LOG_SCALE = 5
-	}
-}
-
-export class Matchbox extends jspb.Message {
-	getModelConfig(): string;
-	setModelConfig(value: string): Matchbox;
-	getEncoderPath(): string;
-	setEncoderPath(value: string): Matchbox;
-	getDecoderPath(): string;
-	setDecoderPath(value: string): Matchbox;
-
-	serializeBinary(): Uint8Array;
-	toObject(includeInstance?: boolean): Matchbox.AsObject;
-	static toObject(includeInstance: boolean, msg: Matchbox): Matchbox.AsObject;
-	static extensions: { [key: number]: jspb.ExtensionFieldInfo<jspb.Message> };
-	static extensionsBinary: { [key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message> };
-	static serializeBinaryToWriter(message: Matchbox, writer: jspb.BinaryWriter): void;
-	static deserializeBinary(bytes: Uint8Array): Matchbox;
-	static deserializeBinaryFromReader(message: Matchbox, reader: jspb.BinaryReader): Matchbox;
-}
-
-export namespace Matchbox {
-	export type AsObject = {
-		modelConfig: string;
-		encoderPath: string;
-		decoderPath: string;
+		tritonServerHost: string;
+		tritonServerPort: number;
 	};
 }
 

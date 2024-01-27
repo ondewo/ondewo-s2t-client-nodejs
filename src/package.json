@@ -1,6 +1,6 @@
 {
 	"name": "@ondewo/s2t-client-nodejs",
-	"version": "5.5.0",
+	"version": "5.6.0",
 	"description": "ONDEWO Speech to Text (S2T) Platfrom client library for Nodejs",
 	"main": "public-api.js",
 	"typings": "public-api.d.ts",

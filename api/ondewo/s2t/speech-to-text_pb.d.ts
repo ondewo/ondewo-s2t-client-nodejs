@@ -155,10 +155,6 @@ export class UtteranceDetectionOptions extends jspb.Message {
 	clearTranscribeNotFinal(): void;
 	getTranscribeNotFinal(): boolean;
 	setTranscribeNotFinal(value: boolean): UtteranceDetectionOptions;
-	getStartOfUtteranceThreshold(): number;
-	setStartOfUtteranceThreshold(value: number): UtteranceDetectionOptions;
-	getEndOfUtteranceThreshold(): number;
-	setEndOfUtteranceThreshold(value: number): UtteranceDetectionOptions;
 	getNextChunkTimeout(): number;
 	setNextChunkTimeout(value: number): UtteranceDetectionOptions;
 
@@ -180,8 +176,6 @@ export class UtteranceDetectionOptions extends jspb.Message {
 export namespace UtteranceDetectionOptions {
 	export type AsObject = {
 		transcribeNotFinal: boolean;
-		startOfUtteranceThreshold: number;
-		endOfUtteranceThreshold: number;
 		nextChunkTimeout: number;
 	};
 
@@ -1115,10 +1109,6 @@ export class StreamingSpeechRecognition extends jspb.Message {
 	setSamplingRate(value: number): StreamingSpeechRecognition;
 	getMinAudioChunkSize(): number;
 	setMinAudioChunkSize(value: number): StreamingSpeechRecognition;
-	getStartOfUtteranceThreshold(): number;
-	setStartOfUtteranceThreshold(value: number): StreamingSpeechRecognition;
-	getEndOfUtteranceThreshold(): number;
-	setEndOfUtteranceThreshold(value: number): StreamingSpeechRecognition;
 	getNextChunkTimeout(): number;
 	setNextChunkTimeout(value: number): StreamingSpeechRecognition;
 
@@ -1141,8 +1131,6 @@ export namespace StreamingSpeechRecognition {
 		decodingMethod: string;
 		samplingRate: number;
 		minAudioChunkSize: number;
-		startOfUtteranceThreshold: number;
-		endOfUtteranceThreshold: number;
 		nextChunkTimeout: number;
 	};
 }

@@ -18,7 +18,7 @@ export
 ONDEWO_S2T_VERSION = 5.6.0
 
 S2T_API_GIT_BRANCH=tags/5.6.0
-ONDEWO_PROTO_COMPILER_GIT_BRANCH=master
+ONDEWO_PROTO_COMPILER_GIT_BRANCH=tags/4.8.0
 ONDEWO_PROTO_COMPILER_DIR=ondewo-proto-compiler
 S2T_APIS_DIR=src/ondewo-s2t-api
 S2T_PROTOS_DIR=${S2T_APIS_DIR}/ondewo
@@ -76,6 +76,7 @@ check_build: ## Checks if proto-code was generated correctly
 	@for proto in `find src/ondewo-s2t-api/ondewo -iname "*.proto*"`; \
 	do \
 		echo $${proto} | cut -d "/" -f 5 | cut -d "." -f 1 >> build_check.txt; \
+		sed -i 's/import.*//g' build_check.txt; \
 	done
 	@echo "`sort build_check.txt | uniq`" > build_check.txt
 	@for file in `cat build_check.txt`;\
@@ -209,13 +210,13 @@ build: check_out_correct_submodule_versions build_compiler update_package npm_ru
 	make install_dependencies
 
 
-remove_npm_script:
+remove_npm_script: ## Removes Script section from package.json
 	$(eval script_lines:= $(shell cat package.json | sed -n '/\"scripts\"/,/\}\,/='))
 	$(eval start:= $(shell echo $(script_lines) | cut -c 1-2))
 	$(eval end:= $(shell echo $(script_lines) | rev | cut -c 1-3 | rev))
 	@sed -i '$(start),$(end)d' package.json
 
-create_npm_package:
+create_npm_package: ## Create NPM Package for Release
 	rm -rf npm
 	mkdir npm
 	cp -R api npm
@@ -225,11 +226,12 @@ create_npm_package:
 	cp LICENSE npm
 	cp README.md npm
 
-install_dependencies:
-	npm i eslint --save-dev
-	npm i prettier --save-dev
-	npm i @typescript-eslint/eslint-plugin --save-dev
-	npm i husky --save-dev
+install_dependencies: ## Installs Dev-Dependencies
+	npm i @typescript-eslint/eslint-plugin \
+		  eslint \
+		  prettier \
+		  husky \
+		  --save-dev
 
 check_out_correct_submodule_versions: ## Fetches all Submodules and checksout specified branch
 	@echo "START checking out correct submodule versions ..."

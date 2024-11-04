@@ -1,7 +1,18 @@
 {
   "name": "@ondewo/s2t-client-nodejs",
   "version": "5.7.0",
-  "description": "ONDEWO Speech to Text (S2T) Platform client library for Nodejs",
+  "description": "ONDEWO Speech to Text (S2T) Client library for Nodejs",
+  "author": "ONDEWO GmbH <office@ondewo.com>",
+  "homepage": "https://ondewo.com",
+  "license": "Apache-2.0",
+  "keywords": [
+    "ondewo",
+    "s2t",
+    "api",
+    "client",
+    "nodejs",
+    "grpc"
+  ],
   "main": "public-api.js",
   "typings": "public-api.d.ts",
   "scripts": {
@@ -10,12 +21,23 @@
     "predebug": "mv ondewo-s2t-api/googleapis/google ondewo-s2t-api/google",
     "debug": "docker run -it --entrypoint /bin/bash -v ${PWD}:/input-volume -v ${PWD}/..:/output-volume ondewo-nodejs-proto-compiler"
   },
-  "author": "ONDEWO GmbH <office@ondewo.com>",
-  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "directory": "https://github.com/ondewo/ondewo-s2t-client-nodejs"
+  },
   "dependencies": {
-    "@typescript-eslint/eslint-plugin": "^7.7.0",
-    "eslint": "^8.57.0",
-    "husky": "^9.0.11",
-    "prettier": "^3.2.5"
+    "@grpc/grpc-js": "^1.12.2",
+    "@types/node": "^20.12.14",
+    "dotenv": "^16.4.5",
+    "google-protobuf": "3.21.4"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3.1.0",
+    "@eslint/js": "^9.13.0",
+    "@typescript-eslint/eslint-plugin": "^8.12.2",
+    "eslint": "^9.13.0",
+    "global": "^4.4.0",
+    "husky": "^9.1.6",
+    "prettier": "^3.3.3"
   }
 }

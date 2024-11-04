@@ -1,5 +1,4 @@
 export
-
 # ---------------- BEFORE RELEASE ----------------
 # 1 - Update Version Number
 # 2 - Update RELEASE.md
@@ -18,7 +17,7 @@ export
 ONDEWO_S2T_VERSION = 5.7.0
 
 S2T_API_GIT_BRANCH=tags/5.7.0
-ONDEWO_PROTO_COMPILER_GIT_BRANCH=tags/4.8.0
+ONDEWO_PROTO_COMPILER_GIT_BRANCH=tags/5.0.0
 ONDEWO_PROTO_COMPILER_DIR=ondewo-proto-compiler
 S2T_APIS_DIR=src/ondewo-s2t-api
 S2T_PROTOS_DIR=${S2T_APIS_DIR}/ondewo
@@ -32,11 +31,11 @@ PRETTIER_WRITE?=
 CURRENT_RELEASE_NOTES=`cat RELEASE.md \
 	| sed -n '/Release ONDEWO S2T Nodejs Client ${ONDEWO_S2T_VERSION}/,/\*\*/p'`
 
-
 GH_REPO="https://github.com/ondewo/ondewo-s2t-client-nodejs"
 DEVOPS_ACCOUNT_GIT="ondewo-devops-accounts"
 DEVOPS_ACCOUNT_DIR="./${DEVOPS_ACCOUNT_GIT}"
 .DEFAULT_GOAL := help
+
 ########################################################
 #       ONDEWO Standard Make Targets
 ########################################################
@@ -49,17 +48,17 @@ install_packages: ## Install npm packages
 install_precommit_hooks: ## Install precommit hooks
 	npx husky install
 
-run_precommit_hooks:
+run_precommit_hooks: ## Runs all precommit hooks
 	.husky/pre-commit
 
 prettier: ## Checks formatting with Prettier - Use PRETTIER_WRITE=-w to also automatically apply corrections where needed
 	node_modules/.bin/prettier --config .prettierrc --check --ignore-path .prettierignore $(PRETTIER_WRITE) ./
 
 eslint: ## Checks Code Logic and Typing
-	./node_modules/.bin/eslint .
+	./node_modules/.bin/eslint --config eslint.config.mjs .
 
-TEST:	## Prints some important variables
-	@echo "Release Notes: \n \n $(CURRENT_RELEASE_NOTES)"
+TEST: ## Prints some important variables
+	@echo "Release Notes: \n \n$(CURRENT_RELEASE_NOTES)"
 	@echo "GH Token: \t $(GITHUB_GH_TOKEN)"
 	@echo "NPM Name: \t $(NPM_USERNAME)"
 	@echo "NPM Password: \t $(NPM_PASSWORD)"
@@ -71,7 +70,7 @@ help: ## Print usage info about help targets
 makefile_chapters: ## Shows all sections of Makefile
 	@echo `cat Makefile| grep "########################################################" -A 1 | grep -v "########################################################"`
 
-check_build: ## Checks if proto-code was generated correctly
+check_build: ## Checks if all built proto-code is there
 	@rm -rf build_check.txt
 	@for proto in `find src/ondewo-s2t-api/ondewo -iname "*.proto*"`; \
 	do \
@@ -141,21 +140,21 @@ build_gh_release: ## Generate Github Release with CLI
 ########################################################
 #		Docker
 
-push_to_gh: login_to_gh build_gh_release ##Logs into Github CLI and Releases
+push_to_gh: login_to_gh build_gh_release ## Logs into Github CLI and Releases
 	@echo 'Released to Github'
 
 build_compiler: ## Builds Ondewo-Proto-Compiler
 	cd ondewo-proto-compiler/nodejs && sh build.sh
 
-release_to_github_via_docker_image:  ## Release to Github via docker
+release_to_github_via_docker_image: ## Release to Github via docker
 	docker run --rm \
 		-e GITHUB_GH_TOKEN=${GITHUB_GH_TOKEN} \
 		${IMAGE_UTILS_NAME} make push_to_gh
 
-build_utils_docker_image:  ## Build utils docker image
+build_utils_docker_image: ## Build utils docker image
 	docker build -f Dockerfile.utils -t ${IMAGE_UTILS_NAME} .
 
-publish_npm_via_docker: build_utils_docker_image ## Builds Code, Docker-Image and Releases to NPM
+publish_npm_via_docker: build_utils_docker_image ## Docker-Image and Releases to NPM
 	docker run --rm \
 		-e NPM_AUTOMATION_TOKEN=${NPM_AUTOMATION_TOKEN} \
 		${IMAGE_UTILS_NAME} make docker_npm_release
@@ -187,7 +186,6 @@ spc: ## Checks if the Release Branch, Tag and Pypi version already exist
 	@if test "$(filtered_branches)" != ""; then echo "-- Test 1: Branch exists!!" & exit 1; else echo "-- Test 1: Branch is fine";fi
 	@if test "$(filtered_tags)" != ""; then echo "-- Test 2: Tag exists!!" & exit 1; else echo "-- Test 2: Tag is fine";fi
 
-
 ########################################################
 # Build
 
@@ -200,6 +198,7 @@ build: check_out_correct_submodule_versions build_compiler update_package npm_ru
 	do \
 		sudo chown -R `whoami`:`whoami` $$f && echo $$f; \
 	done
+	-cd src/ondewo-s2t-api && git checkout -- '**/*.proto' && cd ../..
 	cp src/README.md .
 	cp src/RELEASE.md .
 	make remove_npm_script
@@ -208,7 +207,6 @@ build: check_out_correct_submodule_versions build_compiler update_package npm_ru
 	@$(eval DELETE_LINES:=$(shell echo ${README_CUT_LINES}| sed -e "s/[[:space:]]/,/"))
 	@sed -i "${DELETE_LINES}d" npm/README.md
 	make install_dependencies
-
 
 remove_npm_script: ## Removes Script section from package.json
 	$(eval script_lines:= $(shell cat package.json | sed -n '/\"scripts\"/,/\}\,/='))
@@ -223,17 +221,21 @@ create_npm_package: ## Create NPM Package for Release
 	cp public-api.d.ts npm
 	cp public-api.js npm
 	cp package.json npm
+	cp package-lock.json npm
 	cp LICENSE npm
 	cp README.md npm
 
-install_dependencies: ## Installs Dev-Dependencies
-	npm i @typescript-eslint/eslint-plugin \
-		  eslint \
-		  prettier \
-		  husky \
-		  --save-dev
+install_dependencies: ## Installs npm dev dependencies
+	npm i --save-dev \
+		@eslint/eslintrc \
+		@eslint/js \
+		@typescript-eslint/eslint-plugin \
+		eslint \
+		global \
+		husky \
+		prettier
 
-check_out_correct_submodule_versions: ## Fetches all Submodules and checksout specified branch
+check_out_correct_submodule_versions: ## Fetches all Submodules and checks out specified branch
 	@echo "START checking out correct submodule versions ..."
 	git submodule update --init --recursive
 	git -C ${S2T_APIS_DIR} fetch --all
@@ -242,14 +244,7 @@ check_out_correct_submodule_versions: ## Fetches all Submodules and checksout sp
 	git -C ${ONDEWO_PROTO_COMPILER_DIR} checkout ${ONDEWO_PROTO_COMPILER_GIT_BRANCH}
 	@echo "DONE checking out correct submodule versions."
 
-
 npm_run_build: ## Runs the build command in package.json
 	@echo "START npm run build ..."
 	cd src/ && npm run build && cd ..
 	@echo "DONE npm run build."
-
-test-in-ondewo-aim: ## Runs test
-	@echo "START copying files to local AIM for testing ..."
-	cd src/ && npm run test-in-ondewo-aim && cd ..
-	@echo "DONE copying files to local AIM for testing."
-

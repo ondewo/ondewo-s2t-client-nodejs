@@ -6,6 +6,7 @@
 
 import * as jspb from "google-protobuf";
 import * as google_protobuf_empty_pb from "google-protobuf/google/protobuf/empty_pb";
+import * as google_protobuf_struct_pb from "google-protobuf/google/protobuf/struct_pb";
 
 export class TranscribeRequestConfig extends jspb.Message { 
     getS2tPipelineId(): string;
@@ -48,6 +49,16 @@ export class TranscribeRequestConfig extends jspb.Message {
     getTask(): string | undefined;
     setTask(value: string): TranscribeRequestConfig;
 
+    hasS2tServiceConfig(): boolean;
+    clearS2tServiceConfig(): void;
+    getS2tServiceConfig(): google_protobuf_struct_pb.Struct | undefined;
+    setS2tServiceConfig(value?: google_protobuf_struct_pb.Struct): TranscribeRequestConfig;
+
+    hasS2tCloudProviderConfig(): boolean;
+    clearS2tCloudProviderConfig(): void;
+    getS2tCloudProviderConfig(): S2tCloudProviderConfig | undefined;
+    setS2tCloudProviderConfig(value?: S2tCloudProviderConfig): TranscribeRequestConfig;
+
     getOneofLanguageModelNameCase(): TranscribeRequestConfig.OneofLanguageModelNameCase;
     getOneofPostProcessingCase(): TranscribeRequestConfig.OneofPostProcessingCase;
     getOneofUtteranceDetectionCase(): TranscribeRequestConfig.OneofUtteranceDetectionCase;
@@ -75,6 +86,8 @@ export namespace TranscribeRequestConfig {
         returnOptions?: TranscriptionReturnOptions.AsObject,
         language?: string,
         task?: string,
+        s2tServiceConfig?: google_protobuf_struct_pb.Struct.AsObject,
+        s2tCloudProviderConfig?: S2tCloudProviderConfig.AsObject,
     }
 
     export enum OneofLanguageModelNameCase {
@@ -102,6 +115,211 @@ export namespace TranscribeRequestConfig {
         RETURN_OPTIONS = 8,
     }
 
+}
+
+export class S2tCloudProviderConfig extends jspb.Message { 
+
+    hasS2tCloudProviderConfigAmazon(): boolean;
+    clearS2tCloudProviderConfigAmazon(): void;
+    getS2tCloudProviderConfigAmazon(): S2tCloudProviderConfigAmazon | undefined;
+    setS2tCloudProviderConfigAmazon(value?: S2tCloudProviderConfigAmazon): S2tCloudProviderConfig;
+
+    hasS2tCloudProviderConfigDeepgram(): boolean;
+    clearS2tCloudProviderConfigDeepgram(): void;
+    getS2tCloudProviderConfigDeepgram(): S2tCloudProviderConfigDeepgram | undefined;
+    setS2tCloudProviderConfigDeepgram(value?: S2tCloudProviderConfigDeepgram): S2tCloudProviderConfig;
+
+    hasS2tCloudProviderConfigGoogle(): boolean;
+    clearS2tCloudProviderConfigGoogle(): void;
+    getS2tCloudProviderConfigGoogle(): S2tCloudProviderConfigGoogle | undefined;
+    setS2tCloudProviderConfigGoogle(value?: S2tCloudProviderConfigGoogle): S2tCloudProviderConfig;
+
+    hasS2tCloudProviderConfigMicrosoft(): boolean;
+    clearS2tCloudProviderConfigMicrosoft(): void;
+    getS2tCloudProviderConfigMicrosoft(): S2tCloudProviderConfigMicrosoft | undefined;
+    setS2tCloudProviderConfigMicrosoft(value?: S2tCloudProviderConfigMicrosoft): S2tCloudProviderConfig;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): S2tCloudProviderConfig.AsObject;
+    static toObject(includeInstance: boolean, msg: S2tCloudProviderConfig): S2tCloudProviderConfig.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: S2tCloudProviderConfig, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): S2tCloudProviderConfig;
+    static deserializeBinaryFromReader(message: S2tCloudProviderConfig, reader: jspb.BinaryReader): S2tCloudProviderConfig;
+}
+
+export namespace S2tCloudProviderConfig {
+    export type AsObject = {
+        s2tCloudProviderConfigAmazon?: S2tCloudProviderConfigAmazon.AsObject,
+        s2tCloudProviderConfigDeepgram?: S2tCloudProviderConfigDeepgram.AsObject,
+        s2tCloudProviderConfigGoogle?: S2tCloudProviderConfigGoogle.AsObject,
+        s2tCloudProviderConfigMicrosoft?: S2tCloudProviderConfigMicrosoft.AsObject,
+    }
+}
+
+export class S2tCloudProviderConfigAmazon extends jspb.Message { 
+
+    hasEnablePartialResultsStabilization(): boolean;
+    clearEnablePartialResultsStabilization(): void;
+    getEnablePartialResultsStabilization(): boolean | undefined;
+    setEnablePartialResultsStabilization(value: boolean): S2tCloudProviderConfigAmazon;
+
+    hasPartialResultsStability(): boolean;
+    clearPartialResultsStability(): void;
+    getPartialResultsStability(): string | undefined;
+    setPartialResultsStability(value: string): S2tCloudProviderConfigAmazon;
+
+    hasLanguageModelName(): boolean;
+    clearLanguageModelName(): void;
+    getLanguageModelName(): string | undefined;
+    setLanguageModelName(value: string): S2tCloudProviderConfigAmazon;
+
+    hasVocabularyName(): boolean;
+    clearVocabularyName(): void;
+    getVocabularyName(): string | undefined;
+    setVocabularyName(value: string): S2tCloudProviderConfigAmazon;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): S2tCloudProviderConfigAmazon.AsObject;
+    static toObject(includeInstance: boolean, msg: S2tCloudProviderConfigAmazon): S2tCloudProviderConfigAmazon.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: S2tCloudProviderConfigAmazon, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): S2tCloudProviderConfigAmazon;
+    static deserializeBinaryFromReader(message: S2tCloudProviderConfigAmazon, reader: jspb.BinaryReader): S2tCloudProviderConfigAmazon;
+}
+
+export namespace S2tCloudProviderConfigAmazon {
+    export type AsObject = {
+        enablePartialResultsStabilization?: boolean,
+        partialResultsStability?: string,
+        languageModelName?: string,
+        vocabularyName?: string,
+    }
+}
+
+export class S2tCloudProviderConfigDeepgram extends jspb.Message { 
+
+    hasPunctuate(): boolean;
+    clearPunctuate(): void;
+    getPunctuate(): boolean | undefined;
+    setPunctuate(value: boolean): S2tCloudProviderConfigDeepgram;
+
+    hasSmartFormat(): boolean;
+    clearSmartFormat(): void;
+    getSmartFormat(): boolean | undefined;
+    setSmartFormat(value: boolean): S2tCloudProviderConfigDeepgram;
+
+    hasNumerals(): boolean;
+    clearNumerals(): void;
+    getNumerals(): boolean | undefined;
+    setNumerals(value: boolean): S2tCloudProviderConfigDeepgram;
+
+    hasMeasurements(): boolean;
+    clearMeasurements(): void;
+    getMeasurements(): boolean | undefined;
+    setMeasurements(value: boolean): S2tCloudProviderConfigDeepgram;
+
+    hasDictation(): boolean;
+    clearDictation(): void;
+    getDictation(): boolean | undefined;
+    setDictation(value: boolean): S2tCloudProviderConfigDeepgram;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): S2tCloudProviderConfigDeepgram.AsObject;
+    static toObject(includeInstance: boolean, msg: S2tCloudProviderConfigDeepgram): S2tCloudProviderConfigDeepgram.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: S2tCloudProviderConfigDeepgram, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): S2tCloudProviderConfigDeepgram;
+    static deserializeBinaryFromReader(message: S2tCloudProviderConfigDeepgram, reader: jspb.BinaryReader): S2tCloudProviderConfigDeepgram;
+}
+
+export namespace S2tCloudProviderConfigDeepgram {
+    export type AsObject = {
+        punctuate?: boolean,
+        smartFormat?: boolean,
+        numerals?: boolean,
+        measurements?: boolean,
+        dictation?: boolean,
+    }
+}
+
+export class S2tCloudProviderConfigGoogle extends jspb.Message { 
+
+    hasEnableAutomaticPunctuation(): boolean;
+    clearEnableAutomaticPunctuation(): void;
+    getEnableAutomaticPunctuation(): boolean | undefined;
+    setEnableAutomaticPunctuation(value: boolean): S2tCloudProviderConfigGoogle;
+
+    hasEnableWordTimeOffsets(): boolean;
+    clearEnableWordTimeOffsets(): void;
+    getEnableWordTimeOffsets(): boolean | undefined;
+    setEnableWordTimeOffsets(value: boolean): S2tCloudProviderConfigGoogle;
+
+    hasEnableWordConfidence(): boolean;
+    clearEnableWordConfidence(): void;
+    getEnableWordConfidence(): boolean | undefined;
+    setEnableWordConfidence(value: boolean): S2tCloudProviderConfigGoogle;
+
+    hasTranscriptNormalization(): boolean;
+    clearTranscriptNormalization(): void;
+    getTranscriptNormalization(): boolean | undefined;
+    setTranscriptNormalization(value: boolean): S2tCloudProviderConfigGoogle;
+
+    hasMaxAlternatives(): boolean;
+    clearMaxAlternatives(): void;
+    getMaxAlternatives(): number | undefined;
+    setMaxAlternatives(value: number): S2tCloudProviderConfigGoogle;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): S2tCloudProviderConfigGoogle.AsObject;
+    static toObject(includeInstance: boolean, msg: S2tCloudProviderConfigGoogle): S2tCloudProviderConfigGoogle.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: S2tCloudProviderConfigGoogle, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): S2tCloudProviderConfigGoogle;
+    static deserializeBinaryFromReader(message: S2tCloudProviderConfigGoogle, reader: jspb.BinaryReader): S2tCloudProviderConfigGoogle;
+}
+
+export namespace S2tCloudProviderConfigGoogle {
+    export type AsObject = {
+        enableAutomaticPunctuation?: boolean,
+        enableWordTimeOffsets?: boolean,
+        enableWordConfidence?: boolean,
+        transcriptNormalization?: boolean,
+        maxAlternatives?: number,
+    }
+}
+
+export class S2tCloudProviderConfigMicrosoft extends jspb.Message { 
+
+    hasUseFastTranscriptionApi(): boolean;
+    clearUseFastTranscriptionApi(): void;
+    getUseFastTranscriptionApi(): boolean | undefined;
+    setUseFastTranscriptionApi(value: boolean): S2tCloudProviderConfigMicrosoft;
+
+    hasUseDetailedOutputFormat(): boolean;
+    clearUseDetailedOutputFormat(): void;
+    getUseDetailedOutputFormat(): boolean | undefined;
+    setUseDetailedOutputFormat(value: boolean): S2tCloudProviderConfigMicrosoft;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): S2tCloudProviderConfigMicrosoft.AsObject;
+    static toObject(includeInstance: boolean, msg: S2tCloudProviderConfigMicrosoft): S2tCloudProviderConfigMicrosoft.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: S2tCloudProviderConfigMicrosoft, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): S2tCloudProviderConfigMicrosoft;
+    static deserializeBinaryFromReader(message: S2tCloudProviderConfigMicrosoft, reader: jspb.BinaryReader): S2tCloudProviderConfigMicrosoft;
+}
+
+export namespace S2tCloudProviderConfigMicrosoft {
+    export type AsObject = {
+        useFastTranscriptionApi?: boolean,
+        useDetailedOutputFormat?: boolean,
+    }
 }
 
 export class TranscriptionReturnOptions extends jspb.Message { 
@@ -811,6 +1029,26 @@ export class AcousticModels extends jspb.Message {
     getWhisperTriton(): WhisperTriton | undefined;
     setWhisperTriton(value?: WhisperTriton): AcousticModels;
 
+    hasS2tCloudServiceAmazon(): boolean;
+    clearS2tCloudServiceAmazon(): void;
+    getS2tCloudServiceAmazon(): S2tCloudServiceAmazon | undefined;
+    setS2tCloudServiceAmazon(value?: S2tCloudServiceAmazon): AcousticModels;
+
+    hasS2tCloudServiceDeepgram(): boolean;
+    clearS2tCloudServiceDeepgram(): void;
+    getS2tCloudServiceDeepgram(): S2tCloudServiceDeepgram | undefined;
+    setS2tCloudServiceDeepgram(value?: S2tCloudServiceDeepgram): AcousticModels;
+
+    hasS2tCloudServiceGoogle(): boolean;
+    clearS2tCloudServiceGoogle(): void;
+    getS2tCloudServiceGoogle(): S2tCloudServiceGoogle | undefined;
+    setS2tCloudServiceGoogle(value?: S2tCloudServiceGoogle): AcousticModels;
+
+    hasS2tCloudServiceMicrosoft(): boolean;
+    clearS2tCloudServiceMicrosoft(): void;
+    getS2tCloudServiceMicrosoft(): S2tCloudServiceMicrosoft | undefined;
+    setS2tCloudServiceMicrosoft(value?: S2tCloudServiceMicrosoft): AcousticModels;
+
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): AcousticModels.AsObject;
     static toObject(includeInstance: boolean, msg: AcousticModels): AcousticModels.AsObject;
@@ -828,6 +1066,147 @@ export namespace AcousticModels {
         wav2vecTriton?: Wav2VecTriton.AsObject,
         whisper?: Whisper.AsObject,
         whisperTriton?: WhisperTriton.AsObject,
+        s2tCloudServiceAmazon?: S2tCloudServiceAmazon.AsObject,
+        s2tCloudServiceDeepgram?: S2tCloudServiceDeepgram.AsObject,
+        s2tCloudServiceGoogle?: S2tCloudServiceGoogle.AsObject,
+        s2tCloudServiceMicrosoft?: S2tCloudServiceMicrosoft.AsObject,
+    }
+}
+
+export class S2tCloudServiceAmazon extends jspb.Message { 
+    getLanguage(): string;
+    setLanguage(value: string): S2tCloudServiceAmazon;
+    getStreamingAvailable(): boolean;
+    setStreamingAvailable(value: boolean): S2tCloudServiceAmazon;
+    getEnablePartialResultsStabilization(): boolean;
+    setEnablePartialResultsStabilization(value: boolean): S2tCloudServiceAmazon;
+    getPartialResultsStability(): string;
+    setPartialResultsStability(value: string): S2tCloudServiceAmazon;
+    getLanguageModelName(): string;
+    setLanguageModelName(value: string): S2tCloudServiceAmazon;
+    getVocabularyName(): string;
+    setVocabularyName(value: string): S2tCloudServiceAmazon;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): S2tCloudServiceAmazon.AsObject;
+    static toObject(includeInstance: boolean, msg: S2tCloudServiceAmazon): S2tCloudServiceAmazon.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: S2tCloudServiceAmazon, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): S2tCloudServiceAmazon;
+    static deserializeBinaryFromReader(message: S2tCloudServiceAmazon, reader: jspb.BinaryReader): S2tCloudServiceAmazon;
+}
+
+export namespace S2tCloudServiceAmazon {
+    export type AsObject = {
+        language: string,
+        streamingAvailable: boolean,
+        enablePartialResultsStabilization: boolean,
+        partialResultsStability: string,
+        languageModelName: string,
+        vocabularyName: string,
+    }
+}
+
+export class S2tCloudServiceDeepgram extends jspb.Message { 
+    getModelName(): string;
+    setModelName(value: string): S2tCloudServiceDeepgram;
+    getLanguage(): string;
+    setLanguage(value: string): S2tCloudServiceDeepgram;
+    getPunctuate(): boolean;
+    setPunctuate(value: boolean): S2tCloudServiceDeepgram;
+    getSmartFormat(): boolean;
+    setSmartFormat(value: boolean): S2tCloudServiceDeepgram;
+    getNumerals(): boolean;
+    setNumerals(value: boolean): S2tCloudServiceDeepgram;
+    getMeasurements(): boolean;
+    setMeasurements(value: boolean): S2tCloudServiceDeepgram;
+    getDictation(): boolean;
+    setDictation(value: boolean): S2tCloudServiceDeepgram;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): S2tCloudServiceDeepgram.AsObject;
+    static toObject(includeInstance: boolean, msg: S2tCloudServiceDeepgram): S2tCloudServiceDeepgram.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: S2tCloudServiceDeepgram, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): S2tCloudServiceDeepgram;
+    static deserializeBinaryFromReader(message: S2tCloudServiceDeepgram, reader: jspb.BinaryReader): S2tCloudServiceDeepgram;
+}
+
+export namespace S2tCloudServiceDeepgram {
+    export type AsObject = {
+        modelName: string,
+        language: string,
+        punctuate: boolean,
+        smartFormat: boolean,
+        numerals: boolean,
+        measurements: boolean,
+        dictation: boolean,
+    }
+}
+
+export class S2tCloudServiceGoogle extends jspb.Message { 
+    getModelName(): string;
+    setModelName(value: string): S2tCloudServiceGoogle;
+    getLanguage(): string;
+    setLanguage(value: string): S2tCloudServiceGoogle;
+    getEnableAutomaticPunctuation(): boolean;
+    setEnableAutomaticPunctuation(value: boolean): S2tCloudServiceGoogle;
+    getEnableWordTimeOffsets(): boolean;
+    setEnableWordTimeOffsets(value: boolean): S2tCloudServiceGoogle;
+    getEnableWordConfidence(): boolean;
+    setEnableWordConfidence(value: boolean): S2tCloudServiceGoogle;
+    getTranscriptNormalization(): boolean;
+    setTranscriptNormalization(value: boolean): S2tCloudServiceGoogle;
+    getMaxAlternatives(): number;
+    setMaxAlternatives(value: number): S2tCloudServiceGoogle;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): S2tCloudServiceGoogle.AsObject;
+    static toObject(includeInstance: boolean, msg: S2tCloudServiceGoogle): S2tCloudServiceGoogle.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: S2tCloudServiceGoogle, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): S2tCloudServiceGoogle;
+    static deserializeBinaryFromReader(message: S2tCloudServiceGoogle, reader: jspb.BinaryReader): S2tCloudServiceGoogle;
+}
+
+export namespace S2tCloudServiceGoogle {
+    export type AsObject = {
+        modelName: string,
+        language: string,
+        enableAutomaticPunctuation: boolean,
+        enableWordTimeOffsets: boolean,
+        enableWordConfidence: boolean,
+        transcriptNormalization: boolean,
+        maxAlternatives: number,
+    }
+}
+
+export class S2tCloudServiceMicrosoft extends jspb.Message { 
+    getLanguage(): string;
+    setLanguage(value: string): S2tCloudServiceMicrosoft;
+    getUseFastTranscriptionApi(): boolean;
+    setUseFastTranscriptionApi(value: boolean): S2tCloudServiceMicrosoft;
+    getUseDetailedOutputFormat(): boolean;
+    setUseDetailedOutputFormat(value: boolean): S2tCloudServiceMicrosoft;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): S2tCloudServiceMicrosoft.AsObject;
+    static toObject(includeInstance: boolean, msg: S2tCloudServiceMicrosoft): S2tCloudServiceMicrosoft.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: S2tCloudServiceMicrosoft, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): S2tCloudServiceMicrosoft;
+    static deserializeBinaryFromReader(message: S2tCloudServiceMicrosoft, reader: jspb.BinaryReader): S2tCloudServiceMicrosoft;
+}
+
+export namespace S2tCloudServiceMicrosoft {
+    export type AsObject = {
+        language: string,
+        useFastTranscriptionApi: boolean,
+        useDetailedOutputFormat: boolean,
     }
 }
 

@@ -372,7 +372,13 @@ export class UtteranceDetectionOptions extends jspb.Message {
     getNextChunkTimeout(): number;
     setNextChunkTimeout(value: number): UtteranceDetectionOptions;
 
+    hasTurnDetection(): boolean;
+    clearTurnDetection(): void;
+    getTurnDetection(): TurnDetectionOptions | undefined;
+    setTurnDetection(value?: TurnDetectionOptions): UtteranceDetectionOptions;
+
     getOneofTranscribeNotFinalCase(): UtteranceDetectionOptions.OneofTranscribeNotFinalCase;
+    getOneofTurnDetectionCase(): UtteranceDetectionOptions.OneofTurnDetectionCase;
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): UtteranceDetectionOptions.AsObject;
@@ -388,11 +394,17 @@ export namespace UtteranceDetectionOptions {
     export type AsObject = {
         transcribeNotFinal: boolean,
         nextChunkTimeout: number,
+        turnDetection?: TurnDetectionOptions.AsObject,
     }
 
     export enum OneofTranscribeNotFinalCase {
         ONEOF_TRANSCRIBE_NOT_FINAL_NOT_SET = 0,
         TRANSCRIBE_NOT_FINAL = 1,
+    }
+
+    export enum OneofTurnDetectionCase {
+        ONEOF_TURN_DETECTION_NOT_SET = 0,
+        TURN_DETECTION = 3,
     }
 
 }
@@ -407,6 +419,8 @@ export class PostProcessingOptions extends jspb.Message {
     clearConfig(): void;
     getConfig(): PostProcessing | undefined;
     setConfig(value?: PostProcessing): PostProcessingOptions;
+    getLlmPostProcessing(): boolean;
+    setLlmPostProcessing(value: boolean): PostProcessingOptions;
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): PostProcessingOptions.AsObject;
@@ -423,6 +437,7 @@ export namespace PostProcessingOptions {
         spellingCorrection: boolean,
         normalize: boolean,
         config?: PostProcessing.AsObject,
+        llmPostProcessing: boolean,
     }
 }
 
@@ -865,21 +880,21 @@ export namespace ListS2tDomainsResponse {
     }
 }
 
-export class S2TGetServiceInfoResponse extends jspb.Message { 
+export class S2tGetServiceInfoResponse extends jspb.Message { 
     getVersion(): string;
-    setVersion(value: string): S2TGetServiceInfoResponse;
+    setVersion(value: string): S2tGetServiceInfoResponse;
 
     serializeBinary(): Uint8Array;
-    toObject(includeInstance?: boolean): S2TGetServiceInfoResponse.AsObject;
-    static toObject(includeInstance: boolean, msg: S2TGetServiceInfoResponse): S2TGetServiceInfoResponse.AsObject;
+    toObject(includeInstance?: boolean): S2tGetServiceInfoResponse.AsObject;
+    static toObject(includeInstance: boolean, msg: S2tGetServiceInfoResponse): S2tGetServiceInfoResponse.AsObject;
     static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
     static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-    static serializeBinaryToWriter(message: S2TGetServiceInfoResponse, writer: jspb.BinaryWriter): void;
-    static deserializeBinary(bytes: Uint8Array): S2TGetServiceInfoResponse;
-    static deserializeBinaryFromReader(message: S2TGetServiceInfoResponse, reader: jspb.BinaryReader): S2TGetServiceInfoResponse;
+    static serializeBinaryToWriter(message: S2tGetServiceInfoResponse, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): S2tGetServiceInfoResponse;
+    static deserializeBinaryFromReader(message: S2tGetServiceInfoResponse, reader: jspb.BinaryReader): S2tGetServiceInfoResponse;
 }
 
-export namespace S2TGetServiceInfoResponse {
+export namespace S2tGetServiceInfoResponse {
     export type AsObject = {
         version: string,
     }
@@ -891,15 +906,15 @@ export class Speech2TextConfig extends jspb.Message {
 
     hasDescription(): boolean;
     clearDescription(): void;
-    getDescription(): S2TDescription | undefined;
-    setDescription(value?: S2TDescription): Speech2TextConfig;
+    getDescription(): S2tDescription | undefined;
+    setDescription(value?: S2tDescription): Speech2TextConfig;
     getActive(): boolean;
     setActive(value: boolean): Speech2TextConfig;
 
     hasInference(): boolean;
     clearInference(): void;
-    getInference(): S2TInference | undefined;
-    setInference(value?: S2TInference): Speech2TextConfig;
+    getInference(): S2tInference | undefined;
+    setInference(value?: S2tInference): Speech2TextConfig;
 
     hasStreamingServer(): boolean;
     clearStreamingServer(): void;
@@ -934,9 +949,9 @@ export class Speech2TextConfig extends jspb.Message {
 export namespace Speech2TextConfig {
     export type AsObject = {
         id: string,
-        description?: S2TDescription.AsObject,
+        description?: S2tDescription.AsObject,
         active: boolean,
-        inference?: S2TInference.AsObject,
+        inference?: S2tInference.AsObject,
         streamingServer?: StreamingServer.AsObject,
         voiceActivityDetection?: VoiceActivityDetection.AsObject,
         postProcessing?: PostProcessing.AsObject,
@@ -944,27 +959,27 @@ export namespace Speech2TextConfig {
     }
 }
 
-export class S2TDescription extends jspb.Message { 
+export class S2tDescription extends jspb.Message { 
     getLanguage(): string;
-    setLanguage(value: string): S2TDescription;
+    setLanguage(value: string): S2tDescription;
     getPipelineOwner(): string;
-    setPipelineOwner(value: string): S2TDescription;
+    setPipelineOwner(value: string): S2tDescription;
     getDomain(): string;
-    setDomain(value: string): S2TDescription;
+    setDomain(value: string): S2tDescription;
     getComments(): string;
-    setComments(value: string): S2TDescription;
+    setComments(value: string): S2tDescription;
 
     serializeBinary(): Uint8Array;
-    toObject(includeInstance?: boolean): S2TDescription.AsObject;
-    static toObject(includeInstance: boolean, msg: S2TDescription): S2TDescription.AsObject;
+    toObject(includeInstance?: boolean): S2tDescription.AsObject;
+    static toObject(includeInstance: boolean, msg: S2tDescription): S2tDescription.AsObject;
     static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
     static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-    static serializeBinaryToWriter(message: S2TDescription, writer: jspb.BinaryWriter): void;
-    static deserializeBinary(bytes: Uint8Array): S2TDescription;
-    static deserializeBinaryFromReader(message: S2TDescription, reader: jspb.BinaryReader): S2TDescription;
+    static serializeBinaryToWriter(message: S2tDescription, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): S2tDescription;
+    static deserializeBinaryFromReader(message: S2tDescription, reader: jspb.BinaryReader): S2tDescription;
 }
 
-export namespace S2TDescription {
+export namespace S2tDescription {
     export type AsObject = {
         language: string,
         pipelineOwner: string,
@@ -973,31 +988,31 @@ export namespace S2TDescription {
     }
 }
 
-export class S2TInference extends jspb.Message { 
+export class S2tInference extends jspb.Message { 
 
     hasAcousticModels(): boolean;
     clearAcousticModels(): void;
     getAcousticModels(): AcousticModels | undefined;
-    setAcousticModels(value?: AcousticModels): S2TInference;
+    setAcousticModels(value?: AcousticModels): S2tInference;
 
     hasLanguageModels(): boolean;
     clearLanguageModels(): void;
     getLanguageModels(): LanguageModels | undefined;
-    setLanguageModels(value?: LanguageModels): S2TInference;
+    setLanguageModels(value?: LanguageModels): S2tInference;
     getInferenceBackend(): InferenceBackend;
-    setInferenceBackend(value: InferenceBackend): S2TInference;
+    setInferenceBackend(value: InferenceBackend): S2tInference;
 
     serializeBinary(): Uint8Array;
-    toObject(includeInstance?: boolean): S2TInference.AsObject;
-    static toObject(includeInstance: boolean, msg: S2TInference): S2TInference.AsObject;
+    toObject(includeInstance?: boolean): S2tInference.AsObject;
+    static toObject(includeInstance: boolean, msg: S2tInference): S2tInference.AsObject;
     static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
     static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-    static serializeBinaryToWriter(message: S2TInference, writer: jspb.BinaryWriter): void;
-    static deserializeBinary(bytes: Uint8Array): S2TInference;
-    static deserializeBinaryFromReader(message: S2TInference, reader: jspb.BinaryReader): S2TInference;
+    static serializeBinaryToWriter(message: S2tInference, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): S2tInference;
+    static deserializeBinaryFromReader(message: S2tInference, reader: jspb.BinaryReader): S2tInference;
 }
 
-export namespace S2TInference {
+export namespace S2tInference {
     export type AsObject = {
         acousticModels?: AcousticModels.AsObject,
         languageModels?: LanguageModels.AsObject,
@@ -1457,6 +1472,11 @@ export class StreamingSpeechRecognition extends jspb.Message {
     getNextChunkTimeout(): number;
     setNextChunkTimeout(value: number): StreamingSpeechRecognition;
 
+    hasTurnDetection(): boolean;
+    clearTurnDetection(): void;
+    getTurnDetection(): TurnDetectionOptions | undefined;
+    setTurnDetection(value?: TurnDetectionOptions): StreamingSpeechRecognition;
+
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): StreamingSpeechRecognition.AsObject;
     static toObject(includeInstance: boolean, msg: StreamingSpeechRecognition): StreamingSpeechRecognition.AsObject;
@@ -1474,6 +1494,54 @@ export namespace StreamingSpeechRecognition {
         samplingRate: number,
         minAudioChunkSize: number,
         nextChunkTimeout: number,
+        turnDetection?: TurnDetectionOptions.AsObject,
+    }
+}
+
+export class TurnDetectionOptions extends jspb.Message { 
+
+    hasActive(): boolean;
+    clearActive(): void;
+    getActive(): boolean | undefined;
+    setActive(value: boolean): TurnDetectionOptions;
+
+    hasFullUtteranceDeployment(): boolean;
+    clearFullUtteranceDeployment(): void;
+    getFullUtteranceDeployment(): boolean | undefined;
+    setFullUtteranceDeployment(value: boolean): TurnDetectionOptions;
+
+    hasLlmHost(): boolean;
+    clearLlmHost(): void;
+    getLlmHost(): string | undefined;
+    setLlmHost(value: string): TurnDetectionOptions;
+
+    hasLlmPort(): boolean;
+    clearLlmPort(): void;
+    getLlmPort(): number | undefined;
+    setLlmPort(value: number): TurnDetectionOptions;
+
+    hasLlmRequestTimeout(): boolean;
+    clearLlmRequestTimeout(): void;
+    getLlmRequestTimeout(): number | undefined;
+    setLlmRequestTimeout(value: number): TurnDetectionOptions;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): TurnDetectionOptions.AsObject;
+    static toObject(includeInstance: boolean, msg: TurnDetectionOptions): TurnDetectionOptions.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: TurnDetectionOptions, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): TurnDetectionOptions;
+    static deserializeBinaryFromReader(message: TurnDetectionOptions, reader: jspb.BinaryReader): TurnDetectionOptions;
+}
+
+export namespace TurnDetectionOptions {
+    export type AsObject = {
+        active?: boolean,
+        fullUtteranceDeployment?: boolean,
+        llmHost?: string,
+        llmPort?: number,
+        llmRequestTimeout?: number,
     }
 }
 
@@ -1578,8 +1646,13 @@ export class PostProcessors extends jspb.Message {
 
     hasNormalization(): boolean;
     clearNormalization(): void;
-    getNormalization(): S2TNormalization | undefined;
-    setNormalization(value?: S2TNormalization): PostProcessors;
+    getNormalization(): S2tNormalization | undefined;
+    setNormalization(value?: S2tNormalization): PostProcessors;
+
+    hasLlmPostProcessing(): boolean;
+    clearLlmPostProcessing(): void;
+    getLlmPostProcessing(): S2tLlmPostProcessing | undefined;
+    setLlmPostProcessing(value?: S2tLlmPostProcessing): PostProcessors;
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): PostProcessors.AsObject;
@@ -1594,7 +1667,8 @@ export class PostProcessors extends jspb.Message {
 export namespace PostProcessors {
     export type AsObject = {
         symSpell?: SymSpell.AsObject,
-        normalization?: S2TNormalization.AsObject,
+        normalization?: S2tNormalization.AsObject,
+        llmPostProcessing?: S2tLlmPostProcessing.AsObject,
     }
 }
 
@@ -1624,28 +1698,420 @@ export namespace SymSpell {
     }
 }
 
-export class S2TNormalization extends jspb.Message { 
+export class S2tNormalization extends jspb.Message { 
     getLanguage(): string;
-    setLanguage(value: string): S2TNormalization;
+    setLanguage(value: string): S2tNormalization;
     clearPipelineList(): void;
     getPipelineList(): Array<string>;
-    setPipelineList(value: Array<string>): S2TNormalization;
+    setPipelineList(value: Array<string>): S2tNormalization;
     addPipeline(value: string, index?: number): string;
 
     serializeBinary(): Uint8Array;
-    toObject(includeInstance?: boolean): S2TNormalization.AsObject;
-    static toObject(includeInstance: boolean, msg: S2TNormalization): S2TNormalization.AsObject;
+    toObject(includeInstance?: boolean): S2tNormalization.AsObject;
+    static toObject(includeInstance: boolean, msg: S2tNormalization): S2tNormalization.AsObject;
     static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
     static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-    static serializeBinaryToWriter(message: S2TNormalization, writer: jspb.BinaryWriter): void;
-    static deserializeBinary(bytes: Uint8Array): S2TNormalization;
-    static deserializeBinaryFromReader(message: S2TNormalization, reader: jspb.BinaryReader): S2TNormalization;
+    static serializeBinaryToWriter(message: S2tNormalization, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): S2tNormalization;
+    static deserializeBinaryFromReader(message: S2tNormalization, reader: jspb.BinaryReader): S2tNormalization;
 }
 
-export namespace S2TNormalization {
+export namespace S2tNormalization {
     export type AsObject = {
         language: string,
         pipelineList: Array<string>,
+    }
+}
+
+export class S2tLlmPostProcessing extends jspb.Message { 
+
+    hasLlmHost(): boolean;
+    clearLlmHost(): void;
+    getLlmHost(): string | undefined;
+    setLlmHost(value: string): S2tLlmPostProcessing;
+
+    hasLlmPort(): boolean;
+    clearLlmPort(): void;
+    getLlmPort(): number | undefined;
+    setLlmPort(value: number): S2tLlmPostProcessing;
+
+    hasLlmRequestTimeout(): boolean;
+    clearLlmRequestTimeout(): void;
+    getLlmRequestTimeout(): number | undefined;
+    setLlmRequestTimeout(value: number): S2tLlmPostProcessing;
+
+    hasS2tLlmPostProcessingCasingOptions(): boolean;
+    clearS2tLlmPostProcessingCasingOptions(): void;
+    getS2tLlmPostProcessingCasingOptions(): S2tLlmPostProcessingCasingOptions | undefined;
+    setS2tLlmPostProcessingCasingOptions(value?: S2tLlmPostProcessingCasingOptions): S2tLlmPostProcessing;
+
+    hasS2tLlmPostProcessingPunctuationOptions(): boolean;
+    clearS2tLlmPostProcessingPunctuationOptions(): void;
+    getS2tLlmPostProcessingPunctuationOptions(): S2tLlmPostProcessingPunctuationOptions | undefined;
+    setS2tLlmPostProcessingPunctuationOptions(value?: S2tLlmPostProcessingPunctuationOptions): S2tLlmPostProcessing;
+
+    hasS2tLlmPostProcessingSpellingCorrectionOptions(): boolean;
+    clearS2tLlmPostProcessingSpellingCorrectionOptions(): void;
+    getS2tLlmPostProcessingSpellingCorrectionOptions(): S2tLlmPostProcessingSpellCorrectionOptions | undefined;
+    setS2tLlmPostProcessingSpellingCorrectionOptions(value?: S2tLlmPostProcessingSpellCorrectionOptions): S2tLlmPostProcessing;
+
+    hasS2tLlmPostProcessingSemanticCorrectionOptions(): boolean;
+    clearS2tLlmPostProcessingSemanticCorrectionOptions(): void;
+    getS2tLlmPostProcessingSemanticCorrectionOptions(): S2tLlmPostProcessingSemanticCorrectionOptions | undefined;
+    setS2tLlmPostProcessingSemanticCorrectionOptions(value?: S2tLlmPostProcessingSemanticCorrectionOptions): S2tLlmPostProcessing;
+
+    hasS2tLlmPostProcessingTranslationOptions(): boolean;
+    clearS2tLlmPostProcessingTranslationOptions(): void;
+    getS2tLlmPostProcessingTranslationOptions(): S2tLlmPostProcessingTranslationOptions | undefined;
+    setS2tLlmPostProcessingTranslationOptions(value?: S2tLlmPostProcessingTranslationOptions): S2tLlmPostProcessing;
+
+    hasS2tLlmPostProcessingInverseNormalizationOptions(): boolean;
+    clearS2tLlmPostProcessingInverseNormalizationOptions(): void;
+    getS2tLlmPostProcessingInverseNormalizationOptions(): S2tLlmPostProcessingInverseNormalizationOptions | undefined;
+    setS2tLlmPostProcessingInverseNormalizationOptions(value?: S2tLlmPostProcessingInverseNormalizationOptions): S2tLlmPostProcessing;
+
+    hasS2tLlmPostProcessingNormalizationOptions(): boolean;
+    clearS2tLlmPostProcessingNormalizationOptions(): void;
+    getS2tLlmPostProcessingNormalizationOptions(): S2tLlmPostProcessingNormalizationOptions | undefined;
+    setS2tLlmPostProcessingNormalizationOptions(value?: S2tLlmPostProcessingNormalizationOptions): S2tLlmPostProcessing;
+
+    hasS2tLlmPostProcessingSummarizationOptions(): boolean;
+    clearS2tLlmPostProcessingSummarizationOptions(): void;
+    getS2tLlmPostProcessingSummarizationOptions(): S2tLlmPostProcessingSummarizationOptions | undefined;
+    setS2tLlmPostProcessingSummarizationOptions(value?: S2tLlmPostProcessingSummarizationOptions): S2tLlmPostProcessing;
+
+    hasS2tLlmPostProcessingUserPromptOptions(): boolean;
+    clearS2tLlmPostProcessingUserPromptOptions(): void;
+    getS2tLlmPostProcessingUserPromptOptions(): S2tLlmPostProcessingUserPromptOptions | undefined;
+    setS2tLlmPostProcessingUserPromptOptions(value?: S2tLlmPostProcessingUserPromptOptions): S2tLlmPostProcessing;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): S2tLlmPostProcessing.AsObject;
+    static toObject(includeInstance: boolean, msg: S2tLlmPostProcessing): S2tLlmPostProcessing.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: S2tLlmPostProcessing, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): S2tLlmPostProcessing;
+    static deserializeBinaryFromReader(message: S2tLlmPostProcessing, reader: jspb.BinaryReader): S2tLlmPostProcessing;
+}
+
+export namespace S2tLlmPostProcessing {
+    export type AsObject = {
+        llmHost?: string,
+        llmPort?: number,
+        llmRequestTimeout?: number,
+        s2tLlmPostProcessingCasingOptions?: S2tLlmPostProcessingCasingOptions.AsObject,
+        s2tLlmPostProcessingPunctuationOptions?: S2tLlmPostProcessingPunctuationOptions.AsObject,
+        s2tLlmPostProcessingSpellingCorrectionOptions?: S2tLlmPostProcessingSpellCorrectionOptions.AsObject,
+        s2tLlmPostProcessingSemanticCorrectionOptions?: S2tLlmPostProcessingSemanticCorrectionOptions.AsObject,
+        s2tLlmPostProcessingTranslationOptions?: S2tLlmPostProcessingTranslationOptions.AsObject,
+        s2tLlmPostProcessingInverseNormalizationOptions?: S2tLlmPostProcessingInverseNormalizationOptions.AsObject,
+        s2tLlmPostProcessingNormalizationOptions?: S2tLlmPostProcessingNormalizationOptions.AsObject,
+        s2tLlmPostProcessingSummarizationOptions?: S2tLlmPostProcessingSummarizationOptions.AsObject,
+        s2tLlmPostProcessingUserPromptOptions?: S2tLlmPostProcessingUserPromptOptions.AsObject,
+    }
+}
+
+export class S2tLlmPostProcessingCasingOptions extends jspb.Message { 
+
+    hasActive(): boolean;
+    clearActive(): void;
+    getActive(): boolean | undefined;
+    setActive(value: boolean): S2tLlmPostProcessingCasingOptions;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): S2tLlmPostProcessingCasingOptions.AsObject;
+    static toObject(includeInstance: boolean, msg: S2tLlmPostProcessingCasingOptions): S2tLlmPostProcessingCasingOptions.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: S2tLlmPostProcessingCasingOptions, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): S2tLlmPostProcessingCasingOptions;
+    static deserializeBinaryFromReader(message: S2tLlmPostProcessingCasingOptions, reader: jspb.BinaryReader): S2tLlmPostProcessingCasingOptions;
+}
+
+export namespace S2tLlmPostProcessingCasingOptions {
+    export type AsObject = {
+        active?: boolean,
+    }
+}
+
+export class S2tLlmPostProcessingPunctuationOptions extends jspb.Message { 
+
+    hasActive(): boolean;
+    clearActive(): void;
+    getActive(): boolean | undefined;
+    setActive(value: boolean): S2tLlmPostProcessingPunctuationOptions;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): S2tLlmPostProcessingPunctuationOptions.AsObject;
+    static toObject(includeInstance: boolean, msg: S2tLlmPostProcessingPunctuationOptions): S2tLlmPostProcessingPunctuationOptions.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: S2tLlmPostProcessingPunctuationOptions, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): S2tLlmPostProcessingPunctuationOptions;
+    static deserializeBinaryFromReader(message: S2tLlmPostProcessingPunctuationOptions, reader: jspb.BinaryReader): S2tLlmPostProcessingPunctuationOptions;
+}
+
+export namespace S2tLlmPostProcessingPunctuationOptions {
+    export type AsObject = {
+        active?: boolean,
+    }
+}
+
+export class S2tLlmPostProcessingSpellCorrectionOptions extends jspb.Message { 
+
+    hasActive(): boolean;
+    clearActive(): void;
+    getActive(): boolean | undefined;
+    setActive(value: boolean): S2tLlmPostProcessingSpellCorrectionOptions;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): S2tLlmPostProcessingSpellCorrectionOptions.AsObject;
+    static toObject(includeInstance: boolean, msg: S2tLlmPostProcessingSpellCorrectionOptions): S2tLlmPostProcessingSpellCorrectionOptions.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: S2tLlmPostProcessingSpellCorrectionOptions, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): S2tLlmPostProcessingSpellCorrectionOptions;
+    static deserializeBinaryFromReader(message: S2tLlmPostProcessingSpellCorrectionOptions, reader: jspb.BinaryReader): S2tLlmPostProcessingSpellCorrectionOptions;
+}
+
+export namespace S2tLlmPostProcessingSpellCorrectionOptions {
+    export type AsObject = {
+        active?: boolean,
+    }
+}
+
+export class S2tLlmPostProcessingSemanticCorrectionOptions extends jspb.Message { 
+
+    hasActive(): boolean;
+    clearActive(): void;
+    getActive(): boolean | undefined;
+    setActive(value: boolean): S2tLlmPostProcessingSemanticCorrectionOptions;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): S2tLlmPostProcessingSemanticCorrectionOptions.AsObject;
+    static toObject(includeInstance: boolean, msg: S2tLlmPostProcessingSemanticCorrectionOptions): S2tLlmPostProcessingSemanticCorrectionOptions.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: S2tLlmPostProcessingSemanticCorrectionOptions, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): S2tLlmPostProcessingSemanticCorrectionOptions;
+    static deserializeBinaryFromReader(message: S2tLlmPostProcessingSemanticCorrectionOptions, reader: jspb.BinaryReader): S2tLlmPostProcessingSemanticCorrectionOptions;
+}
+
+export namespace S2tLlmPostProcessingSemanticCorrectionOptions {
+    export type AsObject = {
+        active?: boolean,
+    }
+}
+
+export class S2tLlmPostProcessingTranslationOptions extends jspb.Message { 
+
+    hasActive(): boolean;
+    clearActive(): void;
+    getActive(): boolean | undefined;
+    setActive(value: boolean): S2tLlmPostProcessingTranslationOptions;
+
+    hasLanguage(): boolean;
+    clearLanguage(): void;
+    getLanguage(): string | undefined;
+    setLanguage(value: string): S2tLlmPostProcessingTranslationOptions;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): S2tLlmPostProcessingTranslationOptions.AsObject;
+    static toObject(includeInstance: boolean, msg: S2tLlmPostProcessingTranslationOptions): S2tLlmPostProcessingTranslationOptions.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: S2tLlmPostProcessingTranslationOptions, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): S2tLlmPostProcessingTranslationOptions;
+    static deserializeBinaryFromReader(message: S2tLlmPostProcessingTranslationOptions, reader: jspb.BinaryReader): S2tLlmPostProcessingTranslationOptions;
+}
+
+export namespace S2tLlmPostProcessingTranslationOptions {
+    export type AsObject = {
+        active?: boolean,
+        language?: string,
+    }
+}
+
+export class S2tLlmPostProcessingInverseNormalizationOptions extends jspb.Message { 
+
+    hasActive(): boolean;
+    clearActive(): void;
+    getActive(): boolean | undefined;
+    setActive(value: boolean): S2tLlmPostProcessingInverseNormalizationOptions;
+
+    hasEmail(): boolean;
+    clearEmail(): void;
+    getEmail(): boolean | undefined;
+    setEmail(value: boolean): S2tLlmPostProcessingInverseNormalizationOptions;
+
+    hasPhoneNumber(): boolean;
+    clearPhoneNumber(): void;
+    getPhoneNumber(): boolean | undefined;
+    setPhoneNumber(value: boolean): S2tLlmPostProcessingInverseNormalizationOptions;
+
+    hasDateAndTime(): boolean;
+    clearDateAndTime(): void;
+    getDateAndTime(): boolean | undefined;
+    setDateAndTime(value: boolean): S2tLlmPostProcessingInverseNormalizationOptions;
+
+    hasCreditCardNumber(): boolean;
+    clearCreditCardNumber(): void;
+    getCreditCardNumber(): boolean | undefined;
+    setCreditCardNumber(value: boolean): S2tLlmPostProcessingInverseNormalizationOptions;
+
+    hasSocialSecurityNumber(): boolean;
+    clearSocialSecurityNumber(): void;
+    getSocialSecurityNumber(): boolean | undefined;
+    setSocialSecurityNumber(value: boolean): S2tLlmPostProcessingInverseNormalizationOptions;
+
+    hasTimeZone(): boolean;
+    clearTimeZone(): void;
+    getTimeZone(): boolean | undefined;
+    setTimeZone(value: boolean): S2tLlmPostProcessingInverseNormalizationOptions;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): S2tLlmPostProcessingInverseNormalizationOptions.AsObject;
+    static toObject(includeInstance: boolean, msg: S2tLlmPostProcessingInverseNormalizationOptions): S2tLlmPostProcessingInverseNormalizationOptions.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: S2tLlmPostProcessingInverseNormalizationOptions, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): S2tLlmPostProcessingInverseNormalizationOptions;
+    static deserializeBinaryFromReader(message: S2tLlmPostProcessingInverseNormalizationOptions, reader: jspb.BinaryReader): S2tLlmPostProcessingInverseNormalizationOptions;
+}
+
+export namespace S2tLlmPostProcessingInverseNormalizationOptions {
+    export type AsObject = {
+        active?: boolean,
+        email?: boolean,
+        phoneNumber?: boolean,
+        dateAndTime?: boolean,
+        creditCardNumber?: boolean,
+        socialSecurityNumber?: boolean,
+        timeZone?: boolean,
+    }
+}
+
+export class S2tLlmPostProcessingNormalizationOptions extends jspb.Message { 
+
+    hasActive(): boolean;
+    clearActive(): void;
+    getActive(): boolean | undefined;
+    setActive(value: boolean): S2tLlmPostProcessingNormalizationOptions;
+
+    hasEmail(): boolean;
+    clearEmail(): void;
+    getEmail(): boolean | undefined;
+    setEmail(value: boolean): S2tLlmPostProcessingNormalizationOptions;
+
+    hasPhoneNumber(): boolean;
+    clearPhoneNumber(): void;
+    getPhoneNumber(): boolean | undefined;
+    setPhoneNumber(value: boolean): S2tLlmPostProcessingNormalizationOptions;
+
+    hasDateAndTime(): boolean;
+    clearDateAndTime(): void;
+    getDateAndTime(): boolean | undefined;
+    setDateAndTime(value: boolean): S2tLlmPostProcessingNormalizationOptions;
+
+    hasCreditCardNumber(): boolean;
+    clearCreditCardNumber(): void;
+    getCreditCardNumber(): boolean | undefined;
+    setCreditCardNumber(value: boolean): S2tLlmPostProcessingNormalizationOptions;
+
+    hasSocialSecurityNumber(): boolean;
+    clearSocialSecurityNumber(): void;
+    getSocialSecurityNumber(): boolean | undefined;
+    setSocialSecurityNumber(value: boolean): S2tLlmPostProcessingNormalizationOptions;
+
+    hasTimeZone(): boolean;
+    clearTimeZone(): void;
+    getTimeZone(): boolean | undefined;
+    setTimeZone(value: boolean): S2tLlmPostProcessingNormalizationOptions;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): S2tLlmPostProcessingNormalizationOptions.AsObject;
+    static toObject(includeInstance: boolean, msg: S2tLlmPostProcessingNormalizationOptions): S2tLlmPostProcessingNormalizationOptions.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: S2tLlmPostProcessingNormalizationOptions, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): S2tLlmPostProcessingNormalizationOptions;
+    static deserializeBinaryFromReader(message: S2tLlmPostProcessingNormalizationOptions, reader: jspb.BinaryReader): S2tLlmPostProcessingNormalizationOptions;
+}
+
+export namespace S2tLlmPostProcessingNormalizationOptions {
+    export type AsObject = {
+        active?: boolean,
+        email?: boolean,
+        phoneNumber?: boolean,
+        dateAndTime?: boolean,
+        creditCardNumber?: boolean,
+        socialSecurityNumber?: boolean,
+        timeZone?: boolean,
+    }
+}
+
+export class S2tLlmPostProcessingSummarizationOptions extends jspb.Message { 
+
+    hasActive(): boolean;
+    clearActive(): void;
+    getActive(): boolean | undefined;
+    setActive(value: boolean): S2tLlmPostProcessingSummarizationOptions;
+
+    hasMinChars(): boolean;
+    clearMinChars(): void;
+    getMinChars(): number | undefined;
+    setMinChars(value: number): S2tLlmPostProcessingSummarizationOptions;
+
+    hasMaxChars(): boolean;
+    clearMaxChars(): void;
+    getMaxChars(): number | undefined;
+    setMaxChars(value: number): S2tLlmPostProcessingSummarizationOptions;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): S2tLlmPostProcessingSummarizationOptions.AsObject;
+    static toObject(includeInstance: boolean, msg: S2tLlmPostProcessingSummarizationOptions): S2tLlmPostProcessingSummarizationOptions.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: S2tLlmPostProcessingSummarizationOptions, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): S2tLlmPostProcessingSummarizationOptions;
+    static deserializeBinaryFromReader(message: S2tLlmPostProcessingSummarizationOptions, reader: jspb.BinaryReader): S2tLlmPostProcessingSummarizationOptions;
+}
+
+export namespace S2tLlmPostProcessingSummarizationOptions {
+    export type AsObject = {
+        active?: boolean,
+        minChars?: number,
+        maxChars?: number,
+    }
+}
+
+export class S2tLlmPostProcessingUserPromptOptions extends jspb.Message { 
+
+    hasActive(): boolean;
+    clearActive(): void;
+    getActive(): boolean | undefined;
+    setActive(value: boolean): S2tLlmPostProcessingUserPromptOptions;
+
+    hasPrompt(): boolean;
+    clearPrompt(): void;
+    getPrompt(): string | undefined;
+    setPrompt(value: string): S2tLlmPostProcessingUserPromptOptions;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): S2tLlmPostProcessingUserPromptOptions.AsObject;
+    static toObject(includeInstance: boolean, msg: S2tLlmPostProcessingUserPromptOptions): S2tLlmPostProcessingUserPromptOptions.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: S2tLlmPostProcessingUserPromptOptions, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): S2tLlmPostProcessingUserPromptOptions;
+    static deserializeBinaryFromReader(message: S2tLlmPostProcessingUserPromptOptions, reader: jspb.BinaryReader): S2tLlmPostProcessingUserPromptOptions;
+}
+
+export namespace S2tLlmPostProcessingUserPromptOptions {
+    export type AsObject = {
+        active?: boolean,
+        prompt?: string,
     }
 }
 
@@ -1826,6 +2292,48 @@ export namespace TrainUserLanguageModelRequest {
     export type AsObject = {
         languageModelName: string,
         order: number,
+    }
+}
+
+export class ListS2tNormalizationPipelinesRequest extends jspb.Message { 
+    getLanguage(): string;
+    setLanguage(value: string): ListS2tNormalizationPipelinesRequest;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): ListS2tNormalizationPipelinesRequest.AsObject;
+    static toObject(includeInstance: boolean, msg: ListS2tNormalizationPipelinesRequest): ListS2tNormalizationPipelinesRequest.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: ListS2tNormalizationPipelinesRequest, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): ListS2tNormalizationPipelinesRequest;
+    static deserializeBinaryFromReader(message: ListS2tNormalizationPipelinesRequest, reader: jspb.BinaryReader): ListS2tNormalizationPipelinesRequest;
+}
+
+export namespace ListS2tNormalizationPipelinesRequest {
+    export type AsObject = {
+        language: string,
+    }
+}
+
+export class ListS2tNormalizationPipelinesResponse extends jspb.Message { 
+    clearS2tNormalizationPipelinesList(): void;
+    getS2tNormalizationPipelinesList(): Array<string>;
+    setS2tNormalizationPipelinesList(value: Array<string>): ListS2tNormalizationPipelinesResponse;
+    addS2tNormalizationPipelines(value: string, index?: number): string;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): ListS2tNormalizationPipelinesResponse.AsObject;
+    static toObject(includeInstance: boolean, msg: ListS2tNormalizationPipelinesResponse): ListS2tNormalizationPipelinesResponse.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: ListS2tNormalizationPipelinesResponse, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): ListS2tNormalizationPipelinesResponse;
+    static deserializeBinaryFromReader(message: ListS2tNormalizationPipelinesResponse, reader: jspb.BinaryReader): ListS2tNormalizationPipelinesResponse;
+}
+
+export namespace ListS2tNormalizationPipelinesResponse {
+    export type AsObject = {
+        s2tNormalizationPipelinesList: Array<string>,
     }
 }
 

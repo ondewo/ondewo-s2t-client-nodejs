@@ -131,6 +131,28 @@ function deserialize_ondewo_s2t_ListS2tLanguagesResponse(buffer_arg) {
   return ondewo_s2t_speech$to$text_pb.ListS2tLanguagesResponse.deserializeBinary(new Uint8Array(buffer_arg));
 }
 
+function serialize_ondewo_s2t_ListS2tNormalizationPipelinesRequest(arg) {
+  if (!(arg instanceof ondewo_s2t_speech$to$text_pb.ListS2tNormalizationPipelinesRequest)) {
+    throw new Error('Expected argument of type ondewo.s2t.ListS2tNormalizationPipelinesRequest');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_ondewo_s2t_ListS2tNormalizationPipelinesRequest(buffer_arg) {
+  return ondewo_s2t_speech$to$text_pb.ListS2tNormalizationPipelinesRequest.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
+function serialize_ondewo_s2t_ListS2tNormalizationPipelinesResponse(arg) {
+  if (!(arg instanceof ondewo_s2t_speech$to$text_pb.ListS2tNormalizationPipelinesResponse)) {
+    throw new Error('Expected argument of type ondewo.s2t.ListS2tNormalizationPipelinesResponse');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_ondewo_s2t_ListS2tNormalizationPipelinesResponse(buffer_arg) {
+  return ondewo_s2t_speech$to$text_pb.ListS2tNormalizationPipelinesResponse.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
 function serialize_ondewo_s2t_ListS2tPipelinesRequest(arg) {
   if (!(arg instanceof ondewo_s2t_speech$to$text_pb.ListS2tPipelinesRequest)) {
     throw new Error('Expected argument of type ondewo.s2t.ListS2tPipelinesRequest');
@@ -153,15 +175,15 @@ function deserialize_ondewo_s2t_ListS2tPipelinesResponse(buffer_arg) {
   return ondewo_s2t_speech$to$text_pb.ListS2tPipelinesResponse.deserializeBinary(new Uint8Array(buffer_arg));
 }
 
-function serialize_ondewo_s2t_S2TGetServiceInfoResponse(arg) {
-  if (!(arg instanceof ondewo_s2t_speech$to$text_pb.S2TGetServiceInfoResponse)) {
-    throw new Error('Expected argument of type ondewo.s2t.S2TGetServiceInfoResponse');
+function serialize_ondewo_s2t_S2tGetServiceInfoResponse(arg) {
+  if (!(arg instanceof ondewo_s2t_speech$to$text_pb.S2tGetServiceInfoResponse)) {
+    throw new Error('Expected argument of type ondewo.s2t.S2tGetServiceInfoResponse');
   }
   return Buffer.from(arg.serializeBinary());
 }
 
-function deserialize_ondewo_s2t_S2TGetServiceInfoResponse(buffer_arg) {
-  return ondewo_s2t_speech$to$text_pb.S2TGetServiceInfoResponse.deserializeBinary(new Uint8Array(buffer_arg));
+function deserialize_ondewo_s2t_S2tGetServiceInfoResponse(buffer_arg) {
+  return ondewo_s2t_speech$to$text_pb.S2tGetServiceInfoResponse.deserializeBinary(new Uint8Array(buffer_arg));
 }
 
 function serialize_ondewo_s2t_S2tPipelineId(arg) {
@@ -293,7 +315,7 @@ createS2tPipeline: {
     responseSerialize: serialize_ondewo_s2t_S2tPipelineId,
     responseDeserialize: deserialize_ondewo_s2t_S2tPipelineId,
   },
-  // Deletes a pipeline corresponding to the id parsed in S2TPipelineId. If no corresponding id is
+  // Deletes a pipeline corresponding to the id parsed in S2tPipelineId. If no corresponding id is
 // found, raises ModuleNotFoundError in server.
 deleteS2tPipeline: {
     path: '/ondewo.s2t.Speech2Text/DeleteS2tPipeline',
@@ -361,11 +383,11 @@ getServiceInfo: {
     requestStream: false,
     responseStream: false,
     requestType: google_protobuf_empty_pb.Empty,
-    responseType: ondewo_s2t_speech$to$text_pb.S2TGetServiceInfoResponse,
+    responseType: ondewo_s2t_speech$to$text_pb.S2tGetServiceInfoResponse,
     requestSerialize: serialize_google_protobuf_Empty,
     requestDeserialize: deserialize_google_protobuf_Empty,
-    responseSerialize: serialize_ondewo_s2t_S2TGetServiceInfoResponse,
-    responseDeserialize: deserialize_ondewo_s2t_S2TGetServiceInfoResponse,
+    responseSerialize: serialize_ondewo_s2t_S2tGetServiceInfoResponse,
+    responseDeserialize: deserialize_ondewo_s2t_S2tGetServiceInfoResponse,
   },
   // Given a list of pipeline ids, returns a list of LanguageModelPipelineId messages containing the pipeline
 // id and a list of the language models loaded in the pipeline.
@@ -428,6 +450,18 @@ trainUserLanguageModel: {
     responseSerialize: serialize_google_protobuf_Empty,
     responseDeserialize: deserialize_google_protobuf_Empty,
   },
+  // Retrieves a list of normalization pipelines based on specific requirements.
+listS2tNormalizationPipelines: {
+    path: '/ondewo.s2t.Speech2Text/ListS2tNormalizationPipelines',
+    requestStream: false,
+    responseStream: false,
+    requestType: ondewo_s2t_speech$to$text_pb.ListS2tNormalizationPipelinesRequest,
+    responseType: ondewo_s2t_speech$to$text_pb.ListS2tNormalizationPipelinesResponse,
+    requestSerialize: serialize_ondewo_s2t_ListS2tNormalizationPipelinesRequest,
+    requestDeserialize: deserialize_ondewo_s2t_ListS2tNormalizationPipelinesRequest,
+    responseSerialize: serialize_ondewo_s2t_ListS2tNormalizationPipelinesResponse,
+    responseDeserialize: deserialize_ondewo_s2t_ListS2tNormalizationPipelinesResponse,
+  },
 };
 
-exports.Speech2TextClient = grpc.makeGenericClientConstructor(Speech2TextService);
+exports.Speech2TextClient = grpc.makeGenericClientConstructor(Speech2TextService, 'Speech2Text');

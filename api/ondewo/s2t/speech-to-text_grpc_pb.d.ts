@@ -25,6 +25,7 @@ interface ISpeech2TextService extends grpc.ServiceDefinition<grpc.UntypedService
     deleteUserLanguageModel: ISpeech2TextService_IDeleteUserLanguageModel;
     addDataToUserLanguageModel: ISpeech2TextService_IAddDataToUserLanguageModel;
     trainUserLanguageModel: ISpeech2TextService_ITrainUserLanguageModel;
+    listS2tNormalizationPipelines: ISpeech2TextService_IListS2tNormalizationPipelines;
 }
 
 interface ISpeech2TextService_ITranscribeFile extends grpc.MethodDefinition<ondewo_s2t_speech_to_text_pb.TranscribeFileRequest, ondewo_s2t_speech_to_text_pb.TranscribeFileResponse> {
@@ -108,14 +109,14 @@ interface ISpeech2TextService_IListS2tDomains extends grpc.MethodDefinition<onde
     responseSerialize: grpc.serialize<ondewo_s2t_speech_to_text_pb.ListS2tDomainsResponse>;
     responseDeserialize: grpc.deserialize<ondewo_s2t_speech_to_text_pb.ListS2tDomainsResponse>;
 }
-interface ISpeech2TextService_IGetServiceInfo extends grpc.MethodDefinition<google_protobuf_empty_pb.Empty, ondewo_s2t_speech_to_text_pb.S2TGetServiceInfoResponse> {
+interface ISpeech2TextService_IGetServiceInfo extends grpc.MethodDefinition<google_protobuf_empty_pb.Empty, ondewo_s2t_speech_to_text_pb.S2tGetServiceInfoResponse> {
     path: "/ondewo.s2t.Speech2Text/GetServiceInfo";
     requestStream: false;
     responseStream: false;
     requestSerialize: grpc.serialize<google_protobuf_empty_pb.Empty>;
     requestDeserialize: grpc.deserialize<google_protobuf_empty_pb.Empty>;
-    responseSerialize: grpc.serialize<ondewo_s2t_speech_to_text_pb.S2TGetServiceInfoResponse>;
-    responseDeserialize: grpc.deserialize<ondewo_s2t_speech_to_text_pb.S2TGetServiceInfoResponse>;
+    responseSerialize: grpc.serialize<ondewo_s2t_speech_to_text_pb.S2tGetServiceInfoResponse>;
+    responseDeserialize: grpc.deserialize<ondewo_s2t_speech_to_text_pb.S2tGetServiceInfoResponse>;
 }
 interface ISpeech2TextService_IListS2tLanguageModels extends grpc.MethodDefinition<ondewo_s2t_speech_to_text_pb.ListS2tLanguageModelsRequest, ondewo_s2t_speech_to_text_pb.ListS2tLanguageModelsResponse> {
     path: "/ondewo.s2t.Speech2Text/ListS2tLanguageModels";
@@ -162,6 +163,15 @@ interface ISpeech2TextService_ITrainUserLanguageModel extends grpc.MethodDefinit
     responseSerialize: grpc.serialize<google_protobuf_empty_pb.Empty>;
     responseDeserialize: grpc.deserialize<google_protobuf_empty_pb.Empty>;
 }
+interface ISpeech2TextService_IListS2tNormalizationPipelines extends grpc.MethodDefinition<ondewo_s2t_speech_to_text_pb.ListS2tNormalizationPipelinesRequest, ondewo_s2t_speech_to_text_pb.ListS2tNormalizationPipelinesResponse> {
+    path: "/ondewo.s2t.Speech2Text/ListS2tNormalizationPipelines";
+    requestStream: false;
+    responseStream: false;
+    requestSerialize: grpc.serialize<ondewo_s2t_speech_to_text_pb.ListS2tNormalizationPipelinesRequest>;
+    requestDeserialize: grpc.deserialize<ondewo_s2t_speech_to_text_pb.ListS2tNormalizationPipelinesRequest>;
+    responseSerialize: grpc.serialize<ondewo_s2t_speech_to_text_pb.ListS2tNormalizationPipelinesResponse>;
+    responseDeserialize: grpc.deserialize<ondewo_s2t_speech_to_text_pb.ListS2tNormalizationPipelinesResponse>;
+}
 
 export const Speech2TextService: ISpeech2TextService;
 
@@ -175,12 +185,13 @@ export interface ISpeech2TextServer {
     listS2tPipelines: grpc.handleUnaryCall<ondewo_s2t_speech_to_text_pb.ListS2tPipelinesRequest, ondewo_s2t_speech_to_text_pb.ListS2tPipelinesResponse>;
     listS2tLanguages: grpc.handleUnaryCall<ondewo_s2t_speech_to_text_pb.ListS2tLanguagesRequest, ondewo_s2t_speech_to_text_pb.ListS2tLanguagesResponse>;
     listS2tDomains: grpc.handleUnaryCall<ondewo_s2t_speech_to_text_pb.ListS2tDomainsRequest, ondewo_s2t_speech_to_text_pb.ListS2tDomainsResponse>;
-    getServiceInfo: grpc.handleUnaryCall<google_protobuf_empty_pb.Empty, ondewo_s2t_speech_to_text_pb.S2TGetServiceInfoResponse>;
+    getServiceInfo: grpc.handleUnaryCall<google_protobuf_empty_pb.Empty, ondewo_s2t_speech_to_text_pb.S2tGetServiceInfoResponse>;
     listS2tLanguageModels: grpc.handleUnaryCall<ondewo_s2t_speech_to_text_pb.ListS2tLanguageModelsRequest, ondewo_s2t_speech_to_text_pb.ListS2tLanguageModelsResponse>;
     createUserLanguageModel: grpc.handleUnaryCall<ondewo_s2t_speech_to_text_pb.CreateUserLanguageModelRequest, google_protobuf_empty_pb.Empty>;
     deleteUserLanguageModel: grpc.handleUnaryCall<ondewo_s2t_speech_to_text_pb.DeleteUserLanguageModelRequest, google_protobuf_empty_pb.Empty>;
     addDataToUserLanguageModel: grpc.handleUnaryCall<ondewo_s2t_speech_to_text_pb.AddDataToUserLanguageModelRequest, google_protobuf_empty_pb.Empty>;
     trainUserLanguageModel: grpc.handleUnaryCall<ondewo_s2t_speech_to_text_pb.TrainUserLanguageModelRequest, google_protobuf_empty_pb.Empty>;
+    listS2tNormalizationPipelines: grpc.handleUnaryCall<ondewo_s2t_speech_to_text_pb.ListS2tNormalizationPipelinesRequest, ondewo_s2t_speech_to_text_pb.ListS2tNormalizationPipelinesResponse>;
 }
 
 export interface ISpeech2TextClient {
@@ -211,9 +222,9 @@ export interface ISpeech2TextClient {
     listS2tDomains(request: ondewo_s2t_speech_to_text_pb.ListS2tDomainsRequest, callback: (error: grpc.ServiceError | null, response: ondewo_s2t_speech_to_text_pb.ListS2tDomainsResponse) => void): grpc.ClientUnaryCall;
     listS2tDomains(request: ondewo_s2t_speech_to_text_pb.ListS2tDomainsRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: ondewo_s2t_speech_to_text_pb.ListS2tDomainsResponse) => void): grpc.ClientUnaryCall;
     listS2tDomains(request: ondewo_s2t_speech_to_text_pb.ListS2tDomainsRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: ondewo_s2t_speech_to_text_pb.ListS2tDomainsResponse) => void): grpc.ClientUnaryCall;
-    getServiceInfo(request: google_protobuf_empty_pb.Empty, callback: (error: grpc.ServiceError | null, response: ondewo_s2t_speech_to_text_pb.S2TGetServiceInfoResponse) => void): grpc.ClientUnaryCall;
-    getServiceInfo(request: google_protobuf_empty_pb.Empty, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: ondewo_s2t_speech_to_text_pb.S2TGetServiceInfoResponse) => void): grpc.ClientUnaryCall;
-    getServiceInfo(request: google_protobuf_empty_pb.Empty, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: ondewo_s2t_speech_to_text_pb.S2TGetServiceInfoResponse) => void): grpc.ClientUnaryCall;
+    getServiceInfo(request: google_protobuf_empty_pb.Empty, callback: (error: grpc.ServiceError | null, response: ondewo_s2t_speech_to_text_pb.S2tGetServiceInfoResponse) => void): grpc.ClientUnaryCall;
+    getServiceInfo(request: google_protobuf_empty_pb.Empty, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: ondewo_s2t_speech_to_text_pb.S2tGetServiceInfoResponse) => void): grpc.ClientUnaryCall;
+    getServiceInfo(request: google_protobuf_empty_pb.Empty, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: ondewo_s2t_speech_to_text_pb.S2tGetServiceInfoResponse) => void): grpc.ClientUnaryCall;
     listS2tLanguageModels(request: ondewo_s2t_speech_to_text_pb.ListS2tLanguageModelsRequest, callback: (error: grpc.ServiceError | null, response: ondewo_s2t_speech_to_text_pb.ListS2tLanguageModelsResponse) => void): grpc.ClientUnaryCall;
     listS2tLanguageModels(request: ondewo_s2t_speech_to_text_pb.ListS2tLanguageModelsRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: ondewo_s2t_speech_to_text_pb.ListS2tLanguageModelsResponse) => void): grpc.ClientUnaryCall;
     listS2tLanguageModels(request: ondewo_s2t_speech_to_text_pb.ListS2tLanguageModelsRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: ondewo_s2t_speech_to_text_pb.ListS2tLanguageModelsResponse) => void): grpc.ClientUnaryCall;
@@ -229,6 +240,9 @@ export interface ISpeech2TextClient {
     trainUserLanguageModel(request: ondewo_s2t_speech_to_text_pb.TrainUserLanguageModelRequest, callback: (error: grpc.ServiceError | null, response: google_protobuf_empty_pb.Empty) => void): grpc.ClientUnaryCall;
     trainUserLanguageModel(request: ondewo_s2t_speech_to_text_pb.TrainUserLanguageModelRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: google_protobuf_empty_pb.Empty) => void): grpc.ClientUnaryCall;
     trainUserLanguageModel(request: ondewo_s2t_speech_to_text_pb.TrainUserLanguageModelRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: google_protobuf_empty_pb.Empty) => void): grpc.ClientUnaryCall;
+    listS2tNormalizationPipelines(request: ondewo_s2t_speech_to_text_pb.ListS2tNormalizationPipelinesRequest, callback: (error: grpc.ServiceError | null, response: ondewo_s2t_speech_to_text_pb.ListS2tNormalizationPipelinesResponse) => void): grpc.ClientUnaryCall;
+    listS2tNormalizationPipelines(request: ondewo_s2t_speech_to_text_pb.ListS2tNormalizationPipelinesRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: ondewo_s2t_speech_to_text_pb.ListS2tNormalizationPipelinesResponse) => void): grpc.ClientUnaryCall;
+    listS2tNormalizationPipelines(request: ondewo_s2t_speech_to_text_pb.ListS2tNormalizationPipelinesRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: ondewo_s2t_speech_to_text_pb.ListS2tNormalizationPipelinesResponse) => void): grpc.ClientUnaryCall;
 }
 
 export class Speech2TextClient extends grpc.Client implements ISpeech2TextClient {
@@ -259,9 +273,9 @@ export class Speech2TextClient extends grpc.Client implements ISpeech2TextClient
     public listS2tDomains(request: ondewo_s2t_speech_to_text_pb.ListS2tDomainsRequest, callback: (error: grpc.ServiceError | null, response: ondewo_s2t_speech_to_text_pb.ListS2tDomainsResponse) => void): grpc.ClientUnaryCall;
     public listS2tDomains(request: ondewo_s2t_speech_to_text_pb.ListS2tDomainsRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: ondewo_s2t_speech_to_text_pb.ListS2tDomainsResponse) => void): grpc.ClientUnaryCall;
     public listS2tDomains(request: ondewo_s2t_speech_to_text_pb.ListS2tDomainsRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: ondewo_s2t_speech_to_text_pb.ListS2tDomainsResponse) => void): grpc.ClientUnaryCall;
-    public getServiceInfo(request: google_protobuf_empty_pb.Empty, callback: (error: grpc.ServiceError | null, response: ondewo_s2t_speech_to_text_pb.S2TGetServiceInfoResponse) => void): grpc.ClientUnaryCall;
-    public getServiceInfo(request: google_protobuf_empty_pb.Empty, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: ondewo_s2t_speech_to_text_pb.S2TGetServiceInfoResponse) => void): grpc.ClientUnaryCall;
-    public getServiceInfo(request: google_protobuf_empty_pb.Empty, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: ondewo_s2t_speech_to_text_pb.S2TGetServiceInfoResponse) => void): grpc.ClientUnaryCall;
+    public getServiceInfo(request: google_protobuf_empty_pb.Empty, callback: (error: grpc.ServiceError | null, response: ondewo_s2t_speech_to_text_pb.S2tGetServiceInfoResponse) => void): grpc.ClientUnaryCall;
+    public getServiceInfo(request: google_protobuf_empty_pb.Empty, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: ondewo_s2t_speech_to_text_pb.S2tGetServiceInfoResponse) => void): grpc.ClientUnaryCall;
+    public getServiceInfo(request: google_protobuf_empty_pb.Empty, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: ondewo_s2t_speech_to_text_pb.S2tGetServiceInfoResponse) => void): grpc.ClientUnaryCall;
     public listS2tLanguageModels(request: ondewo_s2t_speech_to_text_pb.ListS2tLanguageModelsRequest, callback: (error: grpc.ServiceError | null, response: ondewo_s2t_speech_to_text_pb.ListS2tLanguageModelsResponse) => void): grpc.ClientUnaryCall;
     public listS2tLanguageModels(request: ondewo_s2t_speech_to_text_pb.ListS2tLanguageModelsRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: ondewo_s2t_speech_to_text_pb.ListS2tLanguageModelsResponse) => void): grpc.ClientUnaryCall;
     public listS2tLanguageModels(request: ondewo_s2t_speech_to_text_pb.ListS2tLanguageModelsRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: ondewo_s2t_speech_to_text_pb.ListS2tLanguageModelsResponse) => void): grpc.ClientUnaryCall;
@@ -277,4 +291,7 @@ export class Speech2TextClient extends grpc.Client implements ISpeech2TextClient
     public trainUserLanguageModel(request: ondewo_s2t_speech_to_text_pb.TrainUserLanguageModelRequest, callback: (error: grpc.ServiceError | null, response: google_protobuf_empty_pb.Empty) => void): grpc.ClientUnaryCall;
     public trainUserLanguageModel(request: ondewo_s2t_speech_to_text_pb.TrainUserLanguageModelRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: google_protobuf_empty_pb.Empty) => void): grpc.ClientUnaryCall;
     public trainUserLanguageModel(request: ondewo_s2t_speech_to_text_pb.TrainUserLanguageModelRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: google_protobuf_empty_pb.Empty) => void): grpc.ClientUnaryCall;
+    public listS2tNormalizationPipelines(request: ondewo_s2t_speech_to_text_pb.ListS2tNormalizationPipelinesRequest, callback: (error: grpc.ServiceError | null, response: ondewo_s2t_speech_to_text_pb.ListS2tNormalizationPipelinesResponse) => void): grpc.ClientUnaryCall;
+    public listS2tNormalizationPipelines(request: ondewo_s2t_speech_to_text_pb.ListS2tNormalizationPipelinesRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: ondewo_s2t_speech_to_text_pb.ListS2tNormalizationPipelinesResponse) => void): grpc.ClientUnaryCall;
+    public listS2tNormalizationPipelines(request: ondewo_s2t_speech_to_text_pb.ListS2tNormalizationPipelinesRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: ondewo_s2t_speech_to_text_pb.ListS2tNormalizationPipelinesResponse) => void): grpc.ClientUnaryCall;
 }

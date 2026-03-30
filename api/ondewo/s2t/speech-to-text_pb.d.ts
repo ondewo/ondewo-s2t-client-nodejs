@@ -1525,6 +1525,16 @@ export class TurnDetectionOptions extends jspb.Message {
     getLlmRequestTimeout(): number | undefined;
     setLlmRequestTimeout(value: number): TurnDetectionOptions;
 
+    hasLlmModelName(): boolean;
+    clearLlmModelName(): void;
+    getLlmModelName(): string | undefined;
+    setLlmModelName(value: string): TurnDetectionOptions;
+
+    hasLlmHeaders(): boolean;
+    clearLlmHeaders(): void;
+    getLlmHeaders(): google_protobuf_struct_pb.Struct | undefined;
+    setLlmHeaders(value?: google_protobuf_struct_pb.Struct): TurnDetectionOptions;
+
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): TurnDetectionOptions.AsObject;
     static toObject(includeInstance: boolean, msg: TurnDetectionOptions): TurnDetectionOptions.AsObject;
@@ -1542,6 +1552,8 @@ export namespace TurnDetectionOptions {
         llmHost?: string,
         llmPort?: number,
         llmRequestTimeout?: number,
+        llmModelName?: string,
+        llmHeaders?: google_protobuf_struct_pb.Struct.AsObject,
     }
 }
 
@@ -1785,6 +1797,16 @@ export class S2tLlmPostProcessing extends jspb.Message {
     getS2tLlmPostProcessingUserPromptOptions(): S2tLlmPostProcessingUserPromptOptions | undefined;
     setS2tLlmPostProcessingUserPromptOptions(value?: S2tLlmPostProcessingUserPromptOptions): S2tLlmPostProcessing;
 
+    hasLlmModelName(): boolean;
+    clearLlmModelName(): void;
+    getLlmModelName(): string | undefined;
+    setLlmModelName(value: string): S2tLlmPostProcessing;
+
+    hasLlmHeaders(): boolean;
+    clearLlmHeaders(): void;
+    getLlmHeaders(): google_protobuf_struct_pb.Struct | undefined;
+    setLlmHeaders(value?: google_protobuf_struct_pb.Struct): S2tLlmPostProcessing;
+
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): S2tLlmPostProcessing.AsObject;
     static toObject(includeInstance: boolean, msg: S2tLlmPostProcessing): S2tLlmPostProcessing.AsObject;
@@ -1809,6 +1831,8 @@ export namespace S2tLlmPostProcessing {
         s2tLlmPostProcessingNormalizationOptions?: S2tLlmPostProcessingNormalizationOptions.AsObject,
         s2tLlmPostProcessingSummarizationOptions?: S2tLlmPostProcessingSummarizationOptions.AsObject,
         s2tLlmPostProcessingUserPromptOptions?: S2tLlmPostProcessingUserPromptOptions.AsObject,
+        llmModelName?: string,
+        llmHeaders?: google_protobuf_struct_pb.Struct.AsObject,
     }
 }
 

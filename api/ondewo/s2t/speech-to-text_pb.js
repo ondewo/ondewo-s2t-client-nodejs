@@ -12723,7 +12723,9 @@ proto.ondewo.s2t.TurnDetectionOptions.toObject = function(includeInstance, msg) 
     fullUtteranceDeployment: jspb.Message.getBooleanFieldWithDefault(msg, 2, false),
     llmHost: jspb.Message.getFieldWithDefault(msg, 3, ""),
     llmPort: jspb.Message.getFieldWithDefault(msg, 4, 0),
-    llmRequestTimeout: jspb.Message.getFloatingPointFieldWithDefault(msg, 5, 0.0)
+    llmRequestTimeout: jspb.Message.getFloatingPointFieldWithDefault(msg, 5, 0.0),
+    llmModelName: jspb.Message.getFieldWithDefault(msg, 6, ""),
+    llmHeaders: (f = msg.getLlmHeaders()) && google_protobuf_struct_pb.Struct.toObject(includeInstance, f)
   };
 
   if (includeInstance) {
@@ -12779,6 +12781,15 @@ proto.ondewo.s2t.TurnDetectionOptions.deserializeBinaryFromReader = function(msg
     case 5:
       var value = /** @type {number} */ (reader.readFloat());
       msg.setLlmRequestTimeout(value);
+      break;
+    case 6:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setLlmModelName(value);
+      break;
+    case 7:
+      var value = new google_protobuf_struct_pb.Struct;
+      reader.readMessage(value,google_protobuf_struct_pb.Struct.deserializeBinaryFromReader);
+      msg.setLlmHeaders(value);
       break;
     default:
       reader.skipField();
@@ -12842,6 +12853,21 @@ proto.ondewo.s2t.TurnDetectionOptions.serializeBinaryToWriter = function(message
     writer.writeFloat(
       5,
       f
+    );
+  }
+  f = /** @type {string} */ (jspb.Message.getField(message, 6));
+  if (f != null) {
+    writer.writeString(
+      6,
+      f
+    );
+  }
+  f = message.getLlmHeaders();
+  if (f != null) {
+    writer.writeMessage(
+      7,
+      f,
+      google_protobuf_struct_pb.Struct.serializeBinaryToWriter
     );
   }
 };
@@ -13024,6 +13050,79 @@ proto.ondewo.s2t.TurnDetectionOptions.prototype.clearLlmRequestTimeout = functio
  */
 proto.ondewo.s2t.TurnDetectionOptions.prototype.hasLlmRequestTimeout = function() {
   return jspb.Message.getField(this, 5) != null;
+};
+
+
+/**
+ * optional string llm_model_name = 6;
+ * @return {string}
+ */
+proto.ondewo.s2t.TurnDetectionOptions.prototype.getLlmModelName = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 6, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.ondewo.s2t.TurnDetectionOptions} returns this
+ */
+proto.ondewo.s2t.TurnDetectionOptions.prototype.setLlmModelName = function(value) {
+  return jspb.Message.setField(this, 6, value);
+};
+
+
+/**
+ * Clears the field making it undefined.
+ * @return {!proto.ondewo.s2t.TurnDetectionOptions} returns this
+ */
+proto.ondewo.s2t.TurnDetectionOptions.prototype.clearLlmModelName = function() {
+  return jspb.Message.setField(this, 6, undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {boolean}
+ */
+proto.ondewo.s2t.TurnDetectionOptions.prototype.hasLlmModelName = function() {
+  return jspb.Message.getField(this, 6) != null;
+};
+
+
+/**
+ * optional google.protobuf.Struct llm_headers = 7;
+ * @return {?proto.google.protobuf.Struct}
+ */
+proto.ondewo.s2t.TurnDetectionOptions.prototype.getLlmHeaders = function() {
+  return /** @type{?proto.google.protobuf.Struct} */ (
+    jspb.Message.getWrapperField(this, google_protobuf_struct_pb.Struct, 7));
+};
+
+
+/**
+ * @param {?proto.google.protobuf.Struct|undefined} value
+ * @return {!proto.ondewo.s2t.TurnDetectionOptions} returns this
+*/
+proto.ondewo.s2t.TurnDetectionOptions.prototype.setLlmHeaders = function(value) {
+  return jspb.Message.setWrapperField(this, 7, value);
+};
+
+
+/**
+ * Clears the message field making it undefined.
+ * @return {!proto.ondewo.s2t.TurnDetectionOptions} returns this
+ */
+proto.ondewo.s2t.TurnDetectionOptions.prototype.clearLlmHeaders = function() {
+  return this.setLlmHeaders(undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {boolean}
+ */
+proto.ondewo.s2t.TurnDetectionOptions.prototype.hasLlmHeaders = function() {
+  return jspb.Message.getField(this, 7) != null;
 };
 
 
@@ -14397,7 +14496,9 @@ proto.ondewo.s2t.S2tLlmPostProcessing.toObject = function(includeInstance, msg) 
     s2tLlmPostProcessingInverseNormalizationOptions: (f = msg.getS2tLlmPostProcessingInverseNormalizationOptions()) && proto.ondewo.s2t.S2tLlmPostProcessingInverseNormalizationOptions.toObject(includeInstance, f),
     s2tLlmPostProcessingNormalizationOptions: (f = msg.getS2tLlmPostProcessingNormalizationOptions()) && proto.ondewo.s2t.S2tLlmPostProcessingNormalizationOptions.toObject(includeInstance, f),
     s2tLlmPostProcessingSummarizationOptions: (f = msg.getS2tLlmPostProcessingSummarizationOptions()) && proto.ondewo.s2t.S2tLlmPostProcessingSummarizationOptions.toObject(includeInstance, f),
-    s2tLlmPostProcessingUserPromptOptions: (f = msg.getS2tLlmPostProcessingUserPromptOptions()) && proto.ondewo.s2t.S2tLlmPostProcessingUserPromptOptions.toObject(includeInstance, f)
+    s2tLlmPostProcessingUserPromptOptions: (f = msg.getS2tLlmPostProcessingUserPromptOptions()) && proto.ondewo.s2t.S2tLlmPostProcessingUserPromptOptions.toObject(includeInstance, f),
+    llmModelName: jspb.Message.getFieldWithDefault(msg, 13, ""),
+    llmHeaders: (f = msg.getLlmHeaders()) && google_protobuf_struct_pb.Struct.toObject(includeInstance, f)
   };
 
   if (includeInstance) {
@@ -14490,6 +14591,15 @@ proto.ondewo.s2t.S2tLlmPostProcessing.deserializeBinaryFromReader = function(msg
       var value = new proto.ondewo.s2t.S2tLlmPostProcessingUserPromptOptions;
       reader.readMessage(value,proto.ondewo.s2t.S2tLlmPostProcessingUserPromptOptions.deserializeBinaryFromReader);
       msg.setS2tLlmPostProcessingUserPromptOptions(value);
+      break;
+    case 13:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setLlmModelName(value);
+      break;
+    case 14:
+      var value = new google_protobuf_struct_pb.Struct;
+      reader.readMessage(value,google_protobuf_struct_pb.Struct.deserializeBinaryFromReader);
+      msg.setLlmHeaders(value);
       break;
     default:
       reader.skipField();
@@ -14611,6 +14721,21 @@ proto.ondewo.s2t.S2tLlmPostProcessing.serializeBinaryToWriter = function(message
       12,
       f,
       proto.ondewo.s2t.S2tLlmPostProcessingUserPromptOptions.serializeBinaryToWriter
+    );
+  }
+  f = /** @type {string} */ (jspb.Message.getField(message, 13));
+  if (f != null) {
+    writer.writeString(
+      13,
+      f
+    );
+  }
+  f = message.getLlmHeaders();
+  if (f != null) {
+    writer.writeMessage(
+      14,
+      f,
+      google_protobuf_struct_pb.Struct.serializeBinaryToWriter
     );
   }
 };
@@ -15054,6 +15179,79 @@ proto.ondewo.s2t.S2tLlmPostProcessing.prototype.clearS2tLlmPostProcessingUserPro
  */
 proto.ondewo.s2t.S2tLlmPostProcessing.prototype.hasS2tLlmPostProcessingUserPromptOptions = function() {
   return jspb.Message.getField(this, 12) != null;
+};
+
+
+/**
+ * optional string llm_model_name = 13;
+ * @return {string}
+ */
+proto.ondewo.s2t.S2tLlmPostProcessing.prototype.getLlmModelName = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 13, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.ondewo.s2t.S2tLlmPostProcessing} returns this
+ */
+proto.ondewo.s2t.S2tLlmPostProcessing.prototype.setLlmModelName = function(value) {
+  return jspb.Message.setField(this, 13, value);
+};
+
+
+/**
+ * Clears the field making it undefined.
+ * @return {!proto.ondewo.s2t.S2tLlmPostProcessing} returns this
+ */
+proto.ondewo.s2t.S2tLlmPostProcessing.prototype.clearLlmModelName = function() {
+  return jspb.Message.setField(this, 13, undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {boolean}
+ */
+proto.ondewo.s2t.S2tLlmPostProcessing.prototype.hasLlmModelName = function() {
+  return jspb.Message.getField(this, 13) != null;
+};
+
+
+/**
+ * optional google.protobuf.Struct llm_headers = 14;
+ * @return {?proto.google.protobuf.Struct}
+ */
+proto.ondewo.s2t.S2tLlmPostProcessing.prototype.getLlmHeaders = function() {
+  return /** @type{?proto.google.protobuf.Struct} */ (
+    jspb.Message.getWrapperField(this, google_protobuf_struct_pb.Struct, 14));
+};
+
+
+/**
+ * @param {?proto.google.protobuf.Struct|undefined} value
+ * @return {!proto.ondewo.s2t.S2tLlmPostProcessing} returns this
+*/
+proto.ondewo.s2t.S2tLlmPostProcessing.prototype.setLlmHeaders = function(value) {
+  return jspb.Message.setWrapperField(this, 14, value);
+};
+
+
+/**
+ * Clears the message field making it undefined.
+ * @return {!proto.ondewo.s2t.S2tLlmPostProcessing} returns this
+ */
+proto.ondewo.s2t.S2tLlmPostProcessing.prototype.clearLlmHeaders = function() {
+  return this.setLlmHeaders(undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {boolean}
+ */
+proto.ondewo.s2t.S2tLlmPostProcessing.prototype.hasLlmHeaders = function() {
+  return jspb.Message.getField(this, 14) != null;
 };
 
 

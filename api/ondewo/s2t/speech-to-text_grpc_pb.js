@@ -264,9 +264,9 @@ function deserialize_ondewo_s2t_TranscribeStreamResponse(buffer_arg) {
 }
 
 
-// Speech-to-text service
+// <p>Speech-to-text service</p>
 var Speech2TextService = exports.Speech2TextService = {
-  // Transcribes an audio file
+  // <p>Transcribes an audio file</p>
 transcribeFile: {
     path: '/ondewo.s2t.Speech2Text/TranscribeFile',
     requestStream: false,
@@ -278,7 +278,7 @@ transcribeFile: {
     responseSerialize: serialize_ondewo_s2t_TranscribeFileResponse,
     responseDeserialize: deserialize_ondewo_s2t_TranscribeFileResponse,
   },
-  // Transcribes an audio stream.
+  // <p>Transcribes an audio stream.</p>
 transcribeStream: {
     path: '/ondewo.s2t.Speech2Text/TranscribeStream',
     requestStream: true,
@@ -290,8 +290,8 @@ transcribeStream: {
     responseSerialize: serialize_ondewo_s2t_TranscribeStreamResponse,
     responseDeserialize: deserialize_ondewo_s2t_TranscribeStreamResponse,
   },
-  // Gets a speech to text pipeline corresponding to the id specified in S2tPipelineId. If no corresponding id is
-// found, raises ModuleNotFoundError in server.
+  // <p>Gets a speech to text pipeline corresponding to the id specified in <code>S2tPipelineId</code>. If no corresponding id is
+// found, raises <code>ModuleNotFoundError</code> in server.</p>
 getS2tPipeline: {
     path: '/ondewo.s2t.Speech2Text/GetS2tPipeline',
     requestStream: false,
@@ -303,7 +303,7 @@ getS2tPipeline: {
     responseSerialize: serialize_ondewo_s2t_Speech2TextConfig,
     responseDeserialize: deserialize_ondewo_s2t_Speech2TextConfig,
   },
-  // Creates a new speech to text pipeline from a Speech2TextConfig and registers the new pipeline in the server.
+  // <p>Creates a new speech to text pipeline from a <code>Speech2TextConfig</code> and registers the new pipeline in the server.</p>
 createS2tPipeline: {
     path: '/ondewo.s2t.Speech2Text/CreateS2tPipeline',
     requestStream: false,
@@ -315,8 +315,8 @@ createS2tPipeline: {
     responseSerialize: serialize_ondewo_s2t_S2tPipelineId,
     responseDeserialize: deserialize_ondewo_s2t_S2tPipelineId,
   },
-  // Deletes a pipeline corresponding to the id parsed in S2tPipelineId. If no corresponding id is
-// found, raises ModuleNotFoundError in server.
+  // <p>Deletes a pipeline corresponding to the id parsed in <code>S2tPipelineId</code>. If no corresponding id is
+// found, raises <code>ModuleNotFoundError</code> in server.</p>
 deleteS2tPipeline: {
     path: '/ondewo.s2t.Speech2Text/DeleteS2tPipeline',
     requestStream: false,
@@ -328,8 +328,8 @@ deleteS2tPipeline: {
     responseSerialize: serialize_google_protobuf_Empty,
     responseDeserialize: deserialize_google_protobuf_Empty,
   },
-  // Updates a pipeline with the id specified in Speech2TextConfig with the new config. If no corresponding id is
-// found, raises ModuleNotFoundError in server.
+  // <p>Updates a pipeline with the id specified in <code>Speech2TextConfig</code> with the new config. If no corresponding id is
+// found, raises <code>ModuleNotFoundError</code> in server.</p>
 updateS2tPipeline: {
     path: '/ondewo.s2t.Speech2Text/UpdateS2tPipeline',
     requestStream: false,
@@ -341,7 +341,7 @@ updateS2tPipeline: {
     responseSerialize: serialize_google_protobuf_Empty,
     responseDeserialize: deserialize_google_protobuf_Empty,
   },
-  // Lists all speech to text pipelines.
+  // <p>Lists all speech to text pipelines.</p>
 listS2tPipelines: {
     path: '/ondewo.s2t.Speech2Text/ListS2tPipelines',
     requestStream: false,
@@ -353,7 +353,7 @@ listS2tPipelines: {
     responseSerialize: serialize_ondewo_s2t_ListS2tPipelinesResponse,
     responseDeserialize: deserialize_ondewo_s2t_ListS2tPipelinesResponse,
   },
-  // Returns a message containing a list of all languages for which there exist pipelines.
+  // <p>Returns a message containing a list of all languages for which there exist pipelines.</p>
 listS2tLanguages: {
     path: '/ondewo.s2t.Speech2Text/ListS2tLanguages',
     requestStream: false,
@@ -365,7 +365,7 @@ listS2tLanguages: {
     responseSerialize: serialize_ondewo_s2t_ListS2tLanguagesResponse,
     responseDeserialize: deserialize_ondewo_s2t_ListS2tLanguagesResponse,
   },
-  // Returns a message containing a list of all domains for which there exist pipelines.
+  // <p>Returns a message containing a list of all domains for which there exist pipelines.</p>
 listS2tDomains: {
     path: '/ondewo.s2t.Speech2Text/ListS2tDomains',
     requestStream: false,
@@ -377,7 +377,7 @@ listS2tDomains: {
     responseSerialize: serialize_ondewo_s2t_ListS2tDomainsResponse,
     responseDeserialize: deserialize_ondewo_s2t_ListS2tDomainsResponse,
   },
-  // Returns a message containing the version of the running speech to text server.
+  // <p>Returns a message containing the version of the running speech to text server.</p>
 getServiceInfo: {
     path: '/ondewo.s2t.Speech2Text/GetServiceInfo',
     requestStream: false,
@@ -389,8 +389,8 @@ getServiceInfo: {
     responseSerialize: serialize_ondewo_s2t_S2tGetServiceInfoResponse,
     responseDeserialize: deserialize_ondewo_s2t_S2tGetServiceInfoResponse,
   },
-  // Given a list of pipeline ids, returns a list of LanguageModelPipelineId messages containing the pipeline
-// id and a list of the language models loaded in the pipeline.
+  // <p>Given a list of pipeline ids, returns a list of <code>LanguageModelPipelineId</code> messages containing the pipeline
+// id and a list of the language models loaded in the pipeline.</p>
 listS2tLanguageModels: {
     path: '/ondewo.s2t.Speech2Text/ListS2tLanguageModels',
     requestStream: false,
@@ -402,7 +402,7 @@ listS2tLanguageModels: {
     responseSerialize: serialize_ondewo_s2t_ListS2tLanguageModelsResponse,
     responseDeserialize: deserialize_ondewo_s2t_ListS2tLanguageModelsResponse,
   },
-  // Create a user language model.
+  // <p>Create a user language model.</p>
 createUserLanguageModel: {
     path: '/ondewo.s2t.Speech2Text/CreateUserLanguageModel',
     requestStream: false,
@@ -414,7 +414,7 @@ createUserLanguageModel: {
     responseSerialize: serialize_google_protobuf_Empty,
     responseDeserialize: deserialize_google_protobuf_Empty,
   },
-  // Delete a user language model.
+  // <p>Delete a user language model.</p>
 deleteUserLanguageModel: {
     path: '/ondewo.s2t.Speech2Text/DeleteUserLanguageModel',
     requestStream: false,
@@ -426,7 +426,7 @@ deleteUserLanguageModel: {
     responseSerialize: serialize_google_protobuf_Empty,
     responseDeserialize: deserialize_google_protobuf_Empty,
   },
-  // Add data to a user language model.
+  // <p>Add data to a user language model.</p>
 addDataToUserLanguageModel: {
     path: '/ondewo.s2t.Speech2Text/AddDataToUserLanguageModel',
     requestStream: false,
@@ -438,7 +438,7 @@ addDataToUserLanguageModel: {
     responseSerialize: serialize_google_protobuf_Empty,
     responseDeserialize: deserialize_google_protobuf_Empty,
   },
-  // Train a user language model.
+  // <p>Train a user language model.</p>
 trainUserLanguageModel: {
     path: '/ondewo.s2t.Speech2Text/TrainUserLanguageModel',
     requestStream: false,
@@ -450,7 +450,7 @@ trainUserLanguageModel: {
     responseSerialize: serialize_google_protobuf_Empty,
     responseDeserialize: deserialize_google_protobuf_Empty,
   },
-  // Retrieves a list of normalization pipelines based on specific requirements.
+  // <p>Retrieves a list of normalization pipelines based on specific requirements.</p>
 listS2tNormalizationPipelines: {
     path: '/ondewo.s2t.Speech2Text/ListS2tNormalizationPipelines',
     requestStream: false,

@@ -2042,6 +2042,11 @@ export class S2tLlmPostProcessingTranslationOptions extends jspb.Message {
     getLanguage(): string | undefined;
     setLanguage(value: string): S2tLlmPostProcessingTranslationOptions;
 
+    hasPrompt(): boolean;
+    clearPrompt(): void;
+    getPrompt(): string | undefined;
+    setPrompt(value: string): S2tLlmPostProcessingTranslationOptions;
+
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): S2tLlmPostProcessingTranslationOptions.AsObject;
     static toObject(includeInstance: boolean, msg: S2tLlmPostProcessingTranslationOptions): S2tLlmPostProcessingTranslationOptions.AsObject;
@@ -2056,6 +2061,7 @@ export namespace S2tLlmPostProcessingTranslationOptions {
     export type AsObject = {
         active?: boolean,
         language?: string,
+        prompt?: string,
     }
 }
 
@@ -2184,6 +2190,11 @@ export class S2tLlmPostProcessingSummarizationOptions extends jspb.Message {
     getActive(): boolean | undefined;
     setActive(value: boolean): S2tLlmPostProcessingSummarizationOptions;
 
+    hasPrompt(): boolean;
+    clearPrompt(): void;
+    getPrompt(): string | undefined;
+    setPrompt(value: string): S2tLlmPostProcessingSummarizationOptions;
+
     hasMinChars(): boolean;
     clearMinChars(): void;
     getMinChars(): number | undefined;
@@ -2207,6 +2218,7 @@ export class S2tLlmPostProcessingSummarizationOptions extends jspb.Message {
 export namespace S2tLlmPostProcessingSummarizationOptions {
     export type AsObject = {
         active?: boolean,
+        prompt?: string,
         minChars?: number,
         maxChars?: number,
     }

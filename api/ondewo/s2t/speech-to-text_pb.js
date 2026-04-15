@@ -16758,7 +16758,8 @@ proto.ondewo.s2t.S2tLlmPostProcessingTranslationOptions.prototype.toObject = fun
 proto.ondewo.s2t.S2tLlmPostProcessingTranslationOptions.toObject = function(includeInstance, msg) {
   var f, obj = {
     active: jspb.Message.getBooleanFieldWithDefault(msg, 1, false),
-    language: jspb.Message.getFieldWithDefault(msg, 2, "")
+    language: jspb.Message.getFieldWithDefault(msg, 2, ""),
+    prompt: jspb.Message.getFieldWithDefault(msg, 3, "")
   };
 
   if (includeInstance) {
@@ -16803,6 +16804,10 @@ proto.ondewo.s2t.S2tLlmPostProcessingTranslationOptions.deserializeBinaryFromRea
       var value = /** @type {string} */ (reader.readString());
       msg.setLanguage(value);
       break;
+    case 3:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setPrompt(value);
+      break;
     default:
       reader.skipField();
       break;
@@ -16843,6 +16848,13 @@ proto.ondewo.s2t.S2tLlmPostProcessingTranslationOptions.serializeBinaryToWriter 
   if (f != null) {
     writer.writeString(
       2,
+      f
+    );
+  }
+  f = /** @type {string} */ (jspb.Message.getField(message, 3));
+  if (f != null) {
+    writer.writeString(
+      3,
       f
     );
   }
@@ -16918,6 +16930,42 @@ proto.ondewo.s2t.S2tLlmPostProcessingTranslationOptions.prototype.clearLanguage 
  */
 proto.ondewo.s2t.S2tLlmPostProcessingTranslationOptions.prototype.hasLanguage = function() {
   return jspb.Message.getField(this, 2) != null;
+};
+
+
+/**
+ * optional string prompt = 3;
+ * @return {string}
+ */
+proto.ondewo.s2t.S2tLlmPostProcessingTranslationOptions.prototype.getPrompt = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 3, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.ondewo.s2t.S2tLlmPostProcessingTranslationOptions} returns this
+ */
+proto.ondewo.s2t.S2tLlmPostProcessingTranslationOptions.prototype.setPrompt = function(value) {
+  return jspb.Message.setField(this, 3, value);
+};
+
+
+/**
+ * Clears the field making it undefined.
+ * @return {!proto.ondewo.s2t.S2tLlmPostProcessingTranslationOptions} returns this
+ */
+proto.ondewo.s2t.S2tLlmPostProcessingTranslationOptions.prototype.clearPrompt = function() {
+  return jspb.Message.setField(this, 3, undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {boolean}
+ */
+proto.ondewo.s2t.S2tLlmPostProcessingTranslationOptions.prototype.hasPrompt = function() {
+  return jspb.Message.getField(this, 3) != null;
 };
 
 
@@ -17862,8 +17910,9 @@ proto.ondewo.s2t.S2tLlmPostProcessingSummarizationOptions.prototype.toObject = f
 proto.ondewo.s2t.S2tLlmPostProcessingSummarizationOptions.toObject = function(includeInstance, msg) {
   var f, obj = {
     active: jspb.Message.getBooleanFieldWithDefault(msg, 1, false),
-    minChars: jspb.Message.getFieldWithDefault(msg, 2, 0),
-    maxChars: jspb.Message.getFieldWithDefault(msg, 3, 0)
+    prompt: jspb.Message.getFieldWithDefault(msg, 2, ""),
+    minChars: jspb.Message.getFieldWithDefault(msg, 3, 0),
+    maxChars: jspb.Message.getFieldWithDefault(msg, 4, 0)
   };
 
   if (includeInstance) {
@@ -17905,10 +17954,14 @@ proto.ondewo.s2t.S2tLlmPostProcessingSummarizationOptions.deserializeBinaryFromR
       msg.setActive(value);
       break;
     case 2:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setPrompt(value);
+      break;
+    case 3:
       var value = /** @type {number} */ (reader.readInt32());
       msg.setMinChars(value);
       break;
-    case 3:
+    case 4:
       var value = /** @type {number} */ (reader.readInt32());
       msg.setMaxChars(value);
       break;
@@ -17948,9 +18001,9 @@ proto.ondewo.s2t.S2tLlmPostProcessingSummarizationOptions.serializeBinaryToWrite
       f
     );
   }
-  f = /** @type {number} */ (jspb.Message.getField(message, 2));
+  f = /** @type {string} */ (jspb.Message.getField(message, 2));
   if (f != null) {
-    writer.writeInt32(
+    writer.writeString(
       2,
       f
     );
@@ -17959,6 +18012,13 @@ proto.ondewo.s2t.S2tLlmPostProcessingSummarizationOptions.serializeBinaryToWrite
   if (f != null) {
     writer.writeInt32(
       3,
+      f
+    );
+  }
+  f = /** @type {number} */ (jspb.Message.getField(message, 4));
+  if (f != null) {
+    writer.writeInt32(
+      4,
       f
     );
   }
@@ -18002,19 +18062,19 @@ proto.ondewo.s2t.S2tLlmPostProcessingSummarizationOptions.prototype.hasActive = 
 
 
 /**
- * optional int32 min_chars = 2;
- * @return {number}
+ * optional string prompt = 2;
+ * @return {string}
  */
-proto.ondewo.s2t.S2tLlmPostProcessingSummarizationOptions.prototype.getMinChars = function() {
-  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 2, 0));
+proto.ondewo.s2t.S2tLlmPostProcessingSummarizationOptions.prototype.getPrompt = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 2, ""));
 };
 
 
 /**
- * @param {number} value
+ * @param {string} value
  * @return {!proto.ondewo.s2t.S2tLlmPostProcessingSummarizationOptions} returns this
  */
-proto.ondewo.s2t.S2tLlmPostProcessingSummarizationOptions.prototype.setMinChars = function(value) {
+proto.ondewo.s2t.S2tLlmPostProcessingSummarizationOptions.prototype.setPrompt = function(value) {
   return jspb.Message.setField(this, 2, value);
 };
 
@@ -18023,7 +18083,7 @@ proto.ondewo.s2t.S2tLlmPostProcessingSummarizationOptions.prototype.setMinChars 
  * Clears the field making it undefined.
  * @return {!proto.ondewo.s2t.S2tLlmPostProcessingSummarizationOptions} returns this
  */
-proto.ondewo.s2t.S2tLlmPostProcessingSummarizationOptions.prototype.clearMinChars = function() {
+proto.ondewo.s2t.S2tLlmPostProcessingSummarizationOptions.prototype.clearPrompt = function() {
   return jspb.Message.setField(this, 2, undefined);
 };
 
@@ -18032,16 +18092,16 @@ proto.ondewo.s2t.S2tLlmPostProcessingSummarizationOptions.prototype.clearMinChar
  * Returns whether this field is set.
  * @return {boolean}
  */
-proto.ondewo.s2t.S2tLlmPostProcessingSummarizationOptions.prototype.hasMinChars = function() {
+proto.ondewo.s2t.S2tLlmPostProcessingSummarizationOptions.prototype.hasPrompt = function() {
   return jspb.Message.getField(this, 2) != null;
 };
 
 
 /**
- * optional int32 max_chars = 3;
+ * optional int32 min_chars = 3;
  * @return {number}
  */
-proto.ondewo.s2t.S2tLlmPostProcessingSummarizationOptions.prototype.getMaxChars = function() {
+proto.ondewo.s2t.S2tLlmPostProcessingSummarizationOptions.prototype.getMinChars = function() {
   return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 3, 0));
 };
 
@@ -18050,7 +18110,7 @@ proto.ondewo.s2t.S2tLlmPostProcessingSummarizationOptions.prototype.getMaxChars 
  * @param {number} value
  * @return {!proto.ondewo.s2t.S2tLlmPostProcessingSummarizationOptions} returns this
  */
-proto.ondewo.s2t.S2tLlmPostProcessingSummarizationOptions.prototype.setMaxChars = function(value) {
+proto.ondewo.s2t.S2tLlmPostProcessingSummarizationOptions.prototype.setMinChars = function(value) {
   return jspb.Message.setField(this, 3, value);
 };
 
@@ -18059,7 +18119,7 @@ proto.ondewo.s2t.S2tLlmPostProcessingSummarizationOptions.prototype.setMaxChars 
  * Clears the field making it undefined.
  * @return {!proto.ondewo.s2t.S2tLlmPostProcessingSummarizationOptions} returns this
  */
-proto.ondewo.s2t.S2tLlmPostProcessingSummarizationOptions.prototype.clearMaxChars = function() {
+proto.ondewo.s2t.S2tLlmPostProcessingSummarizationOptions.prototype.clearMinChars = function() {
   return jspb.Message.setField(this, 3, undefined);
 };
 
@@ -18068,8 +18128,44 @@ proto.ondewo.s2t.S2tLlmPostProcessingSummarizationOptions.prototype.clearMaxChar
  * Returns whether this field is set.
  * @return {boolean}
  */
-proto.ondewo.s2t.S2tLlmPostProcessingSummarizationOptions.prototype.hasMaxChars = function() {
+proto.ondewo.s2t.S2tLlmPostProcessingSummarizationOptions.prototype.hasMinChars = function() {
   return jspb.Message.getField(this, 3) != null;
+};
+
+
+/**
+ * optional int32 max_chars = 4;
+ * @return {number}
+ */
+proto.ondewo.s2t.S2tLlmPostProcessingSummarizationOptions.prototype.getMaxChars = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 4, 0));
+};
+
+
+/**
+ * @param {number} value
+ * @return {!proto.ondewo.s2t.S2tLlmPostProcessingSummarizationOptions} returns this
+ */
+proto.ondewo.s2t.S2tLlmPostProcessingSummarizationOptions.prototype.setMaxChars = function(value) {
+  return jspb.Message.setField(this, 4, value);
+};
+
+
+/**
+ * Clears the field making it undefined.
+ * @return {!proto.ondewo.s2t.S2tLlmPostProcessingSummarizationOptions} returns this
+ */
+proto.ondewo.s2t.S2tLlmPostProcessingSummarizationOptions.prototype.clearMaxChars = function() {
+  return jspb.Message.setField(this, 4, undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {boolean}
+ */
+proto.ondewo.s2t.S2tLlmPostProcessingSummarizationOptions.prototype.hasMaxChars = function() {
+  return jspb.Message.getField(this, 4) != null;
 };
 
 

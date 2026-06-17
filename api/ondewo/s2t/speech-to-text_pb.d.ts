@@ -1064,6 +1064,11 @@ export class AcousticModels extends jspb.Message {
     getS2tCloudServiceMicrosoft(): S2tCloudServiceMicrosoft | undefined;
     setS2tCloudServiceMicrosoft(value?: S2tCloudServiceMicrosoft): AcousticModels;
 
+    hasParakeet(): boolean;
+    clearParakeet(): void;
+    getParakeet(): Parakeet | undefined;
+    setParakeet(value?: Parakeet): AcousticModels;
+
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): AcousticModels.AsObject;
     static toObject(includeInstance: boolean, msg: AcousticModels): AcousticModels.AsObject;
@@ -1085,6 +1090,7 @@ export namespace AcousticModels {
         s2tCloudServiceDeepgram?: S2tCloudServiceDeepgram.AsObject,
         s2tCloudServiceGoogle?: S2tCloudServiceGoogle.AsObject,
         s2tCloudServiceMicrosoft?: S2tCloudServiceMicrosoft.AsObject,
+        parakeet?: Parakeet.AsObject,
     }
 }
 
@@ -1353,6 +1359,38 @@ export namespace Wav2VecTriton {
     }
 }
 
+export class Parakeet extends jspb.Message { 
+    getTritonModelName(): string;
+    setTritonModelName(value: string): Parakeet;
+    getTritonModelVersion(): string;
+    setTritonModelVersion(value: string): Parakeet;
+    getCheckStatusTimeout(): number;
+    setCheckStatusTimeout(value: number): Parakeet;
+    getTritonServerHost(): string;
+    setTritonServerHost(value: string): Parakeet;
+    getTritonServerPort(): number;
+    setTritonServerPort(value: number): Parakeet;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): Parakeet.AsObject;
+    static toObject(includeInstance: boolean, msg: Parakeet): Parakeet.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: Parakeet, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): Parakeet;
+    static deserializeBinaryFromReader(message: Parakeet, reader: jspb.BinaryReader): Parakeet;
+}
+
+export namespace Parakeet {
+    export type AsObject = {
+        tritonModelName: string,
+        tritonModelVersion: string,
+        checkStatusTimeout: number,
+        tritonServerHost: string,
+        tritonServerPort: number,
+    }
+}
+
 export class PtFiles extends jspb.Message { 
     getPath(): string;
     setPath(value: string): PtFiles;
@@ -1599,10 +1637,7 @@ export class OpenaiLlmOptions extends jspb.Message {
     clearStrictResponseValidation(): void;
     getStrictResponseValidation(): boolean | undefined;
     setStrictResponseValidation(value: boolean): OpenaiLlmOptions;
-
-    hasModel(): boolean;
-    clearModel(): void;
-    getModel(): string | undefined;
+    getModel(): string;
     setModel(value: string): OpenaiLlmOptions;
 
     hasFrequencyPenalty(): boolean;
@@ -1736,7 +1771,7 @@ export namespace OpenaiLlmOptions {
         defaultHeadersMap: Array<[string, string]>,
         defaultQuery?: google_protobuf_struct_pb.Struct.AsObject,
         strictResponseValidation?: boolean,
-        model?: string,
+        model: string,
         frequencyPenalty?: number,
 
         logitBiasMap: Array<[string, number]>,

@@ -77,12 +77,21 @@ export interface OfflineTokenLoginOptions {
 
 /** Parsed Keycloak token-endpoint response body (the fields this helper consumes). */
 interface TokenResponse {
+	/** The short-lived bearer access token. */
 	access_token: string;
+	/** The long-lived offline refresh token (may be rotated on each refresh). */
 	refresh_token: string;
+	/** The access-token lifetime in seconds. */
 	expires_in: number;
 }
 
-/** Builds the realm OIDC token endpoint URL, tolerating a trailing slash on `keycloakUrl`. */
+/**
+ * Builds the realm OIDC token endpoint URL, tolerating a trailing slash on `keycloakUrl`.
+ *
+ * @param keycloakUrl - The base Keycloak URL (a trailing slash is stripped).
+ * @param realm - The Keycloak realm whose token endpoint is targeted.
+ * @returns The fully qualified `…/realms/<realm>/protocol/openid-connect/token` URL.
+ */
 function buildTokenEndpoint(keycloakUrl: string, realm: string): string {
 	const base: string = String(keycloakUrl).replace(/\/+$/, '');
 	return base + '/realms/' + realm + '/protocol/openid-connect/token';
@@ -91,6 +100,12 @@ function buildTokenEndpoint(keycloakUrl: string, realm: string): string {
 /**
  * POSTs a url-encoded body to the Keycloak token endpoint and returns the parsed JSON, raising on a
  * non-2xx response or a body missing `access_token` / `refresh_token`.
+ *
+ * @param fetchImpl - The `fetch` implementation used to make the request.
+ * @param tokenEndpoint - The realm OIDC token endpoint URL to POST to.
+ * @param body - The url-encoded form body (grant type, client id, credentials/refresh token).
+ * @returns The parsed {@link TokenResponse} carrying the access and refresh tokens.
+ * @throws {Error} If the response status is non-2xx, or the body lacks an access or refresh token.
  */
 async function requestToken(
 	fetchImpl: typeof fetch,
@@ -137,6 +152,13 @@ export class OfflineTokenProvider {
 	private refreshTimer: ReturnType<typeof setTimeout> | null;
 	private stopped: boolean;
 
+	/**
+	 * Initializes the provider from a completed login and arms the first refresh.
+	 * Private: instances are created only via the static {@link OfflineTokenProvider.login}.
+	 *
+	 * @param options - The Keycloak/ROPC parameters supplied to `login`.
+	 * @param initial - The {@link TokenResponse} returned by the one-time login.
+	 */
 	private constructor(options: OfflineTokenLoginOptions, initial: TokenResponse) {
 		this.tokenEndpoint = buildTokenEndpoint(options.keycloakUrl, options.realm);
 		this.clientId = options.clientId;
@@ -157,6 +179,10 @@ export class OfflineTokenProvider {
 	/**
 	 * Performs the one-time ROPC + offline_access login and returns a started
 	 * provider whose access token is auto-refreshed in the background.
+	 *
+	 * @param options - The Keycloak/ROPC parameters (public client, no secret).
+	 * @returns A started {@link OfflineTokenProvider} holding a fresh access token.
+	 * @throws {Error} If the token request fails or returns a malformed body.
 	 */
 	public static async login(options: OfflineTokenLoginOptions): Promise<OfflineTokenProvider> {
 		/* c8 ignore next -- the global-fetch default cannot be hit hermetically; tests always inject fetchImpl */
@@ -173,12 +199,20 @@ export class OfflineTokenProvider {
 		return new OfflineTokenProvider(options, initial);
 	}
 
-	/** Returns the current (valid) access token. */
+	/**
+	 * Returns the current (valid) access token.
+	 *
+	 * @returns The current bearer access token.
+	 */
 	public getAccessToken(): string {
 		return this.accessToken;
 	}
 
-	/** Returns the ready-to-send `Authorization` header value (`Bearer <jwt>`). */
+	/**
+	 * Returns the ready-to-send `Authorization` header value (`Bearer <jwt>`).
+	 *
+	 * @returns The `Authorization` header value, e.g. `Bearer <jwt>`.
+	 */
 	public getAuthorizationHeader(): string {
 		return 'Bearer ' + this.accessToken;
 	}
@@ -186,6 +220,10 @@ export class OfflineTokenProvider {
 	/**
 	 * Sets `authorization: Bearer <jwt>` on the supplied gRPC `Metadata`-like
 	 * object and returns it (for chaining into a stub call).
+	 *
+	 * @typeParam T - The concrete {@link MetadataLike} type passed in.
+	 * @param metadata - The gRPC `Metadata`-like object to mutate.
+	 * @returns The same `metadata` object, now carrying the `authorization` header.
 	 */
 	public applyToMetadata<T extends MetadataLike>(metadata: T): T {
 		metadata.set('authorization', this.getAuthorizationHeader());
@@ -204,7 +242,13 @@ export class OfflineTokenProvider {
 		}
 	}
 
-	/** Exchanges the offline refresh token for a fresh access token immediately. */
+	/**
+	 * Exchanges the offline refresh token for a fresh access token immediately.
+	 *
+	 * @returns A promise that resolves once the access token has been refreshed
+	 *   (and the next background refresh re-scheduled).
+	 * @throws {Error} If the refresh request fails or returns a malformed body.
+	 */
 	public async refreshNow(): Promise<void> {
 		const body: URLSearchParams = new URLSearchParams({
 			grant_type: 'refresh_token',
@@ -220,7 +264,12 @@ export class OfflineTokenProvider {
 		this.scheduleRefresh(refreshed.expires_in);
 	}
 
-	/** Arms a single timer for the next refresh, clamped to the bounded deadline (when set). */
+	/**
+	 * Arms a single timer for the next refresh, clamped to the bounded deadline (when set).
+	 *
+	 * @param expiresInS - The lifetime in seconds of the access token just obtained;
+	 *   the timer fires `refreshSkewInS` seconds before this elapses.
+	 */
 	private scheduleRefresh(expiresInS: number): void {
 		/* c8 ignore next 3 -- defensive: stop() clears the only timer, so scheduleRefresh is never re-entered after stop */
 		if (this.stopped) {

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 // Unit tests for the D18 offline-token helper. Runs on the built-in node:test
 // runner with no network access -- the Keycloak token endpoint is mocked via an
 // injected `fetch` implementation. Node 22 strips the TypeScript types natively:
@@ -11,39 +10,80 @@ import { test as runTest } from 'node:test';
 import { login, OfflineTokenProvider } from './offlineTokenProvider.js';
 import type { MetadataLike } from './offlineTokenProvider.js';
 
+/** Base Keycloak URL used across the tests (no trailing slash). */
 const KEYCLOAK_URL: string = 'https://keycloak.example.com/auth';
+/** Keycloak realm under which the technical user lives. */
 const REALM: string = 'ondewo-ccai-platform';
+/** Public OIDC client id (no secret, Q1) the SDK authenticates as. */
 const CLIENT_ID: string = 'ondewo-nlu-cai-sdk-public';
+/** Technical-user username (2FA-exempt, D14). */
 const USERNAME: string = 'ondewo-nlu-cai-tech-myproject-bot';
+/** Technical-user password. */
 const PASSWORD: string = 'super-secret';
+/** The realm OIDC token endpoint the helper is expected to POST to. */
 const EXPECTED_TOKEN_ENDPOINT: string =
 	'https://keycloak.example.com/auth/realms/ondewo-ccai-platform/protocol/openid-connect/token';
 
+/**
+ * A canned Keycloak token-endpoint response replayed by the {@link buildFetchMock}
+ * queue. Every field is optional so a test can simulate a malformed body (e.g. a
+ * missing `access_token`) or an error status.
+ */
 interface CannedResponse {
+	/** The access token the mocked endpoint returns, if any. */
 	access_token?: string;
+	/** The offline refresh token the mocked endpoint returns, if any. */
 	refresh_token?: string;
+	/** The access-token lifetime in seconds, if any. */
 	expires_in?: number;
+	/** The HTTP status code to report; defaults to `200` when omitted. */
 	status?: number;
 }
 
+/** A single `fetch` invocation captured by {@link buildFetchMock} for later assertions. */
 interface CapturedCall {
+	/** The request URL the helper POSTed to. */
 	url: string;
+	/** The HTTP method used; defaults to `GET` when the init had none. */
 	method: string;
+	/** The url-encoded request body parsed into query parameters. */
 	params: URLSearchParams;
 }
 
+/** The injectable `fetch` stub plus the running log of calls made through it. */
 interface FetchMock {
+	/** A `fetch`-compatible implementation suitable for {@link OfflineTokenLoginOptions.fetchImpl}. */
 	fetchImpl: typeof fetch;
+	/** Every call made through {@link FetchMock.fetchImpl}, in invocation order. */
 	calls: CapturedCall[];
 }
 
-// Builds a mock `fetch` that records every call and replays a queue of canned
-// token-endpoint responses. No network is touched.
+/** The subset of the `fetch` `Response` shape the helper actually reads. */
+interface MockResponse {
+	/** Whether the status code is in the 2xx success range. */
+	ok: boolean;
+	/** The HTTP status code. */
+	status: number;
+	/** The HTTP status text. */
+	statusText: string;
+	/** Resolves to the parsed JSON body (the canned response). */
+	json(): Promise<CannedResponse | undefined>;
+	/** Resolves to the raw text body (the canned response serialized as JSON). */
+	text(): Promise<string>;
+}
+
+/**
+ * Builds a mock `fetch` that records every call and replays a queue of canned
+ * token-endpoint responses. No network is touched.
+ *
+ * @param responses - The canned responses to return, one per successive call, in order.
+ * @returns A {@link FetchMock} exposing the stub and the captured-call log.
+ */
 function buildFetchMock(responses: CannedResponse[]): FetchMock {
 	const calls: CapturedCall[] = [];
 	let index: number = 0;
 
-	const fetchImpl: any = (input: any, init: any): Promise<any> => {
+	const fetchImpl = (input: RequestInfo | URL, init?: RequestInit): Promise<MockResponse> => {
 		const bodyText: string = init && init.body ? String(init.body) : '';
 		calls.push({
 			url: String(input),
@@ -64,23 +104,41 @@ function buildFetchMock(responses: CannedResponse[]): FetchMock {
 		});
 	};
 
-	return { fetchImpl: fetchImpl as typeof fetch, calls: calls };
+	return { fetchImpl: fetchImpl as unknown as typeof fetch, calls: calls };
 }
 
-// Minimal in-memory stand-in for a gRPC `Metadata` object.
+/** Minimal in-memory stand-in for a gRPC `Metadata` object used by `applyToMetadata`. */
 class FakeMetadata implements MetadataLike {
+	/** The key/value header store the metadata mutations land in. */
 	public readonly store: Record<string, string> = {};
+
+	/**
+	 * Records a header on the in-memory {@link FakeMetadata.store}.
+	 *
+	 * @param key - The header name.
+	 * @param value - The header value.
+	 */
 	public set(key: string, value: string): void {
 		this.store[key] = value;
 	}
 }
 
+/**
+ * Resolves after the given delay, letting scheduled refresh timers fire.
+ *
+ * @param ms - The delay in milliseconds.
+ * @returns A promise that resolves once the delay has elapsed.
+ */
 function sleep(ms: number): Promise<void> {
 	return new Promise<void>((resolve: () => void): void => {
 		setTimeout(resolve, ms);
 	});
 }
 
+/**
+ * Verifies the one-time login POSTs ROPC credentials to the public client with
+ * the `offline_access` scope and never sends a client secret.
+ */
 runTest('login performs ROPC against the public client with offline_access scope', async (): Promise<void> => {
 	const mock: FetchMock = buildFetchMock([{ access_token: 'access-1', refresh_token: 'offline-1', expires_in: 300 }]);
 
@@ -110,6 +168,7 @@ runTest('login performs ROPC against the public client with offline_access scope
 	assert.equal(provider.getAuthorizationHeader(), 'Bearer access-1');
 });
 
+/** Verifies `applyToMetadata` writes the `authorization` header and returns the same object. */
 runTest('applyToMetadata sets the Authorization Bearer header', async (): Promise<void> => {
 	const mock: FetchMock = buildFetchMock([{ access_token: 'access-1', refresh_token: 'offline-1', expires_in: 300 }]);
 	const provider: OfflineTokenProvider = await login({
@@ -128,6 +187,7 @@ runTest('applyToMetadata sets the Authorization Bearer header', async (): Promis
 	assert.equal(metadata.store['authorization'], 'Bearer access-1');
 });
 
+/** Verifies `refreshNow` exchanges the offline refresh token and adopts the rotated one. */
 runTest('refreshNow exchanges the offline refresh token and rotates it', async (): Promise<void> => {
 	const mock: FetchMock = buildFetchMock([
 		{ access_token: 'access-1', refresh_token: 'offline-1', expires_in: 300 },
@@ -157,6 +217,7 @@ runTest('refreshNow exchanges the offline refresh token and rotates it', async (
 	assert.equal(provider.getAccessToken(), 'access-2');
 });
 
+/** Verifies the background loop refreshes the access token before it expires. */
 runTest('the background loop auto-refreshes the access token before expiry', async (): Promise<void> => {
 	const mock: FetchMock = buildFetchMock([
 		// expires_in tiny so the scheduled refresh fires almost immediately.
@@ -181,6 +242,7 @@ runTest('the background loop auto-refreshes the access token before expiry', asy
 	assert.equal(provider.getAccessToken(), 'access-2');
 });
 
+/** Verifies the auto-refresh loop stops once the bounded `tokenExpirationInS` window has elapsed. */
 runTest('the auto-refresh loop stops after tokenExpirationInS elapses', async (): Promise<void> => {
 	const mock: FetchMock = buildFetchMock([
 		{ access_token: 'access-1', refresh_token: 'offline-1', expires_in: 0 },
@@ -208,6 +270,7 @@ runTest('the auto-refresh loop stops after tokenExpirationInS elapses', async ()
 	assert.equal(provider.getAccessToken(), 'access-1');
 });
 
+/** Verifies a non-2xx token response surfaces a descriptive error carrying the HTTP status. */
 runTest('a failed token request raises a descriptive error', async (): Promise<void> => {
 	const mock: FetchMock = buildFetchMock([{ status: 401, access_token: '', refresh_token: '', expires_in: 0 }]);
 
@@ -225,6 +288,7 @@ runTest('a failed token request raises a descriptive error', async (): Promise<v
 	);
 });
 
+/** Verifies a 2xx token response missing `access_token` is rejected as malformed. */
 runTest('a token response missing access_token is rejected', async (): Promise<void> => {
 	const mock: FetchMock = buildFetchMock([{ refresh_token: 'offline-1', expires_in: 300 }]);
 
@@ -242,6 +306,7 @@ runTest('a token response missing access_token is rejected', async (): Promise<v
 	);
 });
 
+/** Verifies a trailing slash on `keycloakUrl` does not duplicate the path separator. */
 runTest('a trailing slash in keycloakUrl does not duplicate the path separator', async (): Promise<void> => {
 	const mock: FetchMock = buildFetchMock([{ access_token: 'access-1', refresh_token: 'offline-1', expires_in: 300 }]);
 	const provider: OfflineTokenProvider = await login({
@@ -256,6 +321,7 @@ runTest('a trailing slash in keycloakUrl does not duplicate the path separator',
 	assert.equal(mock.calls[0].url, EXPECTED_TOKEN_ENDPOINT);
 });
 
+/** Verifies the static `OfflineTokenProvider.login` is the entry point the `login()` wrapper delegates to. */
 runTest('OfflineTokenProvider.login is the static entry point used by login()', async (): Promise<void> => {
 	const mock: FetchMock = buildFetchMock([{ access_token: 'access-1', refresh_token: 'offline-1', expires_in: 300 }]);
 	const provider: OfflineTokenProvider = await OfflineTokenProvider.login({

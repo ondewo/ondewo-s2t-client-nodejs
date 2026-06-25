@@ -38,11 +38,28 @@
 // gRPC stubs.
 'use strict';
 
+/**
+ * Builds the realm OIDC token endpoint URL, tolerating a trailing slash on `keycloakUrl`.
+ *
+ * @param {string} keycloakUrl the base Keycloak URL (a trailing slash is stripped).
+ * @param {string} realm the Keycloak realm whose token endpoint is targeted.
+ * @returns {string} the fully qualified `…/realms/<realm>/protocol/openid-connect/token` URL.
+ */
 function buildTokenEndpoint(keycloakUrl, realm) {
 	var base = String(keycloakUrl).replace(/\/+$/, '');
 	return base + '/realms/' + realm + '/protocol/openid-connect/token';
 }
 
+/**
+ * POSTs a url-encoded body to the Keycloak token endpoint and returns the parsed JSON, raising on a
+ * non-2xx response or a body missing `access_token` / `refresh_token`.
+ *
+ * @param {typeof fetch} fetchImpl the `fetch` implementation used to make the request.
+ * @param {string} tokenEndpoint the realm OIDC token endpoint URL to POST to.
+ * @param {URLSearchParams} body the url-encoded form body (grant type, client id, credentials/refresh token).
+ * @returns {Promise<object>} the parsed token response carrying the access and refresh tokens.
+ * @throws {Error} if the response status is non-2xx, or the body lacks an access or refresh token.
+ */
 async function requestToken(fetchImpl, tokenEndpoint, body) {
 	var response = await fetchImpl(tokenEndpoint, {
 		method: 'POST',
@@ -72,6 +89,13 @@ async function requestToken(fetchImpl, tokenEndpoint, body) {
  * no longer needed to clear the background refresh timer.
  */
 class OfflineTokenProvider {
+	/**
+	 * Initializes the provider from a completed login and arms the first refresh.
+	 * Private: instances are created only via the static `OfflineTokenProvider.login`.
+	 *
+	 * @param {object} options the Keycloak/ROPC parameters supplied to `login`.
+	 * @param {object} initial the token response returned by the one-time login.
+	 */
 	constructor(options, initial) {
 		this.tokenEndpoint = buildTokenEndpoint(options.keycloakUrl, options.realm);
 		this.clientId = options.clientId;
@@ -90,6 +114,10 @@ class OfflineTokenProvider {
 	/**
 	 * Performs the one-time ROPC + offline_access login and returns a started
 	 * provider whose access token is auto-refreshed in the background.
+	 *
+	 * @param {object} options the Keycloak/ROPC parameters (public client, no secret).
+	 * @returns {Promise<OfflineTokenProvider>} a started provider holding a fresh access token.
+	 * @throws {Error} if the token request fails or returns a malformed body.
 	 */
 	static async login(options) {
 		var fetchImpl = options.fetchImpl === undefined ? fetch : options.fetchImpl;
@@ -105,12 +133,20 @@ class OfflineTokenProvider {
 		return new OfflineTokenProvider(options, initial);
 	}
 
-	/** Returns the current (valid) access token. */
+	/**
+	 * Returns the current (valid) access token.
+	 *
+	 * @returns {string} the current bearer access token.
+	 */
 	getAccessToken() {
 		return this.accessToken;
 	}
 
-	/** Returns the ready-to-send `Authorization` header value (`Bearer <jwt>`). */
+	/**
+	 * Returns the ready-to-send `Authorization` header value (`Bearer <jwt>`).
+	 *
+	 * @returns {string} the `Authorization` header value, e.g. `Bearer <jwt>`.
+	 */
 	getAuthorizationHeader() {
 		return 'Bearer ' + this.accessToken;
 	}
@@ -118,6 +154,9 @@ class OfflineTokenProvider {
 	/**
 	 * Sets `authorization: Bearer <jwt>` on the supplied gRPC `Metadata`-like
 	 * object and returns it (for chaining into a stub call).
+	 *
+	 * @param {object} metadata the gRPC `Metadata`-like object to mutate.
+	 * @returns {object} the same `metadata` object, now carrying the `authorization` header.
 	 */
 	applyToMetadata(metadata) {
 		metadata.set('authorization', this.getAuthorizationHeader());
@@ -136,7 +175,13 @@ class OfflineTokenProvider {
 		}
 	}
 
-	/** Exchanges the offline refresh token for a fresh access token immediately. */
+	/**
+	 * Exchanges the offline refresh token for a fresh access token immediately.
+	 *
+	 * @returns {Promise<void>} resolves once the access token has been refreshed
+	 *   (and the next background refresh re-scheduled).
+	 * @throws {Error} if the refresh request fails or returns a malformed body.
+	 */
 	async refreshNow() {
 		var body = new URLSearchParams({
 			grant_type: 'refresh_token',
@@ -152,6 +197,13 @@ class OfflineTokenProvider {
 		this.scheduleRefresh(refreshed.expires_in);
 	}
 
+	/**
+	 * Arms a single timer for the next refresh, clamped to the bounded deadline (when set).
+	 *
+	 * @param {number} expiresInS the lifetime in seconds of the access token just obtained;
+	 *   the timer fires `refreshSkewInS` seconds before this elapses.
+	 * @returns {void}
+	 */
 	scheduleRefresh(expiresInS) {
 		var self = this;
 		if (this.stopped) {

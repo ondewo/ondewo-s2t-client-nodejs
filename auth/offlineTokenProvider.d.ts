@@ -51,18 +51,34 @@ export class OfflineTokenProvider {
 	/**
 	 * Performs the one-time ROPC + `offline_access` login and returns a started
 	 * provider whose access token is auto-refreshed in the background.
+	 *
+	 * @param options - The Keycloak/ROPC parameters (public client, no secret).
+	 * @returns A started `OfflineTokenProvider` holding a fresh access token.
+	 * @throws {Error} If the token request fails or returns a malformed body.
 	 */
 	static login(options: OfflineTokenLoginOptions): Promise<OfflineTokenProvider>;
 
-	/** Returns the current (valid) access token. */
+	/**
+	 * Returns the current (valid) access token.
+	 *
+	 * @returns The current bearer access token.
+	 */
 	getAccessToken(): string;
 
-	/** Returns the ready-to-send `Authorization` header value (`Bearer <jwt>`). */
+	/**
+	 * Returns the ready-to-send `Authorization` header value (`Bearer <jwt>`).
+	 *
+	 * @returns The `Authorization` header value, e.g. `Bearer <jwt>`.
+	 */
 	getAuthorizationHeader(): string;
 
 	/**
 	 * Sets `authorization: Bearer <jwt>` on the supplied gRPC `Metadata`-like
 	 * object and returns it (for chaining into a stub call).
+	 *
+	 * @typeParam T - The concrete `MetadataLike` type passed in.
+	 * @param metadata - The gRPC `Metadata`-like object to mutate.
+	 * @returns The same `metadata` object, now carrying the `authorization` header.
 	 */
 	applyToMetadata<T extends MetadataLike>(metadata: T): T;
 
@@ -72,7 +88,13 @@ export class OfflineTokenProvider {
 	 */
 	stop(): void;
 
-	/** Exchanges the offline refresh token for a fresh access token immediately. */
+	/**
+	 * Exchanges the offline refresh token for a fresh access token immediately.
+	 *
+	 * @returns A promise that resolves once the access token has been refreshed
+	 *   (and the next background refresh re-scheduled).
+	 * @throws {Error} If the refresh request fails or returns a malformed body.
+	 */
 	refreshNow(): Promise<void>;
 }
 

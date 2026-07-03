@@ -159,7 +159,7 @@ class OfflineTokenProvider {
 	 * @returns {object} the same `metadata` object, now carrying the `authorization` header.
 	 */
 	applyToMetadata(metadata) {
-		metadata.set('authorization', this.getAuthorizationHeader());
+		metadata.set('Authorization', this.getAuthorizationHeader());
 		return metadata;
 	}
 

@@ -184,7 +184,7 @@ runTest('applyToMetadata sets the Authorization Bearer header', async (): Promis
 	const metadata: FakeMetadata = new FakeMetadata();
 	const returned: FakeMetadata = provider.applyToMetadata(metadata);
 	assert.equal(returned, metadata);
-	assert.equal(metadata.store['authorization'], 'Bearer access-1');
+	assert.equal(metadata.store['Authorization'], 'Bearer access-1');
 });
 
 /** Verifies `refreshNow` exchanges the offline refresh token and adopts the rotated one. */

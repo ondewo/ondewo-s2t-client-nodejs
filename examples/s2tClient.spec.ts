@@ -35,7 +35,7 @@ class FakeAuthProvider implements BearerAuthProvider {
 	 * @returns The same metadata object, now carrying the bearer header.
 	 */
 	public applyToMetadata(metadata: grpc.Metadata): grpc.Metadata {
-		metadata.set('authorization', BEARER_TOKEN);
+		metadata.set('Authorization', BEARER_TOKEN);
 		return metadata;
 	}
 }
@@ -97,7 +97,7 @@ class FakeStub implements S2tServiceStub {
 /** `buildAuthMetadata` must stamp the provider's bearer header onto fresh metadata. */
 runTest('buildAuthMetadata attaches the bearer authorization header', (): void => {
 	const metadata: grpc.Metadata = buildAuthMetadata(new FakeAuthProvider());
-	assert.deepEqual(metadata.get('authorization'), [BEARER_TOKEN]);
+	assert.deepEqual(metadata.get('Authorization'), [BEARER_TOKEN]);
 });
 
 /** `getServiceInfo` must forward an Empty request plus the auth metadata and resolve the version. */
@@ -110,7 +110,7 @@ runTest('getServiceInfo forwards the auth metadata and resolves the server versi
 
 	assert.ok(stub.serviceInfoRequest instanceof Empty);
 	assert.equal(stub.serviceInfoMetadata, metadata);
-	assert.deepEqual(stub.serviceInfoMetadata?.get('authorization'), [BEARER_TOKEN]);
+	assert.deepEqual(stub.serviceInfoMetadata?.get('Authorization'), [BEARER_TOKEN]);
 	assert.equal(response.getVersion(), SERVER_VERSION);
 });
 

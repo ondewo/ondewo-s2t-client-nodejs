@@ -95,15 +95,15 @@ export function buildAuthMetadata(authProvider: BearerAuthProvider): grpc.Metada
 /** Promise-based convenience wrapper around a `Speech2TextClient`. */
 export class S2tClient {
 	private readonly stub: S2tServiceStub;
-	private readonly metadata: grpc.Metadata;
+	private readonly authProvider: BearerAuthProvider;
 
 	/**
 	 * @param stub - The (real or faked) S2T service stub to call.
-	 * @param metadata - The gRPC metadata (carrying the bearer header) sent with every call.
+	 * @param authProvider - The bearer-token provider whose fresh header is stamped onto every call.
 	 */
-	public constructor(stub: S2tServiceStub, metadata: grpc.Metadata) {
+	public constructor(stub: S2tServiceStub, authProvider: BearerAuthProvider) {
 		this.stub = stub;
-		this.metadata = metadata;
+		this.authProvider = authProvider;
 	}
 
 	/**
@@ -123,7 +123,7 @@ export class S2tClient {
 			credentials = grpc.credentials.createInsecure();
 		}
 		const stub: S2tServiceStub = new Speech2TextClient(address, credentials);
-		return new S2tClient(stub, buildAuthMetadata(authProvider));
+		return new S2tClient(stub, authProvider);
 	}
 
 	/**
@@ -137,7 +137,7 @@ export class S2tClient {
 			(resolve: (value: S2tGetServiceInfoResponse) => void, reject: (reason: grpc.ServiceError) => void): void => {
 				this.stub.getServiceInfo(
 					request,
-					this.metadata,
+					buildAuthMetadata(this.authProvider),
 					(error: grpc.ServiceError | null, response: S2tGetServiceInfoResponse): void => {
 						if (error !== null) {
 							reject(error);
@@ -164,7 +164,7 @@ export class S2tClient {
 			(resolve: (value: Speech2TextConfig[]) => void, reject: (reason: grpc.ServiceError) => void): void => {
 				this.stub.listS2tPipelines(
 					request,
-					this.metadata,
+					buildAuthMetadata(this.authProvider),
 					(error: grpc.ServiceError | null, response: ListS2tPipelinesResponse): void => {
 						if (error !== null) {
 							reject(error);

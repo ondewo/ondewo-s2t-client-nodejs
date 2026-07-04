@@ -159,7 +159,9 @@ class OfflineTokenProvider {
 	 * @returns {object} the same `metadata` object, now carrying the `authorization` header.
 	 */
 	applyToMetadata(metadata) {
-		metadata.set('Authorization', this.getAuthorizationHeader());
+		// Native gRPC (grpc-python / @grpc/grpc-js) requires an all-lowercase
+		// header key; a capital `Authorization` is rejected at call time.
+		metadata.set('authorization', this.getAuthorizationHeader());
 		return metadata;
 	}
 

@@ -35,7 +35,7 @@ class FakeAuthProvider implements BearerAuthProvider {
 	 * @returns The same metadata object, now carrying the bearer header.
 	 */
 	public applyToMetadata(metadata: grpc.Metadata): grpc.Metadata {
-		metadata.set('Authorization', BEARER_TOKEN);
+		metadata.set('authorization', BEARER_TOKEN);
 		return metadata;
 	}
 }
@@ -97,20 +97,18 @@ class FakeStub implements S2tServiceStub {
 /** `buildAuthMetadata` must stamp the provider's bearer header onto fresh metadata. */
 runTest('buildAuthMetadata attaches the bearer authorization header', (): void => {
 	const metadata: grpc.Metadata = buildAuthMetadata(new FakeAuthProvider());
-	assert.deepEqual(metadata.get('Authorization'), [BEARER_TOKEN]);
+	assert.deepEqual(metadata.get('authorization'), [BEARER_TOKEN]);
 });
 
 /** `getServiceInfo` must forward an Empty request plus the auth metadata and resolve the version. */
 runTest('getServiceInfo forwards the auth metadata and resolves the server version', async (): Promise<void> => {
 	const stub: FakeStub = new FakeStub();
-	const metadata: grpc.Metadata = buildAuthMetadata(new FakeAuthProvider());
-	const client: S2tClient = new S2tClient(stub, metadata);
+	const client: S2tClient = new S2tClient(stub, new FakeAuthProvider());
 
 	const response: S2tGetServiceInfoResponse = await client.getServiceInfo();
 
 	assert.ok(stub.serviceInfoRequest instanceof Empty);
-	assert.equal(stub.serviceInfoMetadata, metadata);
-	assert.deepEqual(stub.serviceInfoMetadata?.get('Authorization'), [BEARER_TOKEN]);
+	assert.deepEqual(stub.serviceInfoMetadata?.get('authorization'), [BEARER_TOKEN]);
 	assert.equal(response.getVersion(), SERVER_VERSION);
 });
 
@@ -122,7 +120,7 @@ runTest('getServiceInfo rejects when the gRPC call errors', async (): Promise<vo
 		details: 'boom',
 		metadata: new grpc.Metadata()
 	});
-	const client: S2tClient = new S2tClient(stub, new grpc.Metadata());
+	const client: S2tClient = new S2tClient(stub, new FakeAuthProvider());
 
 	await assert.rejects((): Promise<S2tGetServiceInfoResponse> => client.getServiceInfo(), /boom/);
 });
@@ -131,7 +129,7 @@ runTest('getServiceInfo rejects when the gRPC call errors', async (): Promise<vo
 runTest('listS2tPipelines sets the language filter and maps the pipeline configs', async (): Promise<void> => {
 	const stub: FakeStub = new FakeStub();
 	stub.pipelineConfigs = [new Speech2TextConfig(), new Speech2TextConfig()];
-	const client: S2tClient = new S2tClient(stub, new grpc.Metadata());
+	const client: S2tClient = new S2tClient(stub, new FakeAuthProvider());
 
 	const configs: Speech2TextConfig[] = await client.listS2tPipelines([LANGUAGE]);
 

@@ -168,8 +168,11 @@ runTest('login performs ROPC against the public client with offline_access scope
 	assert.equal(provider.getAuthorizationHeader(), 'Bearer access-1');
 });
 
-/** Verifies `applyToMetadata` writes the `authorization` header and returns the same object. */
-runTest('applyToMetadata sets the Authorization Bearer header', async (): Promise<void> => {
+/**
+ * Verifies `applyToMetadata` writes the bearer header under the all-lowercase
+ * `authorization` key (native gRPC rejects a capital key) and returns the same object.
+ */
+runTest('applyToMetadata sets the lowercase authorization Bearer header', async (): Promise<void> => {
 	const mock: FetchMock = buildFetchMock([{ access_token: 'access-1', refresh_token: 'offline-1', expires_in: 300 }]);
 	const provider: OfflineTokenProvider = await login({
 		keycloakUrl: KEYCLOAK_URL,
@@ -184,7 +187,10 @@ runTest('applyToMetadata sets the Authorization Bearer header', async (): Promis
 	const metadata: FakeMetadata = new FakeMetadata();
 	const returned: FakeMetadata = provider.applyToMetadata(metadata);
 	assert.equal(returned, metadata);
-	assert.equal(metadata.store['Authorization'], 'Bearer access-1');
+	// The key MUST be all-lowercase for native gRPC; a capital variant must not leak.
+	assert.equal(metadata.store['authorization'], 'Bearer access-1');
+	assert.equal(metadata.store['Authorization'], undefined);
+	assert.deepEqual(Object.keys(metadata.store), ['authorization']);
 });
 
 /** Verifies `refreshNow` exchanges the offline refresh token and adopts the rotated one. */

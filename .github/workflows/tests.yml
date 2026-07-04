@@ -24,3 +24,6 @@ jobs:
       # node's built-in test runner under c8 with a 100% line-coverage gate.
       - name: Unit tests + 100% line-coverage gate on hand-written code
         run: npm test
+
+      - name: Type-check + run example mock tests
+        run: npm run typecheck:examples && npm run test:examples

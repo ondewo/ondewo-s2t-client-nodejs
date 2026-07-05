@@ -82,6 +82,31 @@ async function requestToken(fetchImpl, tokenEndpoint, body) {
 }
 
 /**
+ * Builds the default `fetch` used when no `fetchImpl` is injected.
+ *
+ * With `verifySsl` `true` (the default) this is simply the global `fetch`, so the
+ * Keycloak token request performs normal TLS certificate verification. With
+ * `verifySsl` `false`, a cached undici `Agent` configured with
+ * `rejectUnauthorized: false` is attached to every request as its `dispatcher`, so
+ * the token call skips TLS certificate verification (opt-in insecure; Node-only).
+ * The dispatcher is built once here and reused for the login and all refreshes;
+ * the secure default never loads undici.
+ *
+ * @param {boolean} verifySsl whether to verify the Keycloak server's TLS certificate.
+ * @returns {typeof fetch} a `fetch` implementation bound to the chosen TLS-verification behaviour.
+ */
+function createDefaultFetch(verifySsl) {
+	if (verifySsl) {
+		return fetch;
+	}
+	var Agent = require('undici').Agent;
+	var dispatcher = new Agent({ connect: { rejectUnauthorized: false } });
+	return function (input, init) {
+		return fetch(input, Object.assign({}, init, { dispatcher: dispatcher }));
+	};
+}
+
+/**
  * Long-lived access-token provider backed by a Keycloak offline token.
  *
  * Obtain an instance via the module-level `login(...)` (or the static
@@ -102,7 +127,8 @@ class OfflineTokenProvider {
 		this.refreshSkewInMs = (options.refreshSkewInS === undefined ? 30 : options.refreshSkewInS) * 1000;
 		this.deadlineEpochMs =
 			options.tokenExpirationInS === undefined ? null : Date.now() + options.tokenExpirationInS * 1000;
-		this.fetchImpl = options.fetchImpl === undefined ? fetch : options.fetchImpl;
+		this.fetchImpl =
+			options.fetchImpl === undefined ? createDefaultFetch(options.keycloakVerifySsl !== false) : options.fetchImpl;
 
 		this.accessToken = initial.access_token;
 		this.refreshToken = initial.refresh_token;
@@ -120,7 +146,8 @@ class OfflineTokenProvider {
 	 * @throws {Error} if the token request fails or returns a malformed body.
 	 */
 	static async login(options) {
-		var fetchImpl = options.fetchImpl === undefined ? fetch : options.fetchImpl;
+		var fetchImpl =
+			options.fetchImpl === undefined ? createDefaultFetch(options.keycloakVerifySsl !== false) : options.fetchImpl;
 		var tokenEndpoint = buildTokenEndpoint(options.keycloakUrl, options.realm);
 		var body = new URLSearchParams({
 			grant_type: 'password',

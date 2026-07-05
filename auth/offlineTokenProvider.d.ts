@@ -37,6 +37,13 @@ export interface OfflineTokenLoginOptions {
 	 * tests to mock the token endpoint without network access.
 	 */
 	fetchImpl?: typeof fetch;
+	/**
+	 * When `false`, disable TLS certificate verification on the Keycloak token
+	 * request (opt-in insecure, for a self-signed local Envoy). Defaults to `true`
+	 * (secure). Ignored when a custom `fetchImpl` is injected. Node-only (undici
+	 * dispatcher), so it is a no-op in a browser bundle.
+	 */
+	keycloakVerifySsl?: boolean;
 }
 
 /**

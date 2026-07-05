@@ -73,6 +73,14 @@ export interface OfflineTokenLoginOptions {
 	 * tests to mock the token endpoint without network access.
 	 */
 	fetchImpl?: typeof fetch;
+	/**
+	 * When `false`, DISABLE TLS certificate verification on the Keycloak token
+	 * request (opt-in insecure, for a self-signed local Envoy at
+	 * `https://localhost:12001/auth`). Defaults to `true` (verify — secure, unchanged
+	 * behaviour). Ignored when a custom `fetchImpl` is injected. Node-only:
+	 * implemented via an undici dispatcher, so it is a no-op in a browser bundle.
+	 */
+	keycloakVerifySsl?: boolean;
 }
 
 /** Parsed Keycloak token-endpoint response body (the fields this helper consumes). */
@@ -134,6 +142,32 @@ async function requestToken(
 }
 
 /**
+ * Builds the default `fetch` used when no `fetchImpl` is injected.
+ *
+ * With `verifySsl` `true` (the default) this is simply the global `fetch`, so the
+ * Keycloak token request performs normal TLS certificate verification. With
+ * `verifySsl` `false`, a cached undici `Agent` configured with
+ * `rejectUnauthorized: false` is attached to every request as its `dispatcher`, so
+ * the token call skips TLS certificate verification (opt-in insecure; Node-only).
+ * The dispatcher is built once here and reused for the login and all refreshes;
+ * the secure default never loads undici.
+ *
+ * @param verifySsl - Whether to verify the Keycloak server's TLS certificate.
+ * @returns A `fetch` implementation bound to the chosen TLS-verification behaviour.
+ */
+function createDefaultFetch(verifySsl: boolean): typeof fetch {
+	if (verifySsl) {
+		return fetch;
+	}
+	// Lazy require keeps undici out of the default (secure) code path.
+	// eslint-disable-next-line @typescript-eslint/no-require-imports
+	const { Agent } = require('undici') as { Agent: new (options: unknown) => unknown };
+	const dispatcher: unknown = new Agent({ connect: { rejectUnauthorized: false } });
+	return (input: RequestInfo | URL, init?: RequestInit): Promise<Response> =>
+		fetch(input, { ...init, dispatcher } as RequestInit);
+}
+
+/**
  * Long-lived access-token provider backed by a Keycloak offline token.
  *
  * Obtain an instance via the module-level `login(...)` (or the static
@@ -166,8 +200,8 @@ export class OfflineTokenProvider {
 			(options.refreshSkewInS === undefined ? DEFAULT_REFRESH_SKEW_IN_S : options.refreshSkewInS) * 1000;
 		this.deadlineEpochMs =
 			options.tokenExpirationInS === undefined ? null : Date.now() + options.tokenExpirationInS * 1000;
-		/* c8 ignore next -- the global-fetch default cannot be hit hermetically; tests always inject fetchImpl */
-		this.fetchImpl = options.fetchImpl === undefined ? fetch : options.fetchImpl;
+		this.fetchImpl =
+			options.fetchImpl === undefined ? createDefaultFetch(options.keycloakVerifySsl !== false) : options.fetchImpl;
 
 		this.accessToken = initial.access_token;
 		this.refreshToken = initial.refresh_token;
@@ -185,8 +219,8 @@ export class OfflineTokenProvider {
 	 * @throws {Error} If the token request fails or returns a malformed body.
 	 */
 	public static async login(options: OfflineTokenLoginOptions): Promise<OfflineTokenProvider> {
-		/* c8 ignore next -- the global-fetch default cannot be hit hermetically; tests always inject fetchImpl */
-		const fetchImpl: typeof fetch = options.fetchImpl === undefined ? fetch : options.fetchImpl;
+		const fetchImpl: typeof fetch =
+			options.fetchImpl === undefined ? createDefaultFetch(options.keycloakVerifySsl !== false) : options.fetchImpl;
 		const tokenEndpoint: string = buildTokenEndpoint(options.keycloakUrl, options.realm);
 		const body: URLSearchParams = new URLSearchParams({
 			grant_type: 'password',

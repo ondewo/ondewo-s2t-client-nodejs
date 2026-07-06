@@ -35,17 +35,24 @@ npm run typecheck:examples
 
 ## Run the end-to-end example (against a live server)
 
-Configure the endpoint and technical-user credentials via environment variables
-(or an `examples/examples.env` file):
+Configure the endpoint and technical-user credentials in
+[`examples/environment.env`](./environment.env), which the example loads via
+`dotenv` (path resolved relative to the script). The canonical variables are:
 
 ```shell
-ONDEWO_KEYCLOAK_URL=https://keycloak.example.com/auth
-ONDEWO_KEYCLOAK_REALM=ondewo-ccai-platform
-ONDEWO_KEYCLOAK_CLIENT_ID=ondewo-nlu-cai-sdk-public
-ONDEWO_KEYCLOAK_USERNAME=<technical-user>
-ONDEWO_KEYCLOAK_PASSWORD=<password>
-ONDEWO_S2T_HOST=localhost
-ONDEWO_S2T_PORT=50051
+# Connection
+ONDEWO_HOST=localhost
+ONDEWO_PORT=50051
+# Secure channel
+ONDEWO_USE_SECURE_CHANNEL=false
+ONDEWO_GRPC_CERT=
+# Keycloak
+KEYCLOAK_URL=https://keycloak.example.com/auth
+KEYCLOAK_REALM=ondewo-ccai-platform
+KEYCLOAK_CLIENT_ID=ondewo-nlu-cai-sdk-public
+KEYCLOAK_USER_NAME=<technical-user>
+KEYCLOAK_PASSWORD=<password>
+KEYCLOAK_VERIFY_SSL=true
 ```
 
 Then compile and run:

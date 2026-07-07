@@ -16,7 +16,24 @@ const compat = new FlatCompat({
 
 export default [
 	{
-		ignores: ['**/api/', 'src/ondewo-s2t-api', '**/ondewo-proto-compiler', '**/*.mjs']
+		ignores: [
+			'**/*.spec.ts',
+			'npm/auth/offlineTokenProvider.d.ts',
+			'npm/auth/offlineTokenProvider.js',
+			'.test-build/offlineTokenProvider.js',
+			'.test-build/offlineTokenProvider.spec.js',
+			'.test-build/s2tClient.js',
+			'.test-build/s2tClient.spec.js',
+			'**/api/',
+			'src/ondewo-s2t-api',
+			'**/ondewo-proto-compiler',
+			'**/*.mjs',
+			// Hand-shipped auth runtime + typings: same generated-artifact shape as
+			// the proto stubs in api/ (CommonJS .js + companion .d.ts), linted via
+			// their TypeScript .spec.ts; not authored against the .ts-source rules.
+			'auth/offlineTokenProvider.js',
+			'auth/offlineTokenProvider.d.ts'
+		]
 	},
 	...compat.extends(
 		'plugin:@typescript-eslint/recommended',

@@ -13,3 +13,7 @@ ondewo-s2t-api/*
 
 .isort.cfg
 grpc_cert
+
+# auth provider test build + coverage artifacts (see .github/workflows/tests.yml)
+.test-build/
+coverage/

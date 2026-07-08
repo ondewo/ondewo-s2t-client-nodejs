@@ -67,8 +67,6 @@ npm
 └── README.md
 ```
 
-[comment]: <> 'START OF GITHUB README'
-
 ## Build
 
 The `make build` command is dependent on 2 `repositories` and their speciefied `version`:
@@ -94,23 +92,33 @@ The repository is published to GitHub and NPM by the Automated Release Process o
 TODO after PR merge:
 
 - checkout master
+
   ```shell
   git checkout master
   ```
+
 - pull newest state
+
   ```shell
+
   git pull
   ```
+
 - Adjust `ONDEWO_S2T_VERSION` in the `Makefile` <br><br>
 - Add new Release Notes to `src/RELEASE.md` in following format:
+
   ```
   ## Release ONDEWO S2T Nodejs Client X.X.X    <----- Beginning of Notes
 
+
   ...<NOTES>...
+
 
   *****************                             <----- End of Notes
   ```
+
 - release
+
   ```shell
   make ondewo_release
   ```
@@ -121,10 +129,7 @@ The release process can be divided into 6 Steps:
 1. `build` specified version of the `ondewo-s2t-api`
 2. `commit and push` all changes in code resulting from the `build`
 3. Publish the created `npm` folder to `npmjs.com`
-4. Create and push the `release branch` e.g. `release/1.3.20`
-5. Create and push the `release tag` e.g. `1.3.20`
-6. Create a new `Release` on GitHub
+4. Create and push the `release tag` e.g. `1.3.20`
+5. Create a new `Release` on GitHub
 
 > :warning: The Release Automation checks if the build has created all the proto-code files, but it does not check the code-integrity. Please build and test the generated code prior to starting the release process.
-
-[comment]: <> 'END OF GITHUB README'

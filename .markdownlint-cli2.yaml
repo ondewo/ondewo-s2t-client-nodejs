@@ -6,6 +6,7 @@ config:
   MD013: false
   # MD033 no-inline-html: docs embed <p>/<code> HTML tags.
   MD033: false
+  MD053: false
   # MD040 fenced-code-language: README embeds plain directory-tree / output blocks.
   MD040: false
   # MD041 first-line-heading: README opens with the HTML branding/logo header.

@@ -17,3 +17,22 @@ npm/
 dist/
 .test-build/
 .test-build-examples/
+
+# Release-critical markdown: prettier rewrites `[comment]: <> (START OF GITHUB README)` into
+# `[comment]: <> 'START OF GITHUB README'`. The Makefile slices the published README between those
+# markers (`perl -ne 'print if /START OF GITHUB README/../END OF GITHUB README/'` over src/README.md,
+# applied to the root copy), so a rewrite desynchronises the two files and mis-slices npm/README.md.
+README.md
+
+# Config files prettier would reformat on every `make prettier -w` run. Rewriting
+# .pre-commit-config.yaml mid-commit is fatal: `pre-commit run` then aborts with
+# "Your pre-commit configuration is unstaged" and the commit fails. Markdown style is owned by
+# markdownlint-cli2, not prettier.
+.ci-package.json
+.markdownlint-cli2.yaml
+.pre-commit-config.yaml
+CLAUDE.md
+
+# c8 coverage output (gitignored, but `make prettier -w` in .husky/pre-commit would rewrite it)
+coverage/
+.nyc_output/

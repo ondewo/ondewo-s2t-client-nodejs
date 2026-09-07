@@ -1809,6 +1809,20 @@ export class VoiceActivityDetection extends jspb.Message {
     getPyannote(): Pyannote | undefined;
     setPyannote(value?: Pyannote): VoiceActivityDetection;
 
+    hasSilero(): boolean;
+    clearSilero(): void;
+    getSilero(): Silero | undefined;
+    setSilero(value?: Silero): VoiceActivityDetection;
+
+    hasWespeakerTsd(): boolean;
+    clearWespeakerTsd(): void;
+    getWespeakerTsd(): WespeakerTsd | undefined;
+    setWespeakerTsd(value?: WespeakerTsd): VoiceActivityDetection;
+    getVadMethod(): VadMethod;
+    setVadMethod(value: VadMethod): VoiceActivityDetection;
+    getTsdMethod(): TsdMethod;
+    setTsdMethod(value: TsdMethod): VoiceActivityDetection;
+
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): VoiceActivityDetection.AsObject;
     static toObject(includeInstance: boolean, msg: VoiceActivityDetection): VoiceActivityDetection.AsObject;
@@ -1824,6 +1838,10 @@ export namespace VoiceActivityDetection {
         active: string,
         samplingRate: number,
         pyannote?: Pyannote.AsObject,
+        silero?: Silero.AsObject,
+        wespeakerTsd?: WespeakerTsd.AsObject,
+        vadMethod: VadMethod,
+        tsdMethod: TsdMethod,
     }
 }
 
@@ -1859,6 +1877,103 @@ export namespace Pyannote {
         minDurationOn: number,
         tritonServerHost: string,
         tritonServerPort: number,
+    }
+}
+
+export class Silero extends jspb.Message { 
+    getModelName(): string;
+    setModelName(value: string): Silero;
+    getMinAudioSize(): number;
+    setMinAudioSize(value: number): Silero;
+
+    hasThreshold(): boolean;
+    clearThreshold(): void;
+    getThreshold(): number | undefined;
+    setThreshold(value: number): Silero;
+
+    hasMinSpeechDurationMs(): boolean;
+    clearMinSpeechDurationMs(): void;
+    getMinSpeechDurationMs(): number | undefined;
+    setMinSpeechDurationMs(value: number): Silero;
+
+    hasMinSilenceDurationMs(): boolean;
+    clearMinSilenceDurationMs(): void;
+    getMinSilenceDurationMs(): number | undefined;
+    setMinSilenceDurationMs(value: number): Silero;
+
+    hasSpeechPadMs(): boolean;
+    clearSpeechPadMs(): void;
+    getSpeechPadMs(): number | undefined;
+    setSpeechPadMs(value: number): Silero;
+    getTritonServerHost(): string;
+    setTritonServerHost(value: string): Silero;
+    getTritonServerPort(): number;
+    setTritonServerPort(value: number): Silero;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): Silero.AsObject;
+    static toObject(includeInstance: boolean, msg: Silero): Silero.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: Silero, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): Silero;
+    static deserializeBinaryFromReader(message: Silero, reader: jspb.BinaryReader): Silero;
+}
+
+export namespace Silero {
+    export type AsObject = {
+        modelName: string,
+        minAudioSize: number,
+        threshold?: number,
+        minSpeechDurationMs?: number,
+        minSilenceDurationMs?: number,
+        speechPadMs?: number,
+        tritonServerHost: string,
+        tritonServerPort: number,
+    }
+}
+
+export class WespeakerTsd extends jspb.Message { 
+    getActive(): boolean;
+    setActive(value: boolean): WespeakerTsd;
+    getModelName(): string;
+    setModelName(value: string): WespeakerTsd;
+    getTritonServerHost(): string;
+    setTritonServerHost(value: string): WespeakerTsd;
+    getTritonServerPort(): number;
+    setTritonServerPort(value: number): WespeakerTsd;
+
+    hasSimilarityThreshold(): boolean;
+    clearSimilarityThreshold(): void;
+    getSimilarityThreshold(): number | undefined;
+    setSimilarityThreshold(value: number): WespeakerTsd;
+
+    hasMinAudioLength(): boolean;
+    clearMinAudioLength(): void;
+    getMinAudioLength(): number | undefined;
+    setMinAudioLength(value: number): WespeakerTsd;
+    getReferenceMaxLength(): number;
+    setReferenceMaxLength(value: number): WespeakerTsd;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): WespeakerTsd.AsObject;
+    static toObject(includeInstance: boolean, msg: WespeakerTsd): WespeakerTsd.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: WespeakerTsd, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): WespeakerTsd;
+    static deserializeBinaryFromReader(message: WespeakerTsd, reader: jspb.BinaryReader): WespeakerTsd;
+}
+
+export namespace WespeakerTsd {
+    export type AsObject = {
+        active: boolean,
+        modelName: string,
+        tritonServerHost: string,
+        tritonServerPort: number,
+        similarityThreshold?: number,
+        minAudioLength?: number,
+        referenceMaxLength: number,
     }
 }
 
@@ -2549,4 +2664,17 @@ export enum ReasoningEffort {
     REASONING_EFFORT_LOW = 2,
     REASONING_EFFORT_MEDIUM = 3,
     REASONING_EFFORT_HIGH = 4,
+}
+
+export enum VadMethod {
+    VAD_METHOD_UNSPECIFIED = 0,
+    VAD_METHOD_PYANNOTE = 1,
+    VAD_METHOD_SILERO = 2,
+}
+
+export enum TsdMethod {
+    TSD_METHOD_UNSPECIFIED = 0,
+    TSD_METHOD_NONE = 1,
+    TSD_METHOD_PYANNOTE = 2,
+    TSD_METHOD_WESPEAKER = 3,
 }

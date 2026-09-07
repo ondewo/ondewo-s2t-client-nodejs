@@ -113,8 +113,11 @@ script drives `tsc` with explicit flags and `--ignoreConfig`.
 **`auth/offlineTokenProvider.js` and `.d.ts` are NOT `tsc` output.** They are hand-maintained
 ES5-style CommonJS twins (tab-indented, prettier-formatted, licence header, `module.exports = {...}`).
 `npm run build:auth` regenerates them from the `.ts` and produces a ~390-line diff, so **do not run
-it to "sync"** — edit all three files by hand and keep them semantically identical. `npm test`
-covers only the `.ts`; the `.js` is what consumers actually execute.
+it to "sync"** — edit all three files by hand and keep them semantically identical. The `.js` twin
+is what npm consumers actually execute (`make create_npm_package` copies `auth/` wholesale), so
+`npm test` runs the whole behavioural suite against BOTH files and the c8 gate measures both —
+see below. `.d.ts` is the one member of the trio no test executes; the parity case at the end of
+`offlineTokenProvider.spec.ts` compares only the two runtime surfaces.
 
 ## Tests and the coverage gate
 
@@ -131,15 +134,42 @@ make prettier               ## format check; PRETTIER_WRITE=-w to apply
 `.test-build/api -> ../api` (the examples import `../api/...`) and asserts the three expected
 outputs exist, so a silently empty build fails instead of vacuously passing.
 
-The gate is
-`c8 --check-coverage --statements 100 --lines 100 --branches 100 --functions 100 --all --src .test-build --include '.test-build/auth/**/*.js' --include '.test-build/examples/**/*.js' --exclude '**/*.spec.js'`.
+The gate is the `test` script in `package.json`, quoted here verbatim (`node -e
+"console.log(require('./package.json').scripts.test)"` prints it):
+
+```shell
+c8 --check-coverage --statements 100 --lines 100 --branches 100 --functions 100 \
+  --temp-directory .test-build/.c8 --all --src .test-build --src auth \
+  --include '.test-build/auth/**/*.js' --include '.test-build/examples/**/*.js' \
+  --include 'auth/**/*.js' --exclude '**/*.spec.js' \
+  --reporter text node --test .test-build/*/*.spec.js
+```
 
 - **`--all` + directory globs are the point.** With the old single-file `--include
   '**/offlineTokenProvider.js'` the gate failed OPEN: a new untested hand-written file was simply
   not measured. Verified after the change by dropping a trivial `examples/untestedProbe.ts` into the
   tree — the run went red (`untestedProbe.ts 0% | 1-3`). Keep `--all` and keep the globs
   directory-shaped.
-- Coverage is source-mapped back to the `.ts` (hence `--sourceMap` in `build:tests`).
+- **`--src auth` + `--include 'auth/**/*.js'` are what make the gate see the HAND-WRITTEN `.js`.**
+  `--src` is the directory list `--all` walks; with `.test-build` as the only entry the gate could
+  only ever measure `tsc` output, so `auth/offlineTokenProvider.js` — the file npm ships — was
+  invisible and an untested `auth/*.js` was silently ignored (measured: an `auth/untestedTwin.js`
+  probe left the report at `All files | 100 | 100 | 100 | 100`, exit 0). With both `--src` entries
+  the same probe turns the run red (`untestedTwin.js | 0 | 0 | 0 | 0 | 1-3`, exit 1). Do not drop
+  either flag.
+- **The behavioural suite is run twice.** `offlineTokenProvider.spec.ts` wraps every case in
+  `runProviderSuite(implementation, mod)` and calls it with the compiled `.ts` and with the twin
+  `require`d from the repo root (`resolvePath(__dirname, '..', '..', 'auth', ...)`) — 17 cases each,
+  named `ts: …` / `js: …`, plus one shape-parity case. Verified by mutating the twin ALONE:
+  `authorization` → `Authorization` fails `js: applyToMetadata …`; `rejectUnauthorized: false` →
+  `true` fails `js: keycloakVerifySsl false …` and the parity case; an extra prototype method fails
+  the parity case. Before this, an edit to the twin was caught by nothing.
+- Coverage is source-mapped back to the `.ts` (hence `--sourceMap` in `build:tests`); the twin has
+  no source map, so it is reported as `auth/offlineTokenProvider.js` in its own right.
+- **eslint deliberately still ignores `auth/offlineTokenProvider.{js,d.ts}`.** They are ES5-style by
+  design (`var`, no annotations) and the repo's type-aware ruleset (`no-var`, `typedef`,
+  `explicit-function-return-type`) would report them as errors, failing `make eslint`. Their guards are
+  prettier (format), the `js:` suite (behaviour), c8 (coverage) and the parity case (shape).
 - **There is exactly ONE `c8 ignore` in the repo**: the `require.main === module` direct-run
   entrypoint at the bottom of `examples/getServiceInfo.ts`, which cannot execute in-process because
   the spec imports the module. Every other "defensive" ignore that used to sit in
@@ -167,8 +197,10 @@ a hard gate:
 5. `make eslint`
 6. `npx prettier --config .prettierrc --check --ignore-path .prettierignore ./`
 
-What turns it red in practice: a new hand-written file under `auth/`/`examples/` with no test; a
-test script edited in `package.json` but not `.ci-package.json` (or vice versa); an eslint _error_
+What turns it red in practice: a new hand-written file under `auth/`/`examples/` with no test (a
+`.js` there as much as a `.ts`); a behavioural edit to the `auth/offlineTokenProvider.js` twin that
+the `.ts` did not get; a test script edited in `package.json` but not `.ci-package.json` (or vice
+versa); an eslint _error_
 (warnings such as `no-ternary` / `no-mixed-operators` are pre-existing and tolerated); a file
 prettier wants to reformat that is not listed in `.prettierignore`.
 

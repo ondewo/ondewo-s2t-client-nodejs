@@ -43,7 +43,9 @@ git clone https://github.com/ondewo/ondewo-s2t-client-nodejs.git ## Clone reposi
 cd ondewo-s2t-client-nodejs                                      ## Change into repo-directoy
 make setup_developer_environment_locally                         ## Install dependencies
 ```
+
 ## Package structure
+
 ```
 npm
 ├── api
@@ -51,33 +53,67 @@ npm
 │   │   └── protobuf
 │   │       ├── empty_grpc_pb.js
 │   │       ├── empty_pb.d.ts
-│   │       └── empty_pb.js
+│   │       ├── empty_pb.js
+│   │       ├── struct_grpc_pb.js
+│   │       ├── struct_pb.d.ts
+│   │       └── struct_pb.js
 │   └── ondewo
 │       └── s2t
 │           ├── speech-to-text_grpc_pb.d.ts
 │           ├── speech-to-text_grpc_pb.js
 │           ├── speech-to-text_pb.d.ts
 │           └── speech-to-text_pb.js
+├── auth
+│   ├── offlineTokenProvider.d.ts
+│   ├── offlineTokenProvider.js
+│   └── offlineTokenProvider.ts
 ├── LICENSE
 ├── package.json
 ├── public-api.d.ts
 ├── public-api.js
 └── README.md
 ```
+
+## Authentication
+
+Every request carries an `authorization: Bearer <jwt>` header sourced from the Keycloak
+offline-token provider shipped in `auth/`:
+
+```js
+const { login } = require('@ondewo/s2t-client-nodejs/auth/offlineTokenProvider');
+
+const provider = await login({
+  keycloakUrl: 'https://keycloak.example.com/auth',
+  realm: 'ondewo-ccai-platform',
+  clientId: 'ondewo-nlu-cai-sdk-public',
+  username: '<technical-user>',
+  password: '<password>'
+});
+// provider.applyToMetadata(metadata) stamps the header onto any gRPC Metadata object.
+// Always provider.stop() when done -- it clears the background refresh timer.
+```
+
+Set `keycloakVerifySsl: false` to skip TLS certificate verification on the token request only
+(opt-in insecure, for a self-signed local Envoy).
+
 [comment]: <> (START OF GITHUB README)
+
 ## Build
 
 The `make build` command is dependent on 2 `repositories` and their speciefied `version`:
-  - [ondewo-s2t-api](https://github.com/ondewo/ondewo-s2t-api) -- `S2T_API_GIT_BRANCH` in `Makefile`
-  - [ondewo-proto-compiler](https://github.com/ondewo/ondewo-proto-compiler) -- `ONDEWO_PROTO_COMPILER_GIT_BRANCH` in `Makefile`
+
+- [ondewo-s2t-api](https://github.com/ondewo/ondewo-s2t-api) -- `S2T_API_GIT_BRANCH` in `Makefile`
+- [ondewo-proto-compiler](https://github.com/ondewo/ondewo-proto-compiler) -- `ONDEWO_PROTO_COMPILER_GIT_BRANCH` in `Makefile`
 
 Other than creating the proto-code, `build` also installs the `dev-dependencies` and changes the owner of the proto-code-files from `root` to the `current user`.
 
 In the case that some `google .protos` were not automatically generated, exists the option of creating a `proto-deps.txt` inside of the `src` folder. There, import statements can be written the same way as they are in `.proto` files.
+
   ```
   import "google/api/http.proto"; //Example
     <---- New Line
   ```
+
 > :warning: The last line in the `proto-deps.txt` needs to be an empty new line, otherwise the compiler will fail
 
 ## GitHub Repository - Release Automation
@@ -85,16 +121,22 @@ In the case that some `google .protos` were not automatically generated, exists 
 The repository is published to GitHub and NPM by the Automated Release Process of ONDEWO.
 
 TODO after PR merge:
+
 - checkout master
+
   ```shell
   git checkout master
   ```
+
 - pull newest state
+
   ```shell
   git pull
   ```
+
 - Adjust `ONDEWO_S2T_VERSION` in the `Makefile` <br><br>
 - Add new Release Notes to `src/RELEASE.md` in following format:
+
   ```
   ## Release ONDEWO S2T Nodejs Client X.X.X    <----- Beginning of Notes
 
@@ -102,10 +144,13 @@ TODO after PR merge:
 
   *****************                             <----- End of Notes
   ```
+
 - release
+
   ```shell
   make ondewo_release
   ```
+
 <br>
 The release process can be divided into 6 Steps:
 
@@ -118,5 +163,26 @@ The release process can be divided into 6 Steps:
 
 > :warning:  The Release Automation checks if the build has created all the proto-code files, but it does not check the code-integrity. Please build and test the generated code prior to starting the release process.
 
+## Development
+
+Everything below runs without a live S2T server or Keycloak; see [`CLAUDE.md`](./CLAUDE.md) for the
+detailed toolchain notes.
+
+```shell
+npm test                      ## compile + run every test under the 100% coverage gate
+npm run typecheck:examples    ## strict --noEmit type-check of examples/
+npm run test:drift            ## package.json <-> .ci-package.json mirror guard
+make eslint                   ## type-aware lint
+make prettier                 ## format check (add PRETTIER_WRITE=-w to fix)
+uvx pre-commit run --all-files
+```
+
+`npm test` gates the hand-written surface -- `auth/offlineTokenProvider.ts`,
+`examples/s2tClient.ts` and `examples/getServiceInfo.ts` -- at **100% statements, branches,
+functions and lines**, with `c8 --all`, so a new file under `auth/` or `examples/` that no test
+touches fails the build. The generated `api/` stubs are excluded.
+
+`.husky/pre-commit` runs eslint + prettier + `pre-commit run`; `.husky/pre-push` runs `npm test`
+(and skips itself for the release pushes). Install them with `make install_precommit_hooks`.
 
 [comment]: <> (END OF GITHUB README)

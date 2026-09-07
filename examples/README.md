@@ -13,6 +13,13 @@ Minimal, idiomatic usage of `@ondewo/s2t-client-nodejs`.
   version.
 - [`s2tClient.spec.ts`](./s2tClient.spec.ts) — mock-based tests that exercise the
   wrapper with the gRPC stub and the auth provider faked (no live server).
+- [`getServiceInfo.spec.ts`](./getServiceInfo.spec.ts) — unit tests for the runnable
+  script. `main` takes its two outside-world boundaries (the Keycloak login and the
+  client factory) as injectable overrides, so the whole flow runs with a mocked token
+  endpoint and a fake client — no network, no live server.
+
+Both example modules are inside the repo's 100% coverage gate (`npm test`); see
+[`../CLAUDE.md`](../CLAUDE.md).
 
 ## Auth
 
@@ -24,7 +31,8 @@ Authentication follows the SDK's Keycloak bearer-token convention. Obtain an
 ## Run the mock tests (no server required)
 
 ```shell
-npm run test:examples
+npm run test:examples   ## the example specs on their own
+npm test                ## every spec in the repo, under the 100% coverage gate
 ```
 
 ## Type-check the examples

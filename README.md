@@ -177,10 +177,11 @@ make prettier                 ## format check (add PRETTIER_WRITE=-w to fix)
 uvx pre-commit run --all-files
 ```
 
-`npm test` gates the hand-written surface -- `auth/offlineTokenProvider.ts`,
-`examples/s2tClient.ts` and `examples/getServiceInfo.ts` -- at **100% statements, branches,
-functions and lines**, with `c8 --all`, so a new file under `auth/` or `examples/` that no test
-touches fails the build. The generated `api/` stubs are excluded.
+`npm test` gates the hand-written surface -- `auth/offlineTokenProvider.ts`, its shipped CommonJS
+twin `auth/offlineTokenProvider.js`, `examples/s2tClient.ts` and `examples/getServiceInfo.ts` -- at
+**100% statements, branches, functions and lines**, with `c8 --all`, so a new `.ts` or `.js` file
+under `auth/` or `examples/` that no test touches fails the build. The generated `api/` stubs are
+excluded.
 
 `.husky/pre-commit` runs eslint + prettier + `pre-commit run`; `.husky/pre-push` runs `npm test`
 (and skips itself for the release pushes). Install them with `make install_precommit_hooks`.

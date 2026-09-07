@@ -207,7 +207,7 @@ prettier wants to reformat that is not listed in `.prettierignore`.
 ## `.prettierignore` is release-critical
 
 `.husky/pre-commit` runs `make prettier PRETTIER_WRITE=-w`, i.e. prettier **writes** on every
-commit. Two entries exist to stop that from breaking things and must not be removed:
+commit. These entries exist to stop that from breaking things and must not be removed:
 
 - **`README.md`** — prettier rewrites the link-reference title `[comment]: <> (START OF GITHUB
 README)` into `[comment]: <> 'START OF GITHUB README'`. `make build` slices the published README
@@ -216,10 +216,15 @@ README)` into `[comment]: <> 'START OF GITHUB README'`. `make build` slices the 
   (130 vs 122 lines), the release cut the wrong range — the published README ended on an unclosed
   ``` fence and still carried the GitHub-only release section. **Invariant: `diff README.md
 src/README.md` must be empty**, and `make build` enforces it by doing `cp src/README.md .`.
-- **`.pre-commit-config.yaml`, `.markdownlint-cli2.yaml`, `.ci-package.json`, `CLAUDE.md`** —
-  prettier reformatting the pre-commit config mid-commit makes the very next `pre-commit run` abort
-  with _"Your pre-commit configuration is unstaged"_.
 - `coverage/` and `.nyc_output/` are gitignored but `prettier -w ./` would still rewrite them.
+
+`.pre-commit-config.yaml`, `.markdownlint-cli2.yaml`, `.ci-package.json` and `CLAUDE.md` are
+deliberately **not** ignored. They used to be reformatted on every `prettier -w` — and rewriting
+the pre-commit config mid-commit makes the very next `pre-commit run` abort with _"Your pre-commit
+configuration is unstaged"_ — but `style(prettier): normalise formatting to the repo's own prettier
+config` normalised all four instead, which is the better fix: prettier is now a no-op on them, so
+there is nothing to ignore and `npx prettier --check` still covers them. Keep them prettier-clean
+(tabs in the JSON/YAML, prettier's table alignment in this file) rather than adding them back here.
 
 ## pre-commit
 
@@ -230,7 +235,9 @@ already-released versions — never accept one from `pre-commit autoupdate`.
 
 Run it as `uvx pre-commit run --all-files` (`pre-commit` is not on PATH here). It is green.
 
-- **ORDER MATTERS: conventional-pre-commit MUST be declared before giticket.** Both run at the
+- **ORDER MATTERS: conventional-pre-commit MUST be declared before giticket.** Already fixed on
+  master by `fix(tooling): unblock ticket-branch commits and TTY-free codegen`; the rule is recorded
+  here so it is not undone by a future `pre-commit autoupdate` or reorder. Both run at the
   commit-msg stage and pre-commit executes repos in declaration order. giticket rewrites the subject
   to `[OND231-624] chore: probe`, which is no longer valid Conventional Commits. Measured on a
   `feature/OND231-624-…` branch: with giticket first the hook fails with _"[Bad commit message] >>
@@ -240,19 +247,22 @@ Run it as `uvx pre-commit run --all-files` (`pre-commit` is not on PATH here). I
   markdown files across parallel workers, and because `.markdownlint-cli2.yaml` declares
   `globs: ["*.md"]` **every** worker also expands that glob and `--fix`-writes the same root `*.md`
   files. The interleaved writes corrupt them. Measured A/B on this repo (128 CPUs): parallel →
-  `RELEASE.md` kept only 8 of its 16 `## Release ONDEWO S2T Nodejs Client <VERSION>` headings and
-  lost single characters (`ONDEW S2T`, `Tracking API Vesion`, `gihub.com`); serial → one process,
-  6 files, byte-clean. markdownlint-cli2 invoked directly (one process) is clean at both v0.23.0 and
+  `RELEASE.md` kept only 8 of the 16 `## Release ONDEWO S2T Nodejs Client <VERSION>` headings it had
+  at the time (17 today) and lost single characters (`ONDEW S2T`, `Tracking API Vesion`,
+  `gihub.com`); serial → one process, 6 files, byte-clean. markdownlint-cli2 invoked directly (one process) is clean at both v0.23.0 and
   v0.23.2, so the version is not the trigger — the parallelism is.
 - **markdownlint MD053 stays disabled** in `.markdownlint-cli2.yaml`. Its auto-fix DELETES the
   `[comment]: <> (…)` reference definitions the README slice depends on.
-- MD012/MD022/MD032/MD005 auto-fixes on `RELEASE.md` are content-safe: they only strip trailing
-  whitespace, normalise blank lines and unindent the `*` bullets. The `## Release …` headings and
-  the `*****` separators the release Makefile greps for survive — verified by diffing the file with
-  whitespace and blank lines normalised away.
-- `.husky/pre-commit` still guards `pre-commit run` behind `git diff --quiet --
-.pre-commit-config.yaml`. That guard is now belt-and-braces rather than essential: the config is
-  in `.prettierignore`, so `make prettier -w` no longer dirties it.
+- MD012/MD022/MD032/MD005 auto-fixes on `RELEASE.md` are content-safe and are **already committed**,
+  which is what lets `uvx pre-commit run --all-files` leave a clean tree. They only strip trailing
+  whitespace, normalise blank lines and unindent the `*` bullets: re-measured on the current file,
+  all 17 `## Release …` headings and all 18 `*****` separators survive, `RELEASE.md` stays
+  byte-identical to `src/RELEASE.md`, and `make TEST` still slices the 7.4.1 notes.
+- `.husky/pre-commit` guards `pre-commit run` behind `git diff --quiet -- .pre-commit-config.yaml`.
+  Prettier no longer dirties the config (it is normalised, see above), so the guard is there for the
+  release codegen, which leaves the config unstaged and would otherwise abort the hook. Note
+  `pre-commit` is not on PATH here, so that branch of the hook is skipped locally anyway — run
+  `uvx pre-commit run --all-files` by hand.
 - `.husky/pre-push` runs `npm test` and **skips itself for the three release pushes** (`refs/tags/*`,
   `refs/heads/release/*`, and a commit whose subject starts `Preparing for Release`), which
   `make release` performs without `--no-verify`.
@@ -265,8 +275,13 @@ Run it as `uvx pre-commit run --all-files` (`pre-commit` is not on PATH here). I
 - `ONDEWO_PROTO_COMPILER_GIT_BRANCH=tags/5.14.0` in the `Makefile`, which
   `check_out_correct_submodule_versions` checks out during `make build`
 
-They had drifted (`Makefile` at `tags/5.10.0`, gitlink at `5.11.0`), so `make build` actively
-_downgraded_ the submodule. To bump:
+Before this change **both sat at `5.10.0`** — and that is the trap, because the gitlink had been
+moved to 5.12.0 and then 5.13.0 by two `Update proto compiler dependency…` commits that left the
+`Makefile` alone. `check_out_correct_submodule_versions` then checked the submodule back out at
+`tags/5.10.0` during the `make build` of the 7.4.1 release, and `release`'s
+`git add ${ONDEWO_PROTO_COMPILER_DIR}` recorded the downgrade (`2e1d6ee Preparing for Release
+7.4.1`). **Bumping the gitlink alone is always silently reverted by the next release** — move both
+or neither. To bump:
 
 ```shell
 git submodule update --init --recursive
@@ -278,14 +293,19 @@ git add ondewo-proto-compiler Makefile
 
 Nothing else changes: the `jq` dependency sync from
 `ondewo-proto-compiler/nodejs/image-data/package.json` into `src/package.json` is a **no-op** here
-(`@types/node` already `^22.15.27`, `grpc_tools_node_protoc_ts` not declared), and
-`Dockerfile.utils` already carries `ENV NODE_VERSION=24.14.0`, which is what 5.14.0 declares.
+(`src/package.json` already has `@types/node` `^22.15.27` and declares no
+`grpc_tools_node_protoc_ts`), and this repo's `Dockerfile.utils` already carries
+`ENV NODE_VERSION=24.14.0`, which matches the `ARG NODE_VERSION=24.14.0` in the compiler's
+`nodejs/Dockerfile` (introduced in 5.10.0 and unchanged through 5.14.0).
 
 **A pin is not a regeneration.** 5.12.0/5.13.0/5.14.0 are Angular/JS/Node/TS _codegen_ fixes —
-notably `append-auth-exports.sh` (5.13.0), which would re-export `auth/` from `public-api.d.ts`
-(this repo's `public-api.d.ts` still exports no auth module). Moving the pin changes which image
-`make build` would build; it rewrites no committed stub. Never write "Regenerated with
-ondewo-proto-compiler X" in `RELEASE.md` unless `make build` actually ran.
+notably `append-auth-exports.sh` (5.13.0), which re-exports `auth/` from `public-api.d.ts` /
+`public-api.js`. Moving the pin changes which image `make build` would build; it rewrites no
+committed stub. Never write "Regenerated with ondewo-proto-compiler X" in `RELEASE.md` unless
+`make build` actually ran **with the `Makefile` pin at X**: the 7.4.1 entry claims a 5.13.0
+regeneration and an `auth/` re-export from the barrel, but the `Makefile` still said `tags/5.10.0`,
+so the release built with 5.10.0 and the committed `public-api.d.ts` exports no auth module to this
+day. Historical entries are left as they are; do not repeat the mistake.
 
 ## Release
 
@@ -300,8 +320,11 @@ ondewo-proto-compiler X" in `RELEASE.md` unless `make build` actually ran.
 - `make TEST` prints `<set>`/`<unset>` instead of `GITHUB_GH_TOKEN` / `NPM_PASSWORD`; every
   token-bearing `docker run`/`make release $(info)` recipe line is `@`-prefixed. Keep it that way.
 - `CURRENT_RELEASE_NOTES` slices `RELEASE.md` from `Release ONDEWO S2T Nodejs Client <VERSION>` to
-  the next line containing `**`, which is the `*****` separator. `make TEST` prints exactly what a
-  GitHub release would get — use it before releasing.
+  the next line **starting** with five asterisks (`/^\*{5}/`). It used to terminate on `/\*\*/`,
+  which matches the first inline `**bold**` span as readily as the separator and silently truncated
+  the GitHub release notes; `fix(makefile): terminate the release-notes slice on the entry
+separator` fixed that on master — do not "simplify" it back. `make TEST` prints exactly what a
+  GitHub release would get, so run it before releasing.
 - **`RELEASE.md` is the authoritative changelog and the release tag holds the complete history.**
   A careless markdown pass can drop `## Release … X.Y.Z` headings (see `require_serial` above); if
   that happens, restore `RELEASE.md` **and** `src/RELEASE.md` from the latest release tag.
@@ -310,3 +333,12 @@ ondewo-proto-compiler X" in `RELEASE.md` unless `make build` actually ran.
   `make build`. It is an inline `node -e` on purpose — a helper `.js` file gets caught by the
   release's type-checked eslint and fails the release. `npm run test:drift` is the guard that the
   two copies still agree.
+- `.ci-package.json` also carries **`build:auth`**. The 7.4.1 release dropped `build:auth` and
+  `typecheck:examples` from the root `package.json` because they were missing from the mirror, and
+  `fix(package): restore the hand-written scripts the release codegen dropped` had to put them back
+  by hand. Anything the release must not lose belongs in `.ci-package.json`, not only in
+  `package.json`.
+- **`ONDEWO_S2T_VERSION=7.4.1` in the `Makefile` is already released** — tag `7.4.1` exists on
+  origin and `@ondewo/s2t-client-nodejs@7.4.1` is on npm. Bump it (and add the matching
+  `src/RELEASE.md` entry) before the next `make ondewo_release`, or the release re-publishes a
+  version that is already taken.

@@ -142,6 +142,16 @@ async function requestToken(
 }
 
 /**
+ * The undici `Agent` options that switch TLS certificate verification OFF for the
+ * token request. Exported so the security-relevant `rejectUnauthorized: false`
+ * literal is pinned by a test rather than living as a bare literal that could be
+ * flipped without any test noticing.
+ */
+export const INSECURE_AGENT_OPTIONS: { connect: { rejectUnauthorized: boolean } } = {
+	connect: { rejectUnauthorized: false }
+};
+
+/**
  * Builds the default `fetch` used when no `fetchImpl` is injected.
  *
  * With `verifySsl` `true` (the default) this is simply the global `fetch`, so the
@@ -162,7 +172,7 @@ function createDefaultFetch(verifySsl: boolean): typeof fetch {
 	// Lazy require keeps undici out of the default (secure) code path.
 	// eslint-disable-next-line @typescript-eslint/no-require-imports
 	const { Agent } = require('undici') as { Agent: new (options: unknown) => unknown };
-	const dispatcher: unknown = new Agent({ connect: { rejectUnauthorized: false } });
+	const dispatcher: unknown = new Agent(INSECURE_AGENT_OPTIONS);
 	return (input: RequestInfo | URL, init?: RequestInit): Promise<Response> =>
 		fetch(input, { ...init, dispatcher } as RequestInit);
 }

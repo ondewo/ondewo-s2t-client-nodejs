@@ -111,4 +111,12 @@ export class OfflineTokenProvider {
  * @param options the Keycloak/ROPC parameters (public client, no secret).
  * @returns a started `OfflineTokenProvider`.
  */
+/**
+ * The undici `Agent` options that switch TLS certificate verification OFF for the
+ * token request. Exported so the security-relevant `rejectUnauthorized: false`
+ * literal is pinned by a test rather than living as a bare literal that could be
+ * flipped without any test noticing.
+ */
+export declare const INSECURE_AGENT_OPTIONS: { connect: { rejectUnauthorized: boolean } };
+
 export function login(options: OfflineTokenLoginOptions): Promise<OfflineTokenProvider>;

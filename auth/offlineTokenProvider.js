@@ -82,6 +82,16 @@ async function requestToken(fetchImpl, tokenEndpoint, body) {
 }
 
 /**
+ * The undici `Agent` options that switch TLS certificate verification OFF for the
+ * token request. Exported so the security-relevant `rejectUnauthorized: false`
+ * literal is pinned by a test rather than living as a bare literal that could be
+ * flipped without any test noticing.
+ *
+ * @type {{ connect: { rejectUnauthorized: boolean } }}
+ */
+var INSECURE_AGENT_OPTIONS = { connect: { rejectUnauthorized: false } };
+
+/**
  * Builds the default `fetch` used when no `fetchImpl` is injected.
  *
  * With `verifySsl` `true` (the default) this is simply the global `fetch`, so the
@@ -100,7 +110,7 @@ function createDefaultFetch(verifySsl) {
 		return fetch;
 	}
 	var Agent = require('undici').Agent;
-	var dispatcher = new Agent({ connect: { rejectUnauthorized: false } });
+	var dispatcher = new Agent(INSECURE_AGENT_OPTIONS);
 	return function (input, init) {
 		return fetch(input, Object.assign({}, init, { dispatcher: dispatcher }));
 	};
@@ -275,4 +285,8 @@ async function login(options) {
 	return OfflineTokenProvider.login(options);
 }
 
-module.exports = { OfflineTokenProvider: OfflineTokenProvider, login: login };
+module.exports = {
+	OfflineTokenProvider: OfflineTokenProvider,
+	login: login,
+	INSECURE_AGENT_OPTIONS: INSECURE_AGENT_OPTIONS
+};

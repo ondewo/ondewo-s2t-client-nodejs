@@ -7,7 +7,7 @@
 import { strict as assert } from 'node:assert';
 import { test as runTest } from 'node:test';
 
-import { login, OfflineTokenProvider } from './offlineTokenProvider.js';
+import { INSECURE_AGENT_OPTIONS, login, OfflineTokenProvider } from './offlineTokenProvider.js';
 import type { MetadataLike } from './offlineTokenProvider.js';
 
 /** Base Keycloak URL used across the tests (no trailing slash). */
@@ -428,6 +428,10 @@ runTest(
 				assert.ok(captured.init !== undefined);
 				// The insecure undici Agent (rejectUnauthorized:false) reached the token POST.
 				assert.ok(captured.init.dispatcher instanceof undici.Agent);
+				// Pin the security-relevant literal itself: an Agent built with `rejectUnauthorized: true`
+				// would silently disable the whole opt-out (self-signed Envoy logins would start failing
+				// the handshake) while still satisfying the `instanceof Agent` assertion above.
+				assert.deepEqual(INSECURE_AGENT_OPTIONS, { connect: { rejectUnauthorized: false } });
 				assert.equal(provider.getAccessToken(), 'access-insecure');
 			} finally {
 				provider.stop();

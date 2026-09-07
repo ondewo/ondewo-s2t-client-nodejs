@@ -18,9 +18,17 @@ fail_fast: false
 repos:
 
   - repo: https://github.com/DavidAnson/markdownlint-cli2
-    rev: v0.23.0
+    rev: v0.23.2
     hooks:
+      # require_serial IS LOAD-BEARING, do not remove. Without it pre-commit splits the markdown
+      # files across parallel worker processes; `.markdownlint-cli2.yaml` sets `globs: ["*.md"]`, so
+      # EVERY worker also expands that glob and rewrites the same root-level *.md files. Two `--fix`
+      # writers on one file interleave and silently corrupt it -- measured on this repo: RELEASE.md
+      # lost 8 of its 16 "## Release ONDEWO S2T Nodejs Client <VERSION>" headings and single
+      # characters ("ONDEW S2T", "Tracking API Vesion", "gihub.com"). Serial: one process, 6 files,
+      # clean. See CLAUDE.md.
       - id: markdownlint-cli2
+        require_serial: true
 
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v6.0.0
@@ -37,6 +45,18 @@ repos:
       - id: trailing-whitespace
       - id: end-of-file-fixer
 
+  # ORDER MATTERS: both of the hooks below run at the commit-msg stage, and
+  # pre-commit runs them in the order the repos are declared here.
+  # giticket rewrites the subject to "[OND211-2418] feat: …", which is no
+  # longer valid Conventional Commits — so it MUST come after the validation.
+  # With giticket first, every commit on a ticket branch failed the
+  # Conventional Commit hook and could only be made with --no-verify.
+  - repo: https://github.com/compilerla/conventional-pre-commit
+    rev: v4.4.0
+    hooks:
+      - id: conventional-pre-commit
+        stages: [ commit-msg ]
+
   - repo: https://github.com/milin/giticket
     rev: '1.92'
     hooks:
@@ -44,9 +64,3 @@ repos:
         args: [ '--regex=(?:(?:feature|bugfix|support|hotfix)/)?(OND[0-9]{3}-[0-9]{1,5})[_-][\w-]+',
                 '--format=[{ticket}] {commit_msg}',
                 '--mode=regex_match' ]
-
-  - repo: https://github.com/compilerla/conventional-pre-commit
-    rev: v4.4.0
-    hooks:
-      - id: conventional-pre-commit
-        stages: [ commit-msg ]

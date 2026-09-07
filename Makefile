@@ -109,7 +109,7 @@ release: ## Create Github and NPM Release
 	git add ${ONDEWO_PROTO_COMPILER_DIR}
 	git add ${S2T_APIS_DIR}
 	git status
-	git commit --no-verify -m "Preparing for Release ${ONDEWO_S2T_VERSION}"
+	-git commit --no-verify -m "Preparing for Release ${ONDEWO_S2T_VERSION}"
 	git push
 	make publish_npm_via_docker
 	make create_release_branch
@@ -222,13 +222,16 @@ create_npm_package: ## Create NPM Package for Release
 	mkdir npm
 	cp -R api npm
 	cp -R auth npm
-	rm -f npm/auth/*.spec.js
+	rm -f npm/auth/*.spec.* npm/auth/*.test.*
 	cp public-api.d.ts npm
 	cp public-api.js npm
 	cp package.json npm
 	cp package-lock.json npm
 	cp LICENSE npm
 	cp README.md npm
+	# the published tarball is ./npm (see npm_release), so the ROOT .npmignore is never consulted:
+	# write one here as well, so a later broad `cp -R` cannot re-introduce test files into the package
+	printf '%s\n' '*.spec.*' '*.test.*' > npm/.npmignore
 
 install_dependencies: ## Installs npm dev dependencies
 	npm i --save-dev \

@@ -34,11 +34,15 @@ jobs:
         run: npm run test:drift
 
       # The repo is ~95% generated gRPC/protobuf stubs; coverage is gated on the HAND-WRITTEN
-      # surface only -- auth/offlineTokenProvider.ts (the D18 Keycloak offline-token auth provider)
-      # plus examples/s2tClient.ts and examples/getServiceInfo.ts. `npm test` compiles those and
-      # their specs, runs node's built-in test runner and enforces 100% statements / branches /
-      # functions / lines under c8. The gate runs with `--all`, so a NEW hand-written file under
-      # auth/ or examples/ that no test touches turns the build red instead of being ignored.
+      # surface only -- auth/offlineTokenProvider.ts (the D18 Keycloak offline-token auth provider),
+      # its hand-maintained CommonJS twin auth/offlineTokenProvider.js (the file npm consumers
+      # actually execute), plus examples/s2tClient.ts and examples/getServiceInfo.ts. `npm test`
+      # compiles the .ts sources and their specs, runs node's built-in test runner and enforces 100%
+      # statements / branches / functions / lines under c8. The behavioural suite is parameterised
+      # over the module under test and runs TWICE (`ts: ...` / `js: ...`), so an edit to the twin
+      # alone is caught; the gate runs with `--all` over BOTH `--src` roots (.test-build and auth),
+      # so a NEW hand-written .ts OR .js under auth/ or examples/ that no test touches turns the
+      # build red instead of being ignored.
       - name: Unit tests + 100% statement/branch/function/line coverage gate on hand-written code
         run: npm test
 

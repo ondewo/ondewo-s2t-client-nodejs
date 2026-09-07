@@ -3,11 +3,19 @@
 // injected `fetch` implementation. Node 22 strips the TypeScript types natively:
 //
 //   node --test auth/offlineTokenProvider.spec.ts
+//
+// The whole behavioural suite is a FUNCTION of the module under test, and it is run
+// TWICE: once against `auth/offlineTokenProvider.ts` and once against the
+// hand-maintained CommonJS twin `auth/offlineTokenProvider.js` that `make
+// create_npm_package` ships and npm consumers actually execute. Without the second
+// run the twin had no test at all, and the c8 gate -- which only ever measured `tsc`
+// output -- could not see an edit to it.
 
 import { strict as assert } from 'node:assert';
+import { resolve as resolvePath } from 'node:path';
 import { test as runTest } from 'node:test';
 
-import { INSECURE_AGENT_OPTIONS, login, OfflineTokenProvider } from './offlineTokenProvider.js';
+import * as tsProvider from './offlineTokenProvider.js';
 import type { MetadataLike } from './offlineTokenProvider.js';
 
 /** Base Keycloak URL used across the tests (no trailing slash). */
@@ -135,459 +143,521 @@ function sleep(ms: number): Promise<void> {
 	});
 }
 
-/**
- * Verifies the one-time login POSTs ROPC credentials to the public client with
- * the `offline_access` scope and never sends a client secret.
- */
-runTest('login performs ROPC against the public client with offline_access scope', async (): Promise<void> => {
-	const mock: FetchMock = buildFetchMock([{ access_token: 'access-1', refresh_token: 'offline-1', expires_in: 300 }]);
+/** The module surface both implementations of the helper expose. */
+type AuthModule = typeof tsProvider;
 
-	const provider: OfflineTokenProvider = await login({
-		keycloakUrl: KEYCLOAK_URL,
-		realm: REALM,
-		clientId: CLIENT_ID,
-		username: USERNAME,
-		password: PASSWORD,
-		fetchImpl: mock.fetchImpl
-	});
-	provider.stop();
-
-	assert.equal(mock.calls.length, 1);
-	const call: CapturedCall = mock.calls[0];
-	assert.equal(call.url, EXPECTED_TOKEN_ENDPOINT);
-	assert.equal(call.method, 'POST');
-	assert.equal(call.params.get('grant_type'), 'password');
-	assert.equal(call.params.get('client_id'), CLIENT_ID);
-	assert.equal(call.params.get('username'), USERNAME);
-	assert.equal(call.params.get('password'), PASSWORD);
-	assert.equal(call.params.get('scope'), 'openid offline_access');
-	// Public client (Q1): no client_secret must ever be sent.
-	assert.equal(call.params.get('client_secret'), null);
-
-	assert.equal(provider.getAccessToken(), 'access-1');
-	assert.equal(provider.getAuthorizationHeader(), 'Bearer access-1');
-});
+/** A started provider, as returned by either implementation's `login`. */
+type Provider = Awaited<ReturnType<AuthModule['login']>>;
 
 /**
- * Verifies `applyToMetadata` writes the bearer header under the all-lowercase
- * `authorization` key (native gRPC rejects a capital key) and returns the same object.
- */
-runTest('applyToMetadata sets the lowercase authorization Bearer header', async (): Promise<void> => {
-	const mock: FetchMock = buildFetchMock([{ access_token: 'access-1', refresh_token: 'offline-1', expires_in: 300 }]);
-	const provider: OfflineTokenProvider = await login({
-		keycloakUrl: KEYCLOAK_URL,
-		realm: REALM,
-		clientId: CLIENT_ID,
-		username: USERNAME,
-		password: PASSWORD,
-		fetchImpl: mock.fetchImpl
-	});
-	provider.stop();
-
-	const metadata: FakeMetadata = new FakeMetadata();
-	const returned: FakeMetadata = provider.applyToMetadata(metadata);
-	assert.equal(returned, metadata);
-	// The key MUST be all-lowercase for native gRPC; a capital variant must not leak.
-	assert.equal(metadata.store['authorization'], 'Bearer access-1');
-	assert.equal(metadata.store['Authorization'], undefined);
-	assert.deepEqual(Object.keys(metadata.store), ['authorization']);
-});
-
-/** Verifies `refreshNow` exchanges the offline refresh token and adopts the rotated one. */
-runTest('refreshNow exchanges the offline refresh token and rotates it', async (): Promise<void> => {
-	const mock: FetchMock = buildFetchMock([
-		{ access_token: 'access-1', refresh_token: 'offline-1', expires_in: 300 },
-		{ access_token: 'access-2', refresh_token: 'offline-2', expires_in: 300 }
-	]);
-
-	const provider: OfflineTokenProvider = await login({
-		keycloakUrl: KEYCLOAK_URL,
-		realm: REALM,
-		clientId: CLIENT_ID,
-		username: USERNAME,
-		password: PASSWORD,
-		fetchImpl: mock.fetchImpl
-	});
-
-	await provider.refreshNow();
-	provider.stop();
-
-	assert.equal(mock.calls.length, 2);
-	const refreshCall: CapturedCall = mock.calls[1];
-	assert.equal(refreshCall.params.get('grant_type'), 'refresh_token');
-	assert.equal(refreshCall.params.get('client_id'), CLIENT_ID);
-	assert.equal(refreshCall.params.get('refresh_token'), 'offline-1');
-	assert.equal(refreshCall.params.get('client_secret'), null);
-
-	// Access token rotated to the refreshed value.
-	assert.equal(provider.getAccessToken(), 'access-2');
-});
-
-/** Verifies the background loop refreshes the access token before it expires. */
-runTest('the background loop auto-refreshes the access token before expiry', async (): Promise<void> => {
-	const mock: FetchMock = buildFetchMock([
-		// expires_in tiny so the scheduled refresh fires almost immediately.
-		{ access_token: 'access-1', refresh_token: 'offline-1', expires_in: 0 },
-		{ access_token: 'access-2', refresh_token: 'offline-2', expires_in: 300 }
-	]);
-
-	const provider: OfflineTokenProvider = await login({
-		keycloakUrl: KEYCLOAK_URL,
-		realm: REALM,
-		clientId: CLIENT_ID,
-		username: USERNAME,
-		password: PASSWORD,
-		refreshSkewInS: 0,
-		fetchImpl: mock.fetchImpl
-	});
-
-	// Wait for the scheduled timer (delay 0) to fire and complete the refresh.
-	await sleep(50);
-	provider.stop();
-
-	assert.equal(provider.getAccessToken(), 'access-2');
-});
-
-/** Verifies the auto-refresh loop stops once the bounded `tokenExpirationInS` window has elapsed. */
-runTest('the auto-refresh loop stops after tokenExpirationInS elapses', async (): Promise<void> => {
-	const mock: FetchMock = buildFetchMock([
-		{ access_token: 'access-1', refresh_token: 'offline-1', expires_in: 0 },
-		{ access_token: 'access-2', refresh_token: 'offline-2', expires_in: 0 }
-	]);
-
-	const provider: OfflineTokenProvider = await login({
-		keycloakUrl: KEYCLOAK_URL,
-		realm: REALM,
-		clientId: CLIENT_ID,
-		username: USERNAME,
-		password: PASSWORD,
-		refreshSkewInS: 0,
-		// Window already elapsed by the time the first refresh would be scheduled.
-		tokenExpirationInS: 0,
-		fetchImpl: mock.fetchImpl
-	});
-
-	await sleep(50);
-	provider.stop();
-
-	// Only the initial login call happened; no background refresh was scheduled
-	// because the bounded window had already elapsed.
-	assert.equal(mock.calls.length, 1);
-	assert.equal(provider.getAccessToken(), 'access-1');
-});
-
-/** Verifies a non-2xx token response surfaces a descriptive error carrying the HTTP status. */
-runTest('a failed token request raises a descriptive error', async (): Promise<void> => {
-	const mock: FetchMock = buildFetchMock([{ status: 401, access_token: '', refresh_token: '', expires_in: 0 }]);
-
-	await assert.rejects(
-		(): Promise<OfflineTokenProvider> =>
-			login({
-				keycloakUrl: KEYCLOAK_URL,
-				realm: REALM,
-				clientId: CLIENT_ID,
-				username: USERNAME,
-				password: 'wrong',
-				fetchImpl: mock.fetchImpl
-			}),
-		/HTTP 401/
-	);
-});
-
-/** Verifies a 2xx token response missing `access_token` is rejected as malformed. */
-runTest('a token response missing access_token is rejected', async (): Promise<void> => {
-	const mock: FetchMock = buildFetchMock([{ refresh_token: 'offline-1', expires_in: 300 }]);
-
-	await assert.rejects(
-		(): Promise<OfflineTokenProvider> =>
-			login({
-				keycloakUrl: KEYCLOAK_URL,
-				realm: REALM,
-				clientId: CLIENT_ID,
-				username: USERNAME,
-				password: PASSWORD,
-				fetchImpl: mock.fetchImpl
-			}),
-		/missing access_token/
-	);
-});
-
-/** Verifies a trailing slash on `keycloakUrl` does not duplicate the path separator. */
-runTest('a trailing slash in keycloakUrl does not duplicate the path separator', async (): Promise<void> => {
-	const mock: FetchMock = buildFetchMock([{ access_token: 'access-1', refresh_token: 'offline-1', expires_in: 300 }]);
-	const provider: OfflineTokenProvider = await login({
-		keycloakUrl: 'https://keycloak.example.com/auth/',
-		realm: REALM,
-		clientId: CLIENT_ID,
-		username: USERNAME,
-		password: PASSWORD,
-		fetchImpl: mock.fetchImpl
-	});
-	provider.stop();
-	assert.equal(mock.calls[0].url, EXPECTED_TOKEN_ENDPOINT);
-});
-
-/** Verifies the static `OfflineTokenProvider.login` is the entry point the `login()` wrapper delegates to. */
-runTest('OfflineTokenProvider.login is the static entry point used by login()', async (): Promise<void> => {
-	const mock: FetchMock = buildFetchMock([{ access_token: 'access-1', refresh_token: 'offline-1', expires_in: 300 }]);
-	const provider: OfflineTokenProvider = await OfflineTokenProvider.login({
-		keycloakUrl: KEYCLOAK_URL,
-		realm: REALM,
-		clientId: CLIENT_ID,
-		username: USERNAME,
-		password: PASSWORD,
-		fetchImpl: mock.fetchImpl
-	});
-	provider.stop();
-	assert.ok(provider instanceof OfflineTokenProvider);
-});
-
-/** The captured `init` of a default-transport `fetch` call, including the non-standard undici `dispatcher`. */
-interface CapturedInit {
-	/** The undici dispatcher attached by the default transport (undefined when TLS verification is on). */
-	dispatcher?: unknown;
-}
-
-/**
- * Builds a global-`fetch` stand-in that records the `init` of the single call it
- * serves and replays one canned token response. Used to observe whether the
- * default transport attached an undici dispatcher.
+ * Registers the full behavioural suite against one implementation of the helper.
  *
- * @param captured - A single-element holder the served call's `init` is written into.
- * @param accessToken - The access token the canned response returns.
- * @returns A `fetch`-compatible stub.
+ * @param implementation - Short label the test names are prefixed with (`ts` / `js`).
+ * @param mod - The module under test: the TypeScript source or its CommonJS twin.
  */
-function buildInitCapturingFetch(captured: { init?: CapturedInit }, accessToken: string): typeof fetch {
-	const impl = (input: RequestInfo | URL, init?: RequestInit): Promise<MockResponse> => {
-		captured.init = (init === undefined ? {} : init) as CapturedInit;
-		const canned: CannedResponse = { access_token: accessToken, refresh_token: 'offline-x', expires_in: 300 };
-		return Promise.resolve({
-			ok: true,
-			status: 200,
-			statusText: 'OK',
-			json: (): Promise<CannedResponse> => Promise.resolve(canned),
-			text: (): Promise<string> => Promise.resolve(JSON.stringify(canned))
-		});
+function runProviderSuite(implementation: string, mod: AuthModule): void {
+	const INSECURE_AGENT_OPTIONS: AuthModule['INSECURE_AGENT_OPTIONS'] = mod.INSECURE_AGENT_OPTIONS;
+	const login: AuthModule['login'] = mod.login;
+	const OfflineTokenProvider: AuthModule['OfflineTokenProvider'] = mod.OfflineTokenProvider;
+
+	/**
+	 * Registers one case of the suite under its implementation-qualified name.
+	 *
+	 * @param name - The test name, prefixed with the implementation label.
+	 * @param body - The test body.
+	 */
+	const runCase = (name: string, body: () => Promise<void>): void => {
+		void runTest(implementation + ': ' + name, body);
 	};
-	return impl as unknown as typeof fetch;
+
+	/**
+	 * Verifies the one-time login POSTs ROPC credentials to the public client with
+	 * the `offline_access` scope and never sends a client secret.
+	 */
+	runCase('login performs ROPC against the public client with offline_access scope', async (): Promise<void> => {
+		const mock: FetchMock = buildFetchMock([{ access_token: 'access-1', refresh_token: 'offline-1', expires_in: 300 }]);
+
+		const provider: Provider = await login({
+			keycloakUrl: KEYCLOAK_URL,
+			realm: REALM,
+			clientId: CLIENT_ID,
+			username: USERNAME,
+			password: PASSWORD,
+			fetchImpl: mock.fetchImpl
+		});
+		provider.stop();
+
+		assert.equal(mock.calls.length, 1);
+		const call: CapturedCall = mock.calls[0];
+		assert.equal(call.url, EXPECTED_TOKEN_ENDPOINT);
+		assert.equal(call.method, 'POST');
+		assert.equal(call.params.get('grant_type'), 'password');
+		assert.equal(call.params.get('client_id'), CLIENT_ID);
+		assert.equal(call.params.get('username'), USERNAME);
+		assert.equal(call.params.get('password'), PASSWORD);
+		assert.equal(call.params.get('scope'), 'openid offline_access');
+		// Public client (Q1): no client_secret must ever be sent.
+		assert.equal(call.params.get('client_secret'), null);
+
+		assert.equal(provider.getAccessToken(), 'access-1');
+		assert.equal(provider.getAuthorizationHeader(), 'Bearer access-1');
+	});
+
+	/**
+	 * Verifies `applyToMetadata` writes the bearer header under the all-lowercase
+	 * `authorization` key (native gRPC rejects a capital key) and returns the same object.
+	 */
+	runCase('applyToMetadata sets the lowercase authorization Bearer header', async (): Promise<void> => {
+		const mock: FetchMock = buildFetchMock([{ access_token: 'access-1', refresh_token: 'offline-1', expires_in: 300 }]);
+		const provider: Provider = await login({
+			keycloakUrl: KEYCLOAK_URL,
+			realm: REALM,
+			clientId: CLIENT_ID,
+			username: USERNAME,
+			password: PASSWORD,
+			fetchImpl: mock.fetchImpl
+		});
+		provider.stop();
+
+		const metadata: FakeMetadata = new FakeMetadata();
+		const returned: FakeMetadata = provider.applyToMetadata(metadata);
+		assert.equal(returned, metadata);
+		// The key MUST be all-lowercase for native gRPC; a capital variant must not leak.
+		assert.equal(metadata.store['authorization'], 'Bearer access-1');
+		assert.equal(metadata.store['Authorization'], undefined);
+		assert.deepEqual(Object.keys(metadata.store), ['authorization']);
+	});
+
+	/** Verifies `refreshNow` exchanges the offline refresh token and adopts the rotated one. */
+	runCase('refreshNow exchanges the offline refresh token and rotates it', async (): Promise<void> => {
+		const mock: FetchMock = buildFetchMock([
+			{ access_token: 'access-1', refresh_token: 'offline-1', expires_in: 300 },
+			{ access_token: 'access-2', refresh_token: 'offline-2', expires_in: 300 }
+		]);
+
+		const provider: Provider = await login({
+			keycloakUrl: KEYCLOAK_URL,
+			realm: REALM,
+			clientId: CLIENT_ID,
+			username: USERNAME,
+			password: PASSWORD,
+			fetchImpl: mock.fetchImpl
+		});
+
+		await provider.refreshNow();
+		provider.stop();
+
+		assert.equal(mock.calls.length, 2);
+		const refreshCall: CapturedCall = mock.calls[1];
+		assert.equal(refreshCall.params.get('grant_type'), 'refresh_token');
+		assert.equal(refreshCall.params.get('client_id'), CLIENT_ID);
+		assert.equal(refreshCall.params.get('refresh_token'), 'offline-1');
+		assert.equal(refreshCall.params.get('client_secret'), null);
+
+		// Access token rotated to the refreshed value.
+		assert.equal(provider.getAccessToken(), 'access-2');
+	});
+
+	/** Verifies the background loop refreshes the access token before it expires. */
+	runCase('the background loop auto-refreshes the access token before expiry', async (): Promise<void> => {
+		const mock: FetchMock = buildFetchMock([
+			// expires_in tiny so the scheduled refresh fires almost immediately.
+			{ access_token: 'access-1', refresh_token: 'offline-1', expires_in: 0 },
+			{ access_token: 'access-2', refresh_token: 'offline-2', expires_in: 300 }
+		]);
+
+		const provider: Provider = await login({
+			keycloakUrl: KEYCLOAK_URL,
+			realm: REALM,
+			clientId: CLIENT_ID,
+			username: USERNAME,
+			password: PASSWORD,
+			refreshSkewInS: 0,
+			fetchImpl: mock.fetchImpl
+		});
+
+		// Wait for the scheduled timer (delay 0) to fire and complete the refresh.
+		await sleep(50);
+		provider.stop();
+
+		assert.equal(provider.getAccessToken(), 'access-2');
+	});
+
+	/** Verifies the auto-refresh loop stops once the bounded `tokenExpirationInS` window has elapsed. */
+	runCase('the auto-refresh loop stops after tokenExpirationInS elapses', async (): Promise<void> => {
+		const mock: FetchMock = buildFetchMock([
+			{ access_token: 'access-1', refresh_token: 'offline-1', expires_in: 0 },
+			{ access_token: 'access-2', refresh_token: 'offline-2', expires_in: 0 }
+		]);
+
+		const provider: Provider = await login({
+			keycloakUrl: KEYCLOAK_URL,
+			realm: REALM,
+			clientId: CLIENT_ID,
+			username: USERNAME,
+			password: PASSWORD,
+			refreshSkewInS: 0,
+			// Window already elapsed by the time the first refresh would be scheduled.
+			tokenExpirationInS: 0,
+			fetchImpl: mock.fetchImpl
+		});
+
+		await sleep(50);
+		provider.stop();
+
+		// Only the initial login call happened; no background refresh was scheduled
+		// because the bounded window had already elapsed.
+		assert.equal(mock.calls.length, 1);
+		assert.equal(provider.getAccessToken(), 'access-1');
+	});
+
+	/** Verifies a non-2xx token response surfaces a descriptive error carrying the HTTP status. */
+	runCase('a failed token request raises a descriptive error', async (): Promise<void> => {
+		const mock: FetchMock = buildFetchMock([{ status: 401, access_token: '', refresh_token: '', expires_in: 0 }]);
+
+		await assert.rejects(
+			(): Promise<Provider> =>
+				login({
+					keycloakUrl: KEYCLOAK_URL,
+					realm: REALM,
+					clientId: CLIENT_ID,
+					username: USERNAME,
+					password: 'wrong',
+					fetchImpl: mock.fetchImpl
+				}),
+			/HTTP 401/
+		);
+	});
+
+	/** Verifies a 2xx token response missing `access_token` is rejected as malformed. */
+	runCase('a token response missing access_token is rejected', async (): Promise<void> => {
+		const mock: FetchMock = buildFetchMock([{ refresh_token: 'offline-1', expires_in: 300 }]);
+
+		await assert.rejects(
+			(): Promise<Provider> =>
+				login({
+					keycloakUrl: KEYCLOAK_URL,
+					realm: REALM,
+					clientId: CLIENT_ID,
+					username: USERNAME,
+					password: PASSWORD,
+					fetchImpl: mock.fetchImpl
+				}),
+			/missing access_token/
+		);
+	});
+
+	/** Verifies a trailing slash on `keycloakUrl` does not duplicate the path separator. */
+	runCase('a trailing slash in keycloakUrl does not duplicate the path separator', async (): Promise<void> => {
+		const mock: FetchMock = buildFetchMock([{ access_token: 'access-1', refresh_token: 'offline-1', expires_in: 300 }]);
+		const provider: Provider = await login({
+			keycloakUrl: 'https://keycloak.example.com/auth/',
+			realm: REALM,
+			clientId: CLIENT_ID,
+			username: USERNAME,
+			password: PASSWORD,
+			fetchImpl: mock.fetchImpl
+		});
+		provider.stop();
+		assert.equal(mock.calls[0].url, EXPECTED_TOKEN_ENDPOINT);
+	});
+
+	/** Verifies the static `OfflineTokenProvider.login` is the entry point the `login()` wrapper delegates to. */
+	runCase('OfflineTokenProvider.login is the static entry point used by login()', async (): Promise<void> => {
+		const mock: FetchMock = buildFetchMock([{ access_token: 'access-1', refresh_token: 'offline-1', expires_in: 300 }]);
+		const provider: Provider = await OfflineTokenProvider.login({
+			keycloakUrl: KEYCLOAK_URL,
+			realm: REALM,
+			clientId: CLIENT_ID,
+			username: USERNAME,
+			password: PASSWORD,
+			fetchImpl: mock.fetchImpl
+		});
+		provider.stop();
+		assert.ok(provider instanceof OfflineTokenProvider);
+	});
+
+	/** The captured `init` of a default-transport `fetch` call, including the non-standard undici `dispatcher`. */
+	interface CapturedInit {
+		/** The undici dispatcher attached by the default transport (undefined when TLS verification is on). */
+		dispatcher?: unknown;
+	}
+
+	/**
+	 * Builds a global-`fetch` stand-in that records the `init` of the single call it
+	 * serves and replays one canned token response. Used to observe whether the
+	 * default transport attached an undici dispatcher.
+	 *
+	 * @param captured - A single-element holder the served call's `init` is written into.
+	 * @param accessToken - The access token the canned response returns.
+	 * @returns A `fetch`-compatible stub.
+	 */
+	function buildInitCapturingFetch(captured: { init?: CapturedInit }, accessToken: string): typeof fetch {
+		const impl = (input: RequestInfo | URL, init?: RequestInit): Promise<MockResponse> => {
+			captured.init = (init === undefined ? {} : init) as CapturedInit;
+			const canned: CannedResponse = { access_token: accessToken, refresh_token: 'offline-x', expires_in: 300 };
+			return Promise.resolve({
+				ok: true,
+				status: 200,
+				statusText: 'OK',
+				json: (): Promise<CannedResponse> => Promise.resolve(canned),
+				text: (): Promise<string> => Promise.resolve(JSON.stringify(canned))
+			});
+		};
+		return impl as unknown as typeof fetch;
+	}
+
+	/** By default (flag omitted) the default transport uses the plain global `fetch` with NO dispatcher, so TLS verification stays ON. */
+	runCase(
+		'keycloakVerifySsl default: the default transport attaches no dispatcher (TLS verify ON)',
+		async (): Promise<void> => {
+			const globalRef: { fetch?: typeof fetch } = globalThis as { fetch?: typeof fetch };
+			const previousFetch: typeof fetch | undefined = globalRef.fetch;
+			const captured: { init?: CapturedInit } = {};
+			globalRef.fetch = buildInitCapturingFetch(captured, 'access-secure');
+			try {
+				// Omit fetchImpl (-> default transport) and keycloakVerifySsl (-> defaults to verify ON).
+				const provider: Provider = await login({
+					keycloakUrl: KEYCLOAK_URL,
+					realm: REALM,
+					clientId: CLIENT_ID,
+					username: USERNAME,
+					password: PASSWORD
+				});
+				try {
+					assert.ok(captured.init !== undefined);
+					// No undici dispatcher => undici's global dispatcher with TLS verification ON.
+					assert.equal(captured.init.dispatcher, undefined);
+					assert.equal(provider.getAccessToken(), 'access-secure');
+				} finally {
+					provider.stop();
+				}
+			} finally {
+				globalRef.fetch = previousFetch;
+			}
+		}
+	);
+
+	/** With `keycloakVerifySsl: false` the default transport attaches an undici `Agent` dispatcher, disabling TLS verification for the token call. */
+	runCase(
+		'keycloakVerifySsl false: the default transport attaches an undici Agent dispatcher (TLS verify OFF)',
+		async (): Promise<void> => {
+			const globalRef: { fetch?: typeof fetch } = globalThis as { fetch?: typeof fetch };
+			const previousFetch: typeof fetch | undefined = globalRef.fetch;
+			const captured: { init?: CapturedInit } = {};
+			globalRef.fetch = buildInitCapturingFetch(captured, 'access-insecure');
+			try {
+				const provider: Provider = await login({
+					keycloakUrl: KEYCLOAK_URL,
+					realm: REALM,
+					clientId: CLIENT_ID,
+					username: USERNAME,
+					password: PASSWORD,
+					keycloakVerifySsl: false
+				});
+				try {
+					// eslint-disable-next-line @typescript-eslint/no-require-imports
+					const undici: { Agent: new (options: unknown) => unknown } = require('undici') as {
+						Agent: new (options: unknown) => unknown;
+					};
+					assert.ok(captured.init !== undefined);
+					// The insecure undici Agent (rejectUnauthorized:false) reached the token POST.
+					assert.ok(captured.init.dispatcher instanceof undici.Agent);
+					// Pin the security-relevant literal itself: an Agent built with `rejectUnauthorized: true`
+					// would silently disable the whole opt-out (self-signed Envoy logins would start failing
+					// the handshake) while still satisfying the `instanceof Agent` assertion above.
+					assert.deepEqual(INSECURE_AGENT_OPTIONS, { connect: { rejectUnauthorized: false } });
+					assert.equal(provider.getAccessToken(), 'access-insecure');
+				} finally {
+					provider.stop();
+				}
+			} finally {
+				globalRef.fetch = previousFetch;
+			}
+		}
+	);
+
+	/** An injected `fetchImpl` is used verbatim, so `keycloakVerifySsl: false` is a no-op (no dispatcher) for custom transports. */
+	runCase('keycloakVerifySsl false is ignored when a custom fetchImpl is injected', async (): Promise<void> => {
+		const captured: { init?: CapturedInit } = {};
+		const provider: Provider = await login({
+			keycloakUrl: KEYCLOAK_URL,
+			realm: REALM,
+			clientId: CLIENT_ID,
+			username: USERNAME,
+			password: PASSWORD,
+			keycloakVerifySsl: false,
+			fetchImpl: buildInitCapturingFetch(captured, 'access-injected')
+		});
+		try {
+			assert.ok(captured.init !== undefined);
+			// The injected transport receives the request unchanged — the flag never touches it.
+			assert.equal(captured.init.dispatcher, undefined);
+			assert.equal(provider.getAccessToken(), 'access-injected');
+		} finally {
+			provider.stop();
+		}
+	});
+
+	/**
+	 * Verifies a non-2xx response whose body cannot be read still raises the error carrying the HTTP
+	 * status: `response.text()` is allowed to reject (a truncated/aborted body) and the detail is
+	 * simply omitted.
+	 */
+	runCase('a token error whose body cannot be read still reports the HTTP status', async (): Promise<void> => {
+		const impl = (): Promise<MockResponse> =>
+			Promise.resolve({
+				ok: false,
+				status: 502,
+				statusText: 'Bad Gateway',
+				json: (): Promise<CannedResponse | undefined> => Promise.resolve(undefined),
+				text: (): Promise<string> => Promise.reject(new Error('body stream closed'))
+			});
+
+		await assert.rejects(
+			(): Promise<Provider> =>
+				login({
+					keycloakUrl: KEYCLOAK_URL,
+					realm: REALM,
+					clientId: CLIENT_ID,
+					username: USERNAME,
+					password: PASSWORD,
+					fetchImpl: impl as unknown as typeof fetch
+				}),
+			/HTTP 502 Bad Gateway$/
+		);
+	});
+
+	/** Verifies an explicit `refreshNow()` after `stop()` still refreshes but arms no new timer. */
+	runCase('refreshNow after stop refreshes once and re-arms no timer', async (): Promise<void> => {
+		const mock: FetchMock = buildFetchMock([
+			{ access_token: 'access-1', refresh_token: 'offline-1', expires_in: 300 },
+			{ access_token: 'access-2', refresh_token: 'offline-2', expires_in: 0 }
+		]);
+		const provider: Provider = await login({
+			keycloakUrl: KEYCLOAK_URL,
+			realm: REALM,
+			clientId: CLIENT_ID,
+			username: USERNAME,
+			password: PASSWORD,
+			refreshSkewInS: 0,
+			fetchImpl: mock.fetchImpl
+		});
+
+		provider.stop();
+		await provider.refreshNow();
+		assert.equal(provider.getAccessToken(), 'access-2');
+
+		// The refreshed token expires immediately, so a re-armed timer would fire within the sleep and
+		// make a third call. The stopped provider must not schedule one.
+		await sleep(50);
+		assert.equal(mock.calls.length, 2);
+	});
+
+	/** Verifies a refresh skew larger than the token lifetime clamps the delay to zero instead of going negative. */
+	runCase('a refresh skew larger than expires_in clamps the delay to zero', async (): Promise<void> => {
+		const mock: FetchMock = buildFetchMock([
+			// 1s lifetime with a 5s skew => a negative delay before the clamp.
+			{ access_token: 'access-1', refresh_token: 'offline-1', expires_in: 1 },
+			{ access_token: 'access-2', refresh_token: 'offline-2', expires_in: 300 }
+		]);
+		const provider: Provider = await login({
+			keycloakUrl: KEYCLOAK_URL,
+			realm: REALM,
+			clientId: CLIENT_ID,
+			username: USERNAME,
+			password: PASSWORD,
+			refreshSkewInS: 5,
+			fetchImpl: mock.fetchImpl
+		});
+
+		await sleep(50);
+		provider.stop();
+
+		assert.equal(mock.calls.length, 2);
+		assert.equal(provider.getAccessToken(), 'access-2');
+	});
+
+	/** Verifies a still-open bounded window caps the refresh delay so the last refresh lands inside it. */
+	runCase('a still-open bounded window caps the refresh delay', async (): Promise<void> => {
+		const mock: FetchMock = buildFetchMock([
+			// A 300s token inside a 60s bounded window: the delay must be clamped down to the window.
+			{ access_token: 'access-1', refresh_token: 'offline-1', expires_in: 300 }
+		]);
+		const provider: Provider = await login({
+			keycloakUrl: KEYCLOAK_URL,
+			realm: REALM,
+			clientId: CLIENT_ID,
+			username: USERNAME,
+			password: PASSWORD,
+			refreshSkewInS: 0,
+			tokenExpirationInS: 60,
+			fetchImpl: mock.fetchImpl
+		});
+		provider.stop();
+
+		// The timer is armed ~60s out (not 300s), so nothing fired yet: only the login call happened.
+		assert.equal(mock.calls.length, 1);
+		assert.equal(provider.getAccessToken(), 'access-1');
+	});
+
+	/** Verifies a failing BACKGROUND refresh is swallowed: no unhandled rejection, the old token simply lapses. */
+	runCase(
+		'a failing background refresh is swallowed and leaves the previous token in place',
+		async (): Promise<void> => {
+			const mock: FetchMock = buildFetchMock([
+				{ access_token: 'access-1', refresh_token: 'offline-1', expires_in: 0 },
+				// The scheduled refresh is rejected by Keycloak.
+				{ status: 401 }
+			]);
+			const provider: Provider = await login({
+				keycloakUrl: KEYCLOAK_URL,
+				realm: REALM,
+				clientId: CLIENT_ID,
+				username: USERNAME,
+				password: PASSWORD,
+				refreshSkewInS: 0,
+				fetchImpl: mock.fetchImpl
+			});
+
+			await sleep(50);
+			provider.stop();
+
+			assert.equal(mock.calls.length, 2);
+			// The rejection never escaped (an unhandled rejection would fail the test run) and the previous
+			// access token is still the one callers read.
+			assert.equal(provider.getAccessToken(), 'access-1');
+		}
+	);
 }
 
-/** By default (flag omitted) the default transport uses the plain global `fetch` with NO dispatcher, so TLS verification stays ON. */
-runTest(
-	'keycloakVerifySsl default: the default transport attaches no dispatcher (TLS verify ON)',
-	async (): Promise<void> => {
-		const globalRef: { fetch?: typeof fetch } = globalThis as { fetch?: typeof fetch };
-		const previousFetch: typeof fetch | undefined = globalRef.fetch;
-		const captured: { init?: CapturedInit } = {};
-		globalRef.fetch = buildInitCapturingFetch(captured, 'access-secure');
-		try {
-			// Omit fetchImpl (-> default transport) and keycloakVerifySsl (-> defaults to verify ON).
-			const provider: OfflineTokenProvider = await login({
-				keycloakUrl: KEYCLOAK_URL,
-				realm: REALM,
-				clientId: CLIENT_ID,
-				username: USERNAME,
-				password: PASSWORD
-			});
-			try {
-				assert.ok(captured.init !== undefined);
-				// No undici dispatcher => undici's global dispatcher with TLS verification ON.
-				assert.equal(captured.init.dispatcher, undefined);
-				assert.equal(provider.getAccessToken(), 'access-secure');
-			} finally {
-				provider.stop();
-			}
-		} finally {
-			globalRef.fetch = previousFetch;
-		}
-	}
-);
+// The TypeScript source: the file developers edit, compiled by `npm run build:tests`.
+runProviderSuite('ts', tsProvider);
 
-/** With `keycloakVerifySsl: false` the default transport attaches an undici `Agent` dispatcher, disabling TLS verification for the token call. */
-runTest(
-	'keycloakVerifySsl false: the default transport attaches an undici Agent dispatcher (TLS verify OFF)',
-	async (): Promise<void> => {
-		const globalRef: { fetch?: typeof fetch } = globalThis as { fetch?: typeof fetch };
-		const previousFetch: typeof fetch | undefined = globalRef.fetch;
-		const captured: { init?: CapturedInit } = {};
-		globalRef.fetch = buildInitCapturingFetch(captured, 'access-insecure');
-		try {
-			const provider: OfflineTokenProvider = await login({
-				keycloakUrl: KEYCLOAK_URL,
-				realm: REALM,
-				clientId: CLIENT_ID,
-				username: USERNAME,
-				password: PASSWORD,
-				keycloakVerifySsl: false
-			});
-			try {
-				// eslint-disable-next-line @typescript-eslint/no-require-imports
-				const undici: { Agent: new (options: unknown) => unknown } = require('undici') as {
-					Agent: new (options: unknown) => unknown;
-				};
-				assert.ok(captured.init !== undefined);
-				// The insecure undici Agent (rejectUnauthorized:false) reached the token POST.
-				assert.ok(captured.init.dispatcher instanceof undici.Agent);
-				// Pin the security-relevant literal itself: an Agent built with `rejectUnauthorized: true`
-				// would silently disable the whole opt-out (self-signed Envoy logins would start failing
-				// the handshake) while still satisfying the `instanceof Agent` assertion above.
-				assert.deepEqual(INSECURE_AGENT_OPTIONS, { connect: { rejectUnauthorized: false } });
-				assert.equal(provider.getAccessToken(), 'access-insecure');
-			} finally {
-				provider.stop();
-			}
-		} finally {
-			globalRef.fetch = previousFetch;
-		}
-	}
-);
-
-/** An injected `fetchImpl` is used verbatim, so `keycloakVerifySsl: false` is a no-op (no dispatcher) for custom transports. */
-runTest('keycloakVerifySsl false is ignored when a custom fetchImpl is injected', async (): Promise<void> => {
-	const captured: { init?: CapturedInit } = {};
-	const provider: OfflineTokenProvider = await login({
-		keycloakUrl: KEYCLOAK_URL,
-		realm: REALM,
-		clientId: CLIENT_ID,
-		username: USERNAME,
-		password: PASSWORD,
-		keycloakVerifySsl: false,
-		fetchImpl: buildInitCapturingFetch(captured, 'access-injected')
-	});
-	try {
-		assert.ok(captured.init !== undefined);
-		// The injected transport receives the request unchanged — the flag never touches it.
-		assert.equal(captured.init.dispatcher, undefined);
-		assert.equal(provider.getAccessToken(), 'access-injected');
-	} finally {
-		provider.stop();
-	}
-});
+// The hand-maintained CommonJS twin, loaded from the REPO ROOT (not from `.test-build`), so the
+// exact bytes shipped to npm are the ones executed here and measured by the c8 gate.
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const jsProvider: AuthModule = require(
+	resolvePath(__dirname, '..', '..', 'auth', 'offlineTokenProvider.js')
+) as AuthModule;
+runProviderSuite('js', jsProvider);
 
 /**
- * Verifies a non-2xx response whose body cannot be read still raises the error carrying the HTTP
- * status: `response.text()` is allowed to reject (a truncated/aborted body) and the detail is
- * simply omitted.
+ * Guards the twin against silent drift in its exported SHAPE, which the behavioural suite above
+ * exercises but does not compare: a member added to the `.ts` and forgotten in the `.js` (or vice
+ * versa) fails here rather than at an npm consumer's call site.
  */
-runTest('a token error whose body cannot be read still reports the HTTP status', async (): Promise<void> => {
-	const impl = (): Promise<MockResponse> =>
-		Promise.resolve({
-			ok: false,
-			status: 502,
-			statusText: 'Bad Gateway',
-			json: (): Promise<CannedResponse | undefined> => Promise.resolve(undefined),
-			text: (): Promise<string> => Promise.reject(new Error('body stream closed'))
-		});
-
-	await assert.rejects(
-		(): Promise<OfflineTokenProvider> =>
-			login({
-				keycloakUrl: KEYCLOAK_URL,
-				realm: REALM,
-				clientId: CLIENT_ID,
-				username: USERNAME,
-				password: PASSWORD,
-				fetchImpl: impl as unknown as typeof fetch
-			}),
-		/HTTP 502 Bad Gateway$/
+void runTest('the CommonJS twin exports the same surface as the TypeScript source', (): void => {
+	assert.deepEqual(Object.keys(jsProvider).sort(), Object.keys(tsProvider).sort());
+	assert.deepEqual(
+		Object.getOwnPropertyNames(jsProvider.OfflineTokenProvider).sort(),
+		Object.getOwnPropertyNames(tsProvider.OfflineTokenProvider).sort()
 	);
-});
-
-/** Verifies an explicit `refreshNow()` after `stop()` still refreshes but arms no new timer. */
-runTest('refreshNow after stop refreshes once and re-arms no timer', async (): Promise<void> => {
-	const mock: FetchMock = buildFetchMock([
-		{ access_token: 'access-1', refresh_token: 'offline-1', expires_in: 300 },
-		{ access_token: 'access-2', refresh_token: 'offline-2', expires_in: 0 }
-	]);
-	const provider: OfflineTokenProvider = await login({
-		keycloakUrl: KEYCLOAK_URL,
-		realm: REALM,
-		clientId: CLIENT_ID,
-		username: USERNAME,
-		password: PASSWORD,
-		refreshSkewInS: 0,
-		fetchImpl: mock.fetchImpl
-	});
-
-	provider.stop();
-	await provider.refreshNow();
-	assert.equal(provider.getAccessToken(), 'access-2');
-
-	// The refreshed token expires immediately, so a re-armed timer would fire within the sleep and
-	// make a third call. The stopped provider must not schedule one.
-	await sleep(50);
-	assert.equal(mock.calls.length, 2);
-});
-
-/** Verifies a refresh skew larger than the token lifetime clamps the delay to zero instead of going negative. */
-runTest('a refresh skew larger than expires_in clamps the delay to zero', async (): Promise<void> => {
-	const mock: FetchMock = buildFetchMock([
-		// 1s lifetime with a 5s skew => a negative delay before the clamp.
-		{ access_token: 'access-1', refresh_token: 'offline-1', expires_in: 1 },
-		{ access_token: 'access-2', refresh_token: 'offline-2', expires_in: 300 }
-	]);
-	const provider: OfflineTokenProvider = await login({
-		keycloakUrl: KEYCLOAK_URL,
-		realm: REALM,
-		clientId: CLIENT_ID,
-		username: USERNAME,
-		password: PASSWORD,
-		refreshSkewInS: 5,
-		fetchImpl: mock.fetchImpl
-	});
-
-	await sleep(50);
-	provider.stop();
-
-	assert.equal(mock.calls.length, 2);
-	assert.equal(provider.getAccessToken(), 'access-2');
-});
-
-/** Verifies a still-open bounded window caps the refresh delay so the last refresh lands inside it. */
-runTest('a still-open bounded window caps the refresh delay', async (): Promise<void> => {
-	const mock: FetchMock = buildFetchMock([
-		// A 300s token inside a 60s bounded window: the delay must be clamped down to the window.
-		{ access_token: 'access-1', refresh_token: 'offline-1', expires_in: 300 }
-	]);
-	const provider: OfflineTokenProvider = await login({
-		keycloakUrl: KEYCLOAK_URL,
-		realm: REALM,
-		clientId: CLIENT_ID,
-		username: USERNAME,
-		password: PASSWORD,
-		refreshSkewInS: 0,
-		tokenExpirationInS: 60,
-		fetchImpl: mock.fetchImpl
-	});
-	provider.stop();
-
-	// The timer is armed ~60s out (not 300s), so nothing fired yet: only the login call happened.
-	assert.equal(mock.calls.length, 1);
-	assert.equal(provider.getAccessToken(), 'access-1');
-});
-
-/** Verifies a failing BACKGROUND refresh is swallowed: no unhandled rejection, the old token simply lapses. */
-runTest('a failing background refresh is swallowed and leaves the previous token in place', async (): Promise<void> => {
-	const mock: FetchMock = buildFetchMock([
-		{ access_token: 'access-1', refresh_token: 'offline-1', expires_in: 0 },
-		// The scheduled refresh is rejected by Keycloak.
-		{ status: 401 }
-	]);
-	const provider: OfflineTokenProvider = await login({
-		keycloakUrl: KEYCLOAK_URL,
-		realm: REALM,
-		clientId: CLIENT_ID,
-		username: USERNAME,
-		password: PASSWORD,
-		refreshSkewInS: 0,
-		fetchImpl: mock.fetchImpl
-	});
-
-	await sleep(50);
-	provider.stop();
-
-	assert.equal(mock.calls.length, 2);
-	// The rejection never escaped (an unhandled rejection would fail the test run) and the previous
-	// access token is still the one callers read.
-	assert.equal(provider.getAccessToken(), 'access-1');
+	assert.deepEqual(
+		Object.getOwnPropertyNames(jsProvider.OfflineTokenProvider.prototype).sort(),
+		Object.getOwnPropertyNames(tsProvider.OfflineTokenProvider.prototype).sort()
+	);
+	// The security-relevant literal must be identical in both, not merely present in both.
+	assert.deepEqual(jsProvider.INSECURE_AGENT_OPTIONS, tsProvider.INSECURE_AGENT_OPTIONS);
+	assert.equal(jsProvider.INSECURE_AGENT_OPTIONS.connect.rejectUnauthorized, false);
 });

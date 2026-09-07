@@ -2,9 +2,9 @@
 
 # Full test suite + 100% coverage gate before every push -- the local counterpart of
 # .github/workflows/tests.yml. `npm test` compiles every hand-written .ts, runs every test case and
-# enforces 100% statements/branches/functions/lines on auth/offlineTokenProvider.ts,
-# examples/s2tClient.ts and examples/getServiceInfo.ts, so a push can never carry an untested or
-# uncovered change.
+# enforces 100% statements/branches/functions/lines on auth/offlineTokenProvider.ts, its shipped
+# CommonJS twin auth/offlineTokenProvider.js, examples/s2tClient.ts and examples/getServiceInfo.ts,
+# so a push can never carry an untested or uncovered change.
 #
 # Deliberately NOT part of .husky/pre-commit: the automated release invokes THAT hook directly
 # (`make run_precommit_hooks`), where a test run over freshly generated code would break the release.

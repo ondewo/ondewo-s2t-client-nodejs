@@ -23,10 +23,10 @@ config:
   # headings across versions even as direct siblings.
   MD024: false
 globs:
-  - "*.md"
+  - '*.md'
 ignores:
-  - "node_modules/**"
-  - "api/**"
-  - "src/ondewo-s2t-api/**"
-  - "ondewo-proto-compiler/**"
-  - ".venv/**"
+  - 'node_modules/**'
+  - 'api/**'
+  - 'src/ondewo-s2t-api/**'
+  - 'ondewo-proto-compiler/**'
+  - '.venv/**'

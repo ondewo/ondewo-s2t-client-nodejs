@@ -17,22 +17,14 @@ npm/
 dist/
 .test-build/
 .test-build-examples/
-
-# Release-critical markdown: prettier rewrites `[comment]: <> (START OF GITHUB README)` into
-# `[comment]: <> 'START OF GITHUB README'`. The Makefile slices the published README between those
-# markers (`perl -ne 'print if /START OF GITHUB README/../END OF GITHUB README/'` over src/README.md,
-# applied to the root copy), so a rewrite desynchronises the two files and mis-slices npm/README.md.
+# README.md is prettier-ignored: .prettierrc sets useTabs, so prettier re-tabs the fenced
+# code blocks that markdownlint's MD010 then de-tabs, and the husky hook runs prettier -w
+# before pre-commit -- the two fight on every commit that touches the file. Prettier also
+# rewrites the `[comment]: <> (START/END OF GITHUB README)` slice markers the release cuts
+# the published README with.
 README.md
 
-# Config files prettier would reformat on every `make prettier -w` run. Rewriting
-# .pre-commit-config.yaml mid-commit is fatal: `pre-commit run` then aborts with
-# "Your pre-commit configuration is unstaged" and the commit fails. Markdown style is owned by
-# markdownlint-cli2, not prettier.
-.ci-package.json
-.markdownlint-cli2.yaml
-.pre-commit-config.yaml
-CLAUDE.md
-
-# c8 coverage output (gitignored, but `make prettier -w` in .husky/pre-commit would rewrite it)
+# c8 coverage output. Gitignored, but `.husky/pre-commit` runs `make prettier PRETTIER_WRITE=-w`
+# over ./, so prettier would still rewrite the generated report files.
 coverage/
 .nyc_output/

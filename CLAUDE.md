@@ -96,15 +96,15 @@ clarifying questions come before implementation rather than after mistakes.
 `@ondewo/s2t-client-nodejs` — the Node gRPC SDK for the ONDEWO S2T API. About 95% of the tracked
 code is **generated** and must never be hand-edited:
 
-| Path | Kind |
-| --- | --- |
-| `api/` | generated protobuf/gRPC stubs (`speech-to-text*_pb`, `empty*`, `struct*`) |
-| `public-api.js`, `public-api.d.ts` | generated barrel re-exporting `api/` |
-| `src/ondewo-s2t-api/` | submodule: the `.proto` source |
-| `ondewo-proto-compiler/` | submodule: the codegen docker image |
-| `auth/offlineTokenProvider.ts` | **hand-written** — the D18 Keycloak offline-token provider |
-| `auth/offlineTokenProvider.js`, `.d.ts` | **hand-maintained** CommonJS twin + typings shipped to npm |
-| `examples/s2tClient.ts`, `examples/getServiceInfo.ts` | **hand-written** examples |
+| Path                                                  | Kind                                                                      |
+| ----------------------------------------------------- | ------------------------------------------------------------------------- |
+| `api/`                                                | generated protobuf/gRPC stubs (`speech-to-text*_pb`, `empty*`, `struct*`) |
+| `public-api.js`, `public-api.d.ts`                    | generated barrel re-exporting `api/`                                      |
+| `src/ondewo-s2t-api/`                                 | submodule: the `.proto` source                                            |
+| `ondewo-proto-compiler/`                              | submodule: the codegen docker image                                       |
+| `auth/offlineTokenProvider.ts`                        | **hand-written** — the D18 Keycloak offline-token provider                |
+| `auth/offlineTokenProvider.js`, `.d.ts`               | **hand-maintained** CommonJS twin + typings shipped to npm                |
+| `examples/s2tClient.ts`, `examples/getServiceInfo.ts` | **hand-written** examples                                                 |
 
 Toolchain: node 24 locally / node 20 in CI, typescript 6.0.3, c8 11.0.0, node's built-in
 `node:test` runner. There is no jest and no `tsconfig`-driven build for the tests — every test
@@ -146,7 +146,7 @@ c8 --check-coverage --statements 100 --lines 100 --branches 100 --functions 100 
 ```
 
 - **`--all` + directory globs are the point.** With the old single-file `--include
-  '**/offlineTokenProvider.js'` the gate failed OPEN: a new untested hand-written file was simply
+'**/offlineTokenProvider.js'` the gate failed OPEN: a new untested hand-written file was simply
   not measured. Verified after the change by dropping a trivial `examples/untestedProbe.ts` into the
   tree — the run went red (`untestedProbe.ts 0% | 1-3`). Keep `--all` and keep the globs
   directory-shaped.
@@ -210,12 +210,12 @@ prettier wants to reformat that is not listed in `.prettierignore`.
 commit. Two entries exist to stop that from breaking things and must not be removed:
 
 - **`README.md`** — prettier rewrites the link-reference title `[comment]: <> (START OF GITHUB
-  README)` into `[comment]: <> 'START OF GITHUB README'`. `make build` slices the published README
+README)` into `[comment]: <> 'START OF GITHUB README'`. `make build` slices the published README
   between those markers: it computes the line range from `src/README.md` and applies it to
   `npm/README.md`, which is a copy of the ROOT `README.md`. Once prettier had desynchronised the two
   (130 vs 122 lines), the release cut the wrong range — the published README ended on an unclosed
   ``` fence and still carried the GitHub-only release section. **Invariant: `diff README.md
-  src/README.md` must be empty**, and `make build` enforces it by doing `cp src/README.md .`.
+src/README.md` must be empty**, and `make build` enforces it by doing `cp src/README.md .`.
 - **`.pre-commit-config.yaml`, `.markdownlint-cli2.yaml`, `.ci-package.json`, `CLAUDE.md`** —
   prettier reformatting the pre-commit config mid-commit makes the very next `pre-commit run` abort
   with _"Your pre-commit configuration is unstaged"_.
@@ -251,7 +251,7 @@ Run it as `uvx pre-commit run --all-files` (`pre-commit` is not on PATH here). I
   the `*****` separators the release Makefile greps for survive — verified by diffing the file with
   whitespace and blank lines normalised away.
 - `.husky/pre-commit` still guards `pre-commit run` behind `git diff --quiet --
-  .pre-commit-config.yaml`. That guard is now belt-and-braces rather than essential: the config is
+.pre-commit-config.yaml`. That guard is now belt-and-braces rather than essential: the config is
   in `.prettierignore`, so `make prettier -w` no longer dirties it.
 - `.husky/pre-push` runs `npm test` and **skips itself for the three release pushes** (`refs/tags/*`,
   `refs/heads/release/*`, and a commit whose subject starts `Preparing for Release`), which
@@ -294,7 +294,7 @@ ondewo-proto-compiler X" in `RELEASE.md` unless `make build` actually ran.
 - `create_npm_package` copies `auth/` wholesale, then `rm -f npm/auth/*.spec.* npm/auth/*.test.*`
   and writes `npm/.npmignore` with the same two patterns. The published tarball is `./npm`, so the
   **root `.npmignore` is never consulted**. `make create_npm_package && (cd npm && npm pack
-  --dry-run) | grep -c spec` must print `0`.
+--dry-run) | grep -c spec` must print `0`.
 - The release commit line is `-git commit --no-verify …`. The leading `-` matters: when `make build`
   produced no changes the bare form aborts the whole release on git's non-zero "nothing to commit".
 - `make TEST` prints `<set>`/`<unset>` instead of `GITHUB_GH_TOKEN` / `NPM_PASSWORD`; every

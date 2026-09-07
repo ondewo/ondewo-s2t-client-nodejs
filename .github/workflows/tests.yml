@@ -9,6 +9,10 @@ jobs:
   unit-tests:
     runs-on: ubuntu-latest
     steps:
+      # No `submodules:` key on purpose (the default is false). The tests only need the COMMITTED
+      # api/ stubs, which are ordinary tracked files rather than a gitlink, and the
+      # ondewo-proto-compiler submodule is declared with an SSH URL (git@github.com:...) that a
+      # runner without a deploy key cannot clone -- fetching submodules would fail this step.
       - uses: actions/checkout@v5
 
       - name: Set up Node.js 20
@@ -19,11 +23,37 @@ jobs:
       - name: Install dependencies
         run: npm install --no-audit --no-fund
 
-      # The repo is ~95% generated gRPC/protobuf stubs; coverage is gated on the HAND-WRITTEN surface
-      # (the D18 Keycloak offline-token auth provider). The test compiles the TS provider + spec and runs
-      # node's built-in test runner under c8 with a 100% line-coverage gate.
-      - name: Unit tests + 100% line-coverage gate on hand-written code
+      # The release codegen REGENERATES the root package.json, wiping its test scripts and
+      # test-only devDependencies, and `make restore_ci_test_setup` merges .ci-package.json back in
+      # to repair it. That makes .ci-package.json -- not package.json -- the copy that survives a
+      # release: a script edited in only one of the two is silently reverted to the stale mirrored
+      # value by the next release, and CI then breaks afterwards with no obvious cause. This step
+      # turns that drift into a red build on the commit that introduced it, and runs first so a
+      # mismatch fails fast.
+      - name: Guard the package.json <-> .ci-package.json mirror
+        run: npm run test:drift
+
+      # The repo is ~95% generated gRPC/protobuf stubs; coverage is gated on the HAND-WRITTEN
+      # surface only -- auth/offlineTokenProvider.ts (the D18 Keycloak offline-token auth provider)
+      # plus examples/s2tClient.ts and examples/getServiceInfo.ts. `npm test` compiles those and
+      # their specs, runs node's built-in test runner and enforces 100% statements / branches /
+      # functions / lines under c8. The gate runs with `--all`, so a NEW hand-written file under
+      # auth/ or examples/ that no test touches turns the build red instead of being ignored.
+      - name: Unit tests + 100% statement/branch/function/line coverage gate on hand-written code
         run: npm test
 
+      # `npm test` already runs examples/*.spec.js; this step adds the strict `--noEmit` type-check
+      # of the examples (which the coverage run does not perform) and re-runs the example specs on
+      # their own, which is how a developer runs them.
       - name: Type-check + run example mock tests
         run: npm run typecheck:examples && npm run test:examples
+
+      # eslint and prettier are enforced locally by .husky/pre-commit (`make eslint`,
+      # `make prettier PRETTIER_WRITE=-w`). Running the same two targets here keeps CI and the hooks
+      # in agreement -- without this, a prettier violation is only ever "fixed" by the hook
+      # rewriting the file mid-commit, which is invisible to CI.
+      - name: Lint (type annotations + repo conventions)
+        run: make eslint
+
+      - name: Format check
+        run: npx prettier --config .prettierrc --check --ignore-path .prettierignore ./

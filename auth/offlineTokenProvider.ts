@@ -127,7 +127,6 @@ async function requestToken(
 	});
 	if (!response.ok) {
 		const detail: string = await response.text().catch((): string => {
-			/* c8 ignore next -- defensive: the mocked Response.text() never rejects, but a real one might */
 			return '';
 		});
 		throw new Error(
@@ -317,7 +316,6 @@ export class OfflineTokenProvider {
 	 *   the timer fires `refreshSkewInS` seconds before this elapses.
 	 */
 	private scheduleRefresh(expiresInS: number): void {
-		/* c8 ignore next 3 -- defensive: stop() clears the only timer, so scheduleRefresh is never re-entered after stop */
 		if (this.stopped) {
 			return;
 		}
@@ -327,17 +325,16 @@ export class OfflineTokenProvider {
 		}
 
 		let delayMs: number = expiresInS * 1000 - this.refreshSkewInMs;
-		/* c8 ignore next 3 -- defensive clamp: only reached when refreshSkewInS exceeds expires_in (degenerate config) */
+		// Degenerate config (refreshSkewInS larger than expires_in): refresh straight away.
 		if (delayMs < 0) {
 			delayMs = 0;
 		}
-		/* c8 ignore next 3 -- defensive deadline clamp: a still-open bounded window returns early above before reaching here */
+		// A still-open bounded window caps the delay so the last refresh lands inside it.
 		if (this.deadlineEpochMs !== null) {
 			delayMs = Math.min(delayMs, this.deadlineEpochMs - Date.now());
 		}
 
 		this.refreshTimer = setTimeout((): void => {
-			/* c8 ignore next 5 -- defensive: the background refresh resolves in tests, so this rejection handler is never entered */
 			this.refreshNow().catch((): void => {
 				// Swallow refresh errors so an unhandled rejection never crashes the
 				// host process; the access token simply lapses and the caller will

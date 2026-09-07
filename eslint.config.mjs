@@ -20,10 +20,9 @@ export default [
 			'**/*.spec.ts',
 			'npm/auth/offlineTokenProvider.d.ts',
 			'npm/auth/offlineTokenProvider.js',
-			'.test-build/offlineTokenProvider.js',
-			'.test-build/offlineTokenProvider.spec.js',
-			'.test-build/s2tClient.js',
-			'.test-build/s2tClient.spec.js',
+			// tsc test output (package.json `build:tests`); its .js are outside the tsconfig
+			// program, so lint the .ts source instead of the build artifacts
+			'.test-build/',
 			'**/api/',
 			'src/ondewo-s2t-api',
 			'**/ondewo-proto-compiler',

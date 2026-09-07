@@ -463,3 +463,131 @@ runTest('keycloakVerifySsl false is ignored when a custom fetchImpl is injected'
 		provider.stop();
 	}
 });
+
+/**
+ * Verifies a non-2xx response whose body cannot be read still raises the error carrying the HTTP
+ * status: `response.text()` is allowed to reject (a truncated/aborted body) and the detail is
+ * simply omitted.
+ */
+runTest('a token error whose body cannot be read still reports the HTTP status', async (): Promise<void> => {
+	const impl = (): Promise<MockResponse> =>
+		Promise.resolve({
+			ok: false,
+			status: 502,
+			statusText: 'Bad Gateway',
+			json: (): Promise<CannedResponse | undefined> => Promise.resolve(undefined),
+			text: (): Promise<string> => Promise.reject(new Error('body stream closed'))
+		});
+
+	await assert.rejects(
+		(): Promise<OfflineTokenProvider> =>
+			login({
+				keycloakUrl: KEYCLOAK_URL,
+				realm: REALM,
+				clientId: CLIENT_ID,
+				username: USERNAME,
+				password: PASSWORD,
+				fetchImpl: impl as unknown as typeof fetch
+			}),
+		/HTTP 502 Bad Gateway$/
+	);
+});
+
+/** Verifies an explicit `refreshNow()` after `stop()` still refreshes but arms no new timer. */
+runTest('refreshNow after stop refreshes once and re-arms no timer', async (): Promise<void> => {
+	const mock: FetchMock = buildFetchMock([
+		{ access_token: 'access-1', refresh_token: 'offline-1', expires_in: 300 },
+		{ access_token: 'access-2', refresh_token: 'offline-2', expires_in: 0 }
+	]);
+	const provider: OfflineTokenProvider = await login({
+		keycloakUrl: KEYCLOAK_URL,
+		realm: REALM,
+		clientId: CLIENT_ID,
+		username: USERNAME,
+		password: PASSWORD,
+		refreshSkewInS: 0,
+		fetchImpl: mock.fetchImpl
+	});
+
+	provider.stop();
+	await provider.refreshNow();
+	assert.equal(provider.getAccessToken(), 'access-2');
+
+	// The refreshed token expires immediately, so a re-armed timer would fire within the sleep and
+	// make a third call. The stopped provider must not schedule one.
+	await sleep(50);
+	assert.equal(mock.calls.length, 2);
+});
+
+/** Verifies a refresh skew larger than the token lifetime clamps the delay to zero instead of going negative. */
+runTest('a refresh skew larger than expires_in clamps the delay to zero', async (): Promise<void> => {
+	const mock: FetchMock = buildFetchMock([
+		// 1s lifetime with a 5s skew => a negative delay before the clamp.
+		{ access_token: 'access-1', refresh_token: 'offline-1', expires_in: 1 },
+		{ access_token: 'access-2', refresh_token: 'offline-2', expires_in: 300 }
+	]);
+	const provider: OfflineTokenProvider = await login({
+		keycloakUrl: KEYCLOAK_URL,
+		realm: REALM,
+		clientId: CLIENT_ID,
+		username: USERNAME,
+		password: PASSWORD,
+		refreshSkewInS: 5,
+		fetchImpl: mock.fetchImpl
+	});
+
+	await sleep(50);
+	provider.stop();
+
+	assert.equal(mock.calls.length, 2);
+	assert.equal(provider.getAccessToken(), 'access-2');
+});
+
+/** Verifies a still-open bounded window caps the refresh delay so the last refresh lands inside it. */
+runTest('a still-open bounded window caps the refresh delay', async (): Promise<void> => {
+	const mock: FetchMock = buildFetchMock([
+		// A 300s token inside a 60s bounded window: the delay must be clamped down to the window.
+		{ access_token: 'access-1', refresh_token: 'offline-1', expires_in: 300 }
+	]);
+	const provider: OfflineTokenProvider = await login({
+		keycloakUrl: KEYCLOAK_URL,
+		realm: REALM,
+		clientId: CLIENT_ID,
+		username: USERNAME,
+		password: PASSWORD,
+		refreshSkewInS: 0,
+		tokenExpirationInS: 60,
+		fetchImpl: mock.fetchImpl
+	});
+	provider.stop();
+
+	// The timer is armed ~60s out (not 300s), so nothing fired yet: only the login call happened.
+	assert.equal(mock.calls.length, 1);
+	assert.equal(provider.getAccessToken(), 'access-1');
+});
+
+/** Verifies a failing BACKGROUND refresh is swallowed: no unhandled rejection, the old token simply lapses. */
+runTest('a failing background refresh is swallowed and leaves the previous token in place', async (): Promise<void> => {
+	const mock: FetchMock = buildFetchMock([
+		{ access_token: 'access-1', refresh_token: 'offline-1', expires_in: 0 },
+		// The scheduled refresh is rejected by Keycloak.
+		{ status: 401 }
+	]);
+	const provider: OfflineTokenProvider = await login({
+		keycloakUrl: KEYCLOAK_URL,
+		realm: REALM,
+		clientId: CLIENT_ID,
+		username: USERNAME,
+		password: PASSWORD,
+		refreshSkewInS: 0,
+		fetchImpl: mock.fetchImpl
+	});
+
+	await sleep(50);
+	provider.stop();
+
+	assert.equal(mock.calls.length, 2);
+	// The rejection never escaped (an unhandled rejection would fail the test run) and the previous
+	// access token is still the one callers read.
+	assert.equal(provider.getAccessToken(), 'access-1');
+});

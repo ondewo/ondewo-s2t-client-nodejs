@@ -143,3 +143,27 @@ runTest('create builds an S2tClient wired with bearer auth', (): void => {
 	const client: S2tClient = S2tClient.create(config, new FakeAuthProvider());
 	assert.ok(client instanceof S2tClient);
 });
+
+/** A gRPC error from `listS2tPipelines` must reject the returned promise. */
+runTest('listS2tPipelines rejects when the gRPC call errors', async (): Promise<void> => {
+	const stub: FakeStub = new FakeStub();
+	stub.pipelinesError = Object.assign(new Error('pipelines unavailable'), {
+		code: grpc.status.UNAVAILABLE,
+		details: 'pipelines unavailable',
+		metadata: new grpc.Metadata()
+	});
+	const client: S2tClient = new S2tClient(stub, new FakeAuthProvider());
+
+	await assert.rejects((): Promise<Speech2TextConfig[]> => client.listS2tPipelines(), /pipelines unavailable/);
+});
+
+/**
+ * `S2tClient.create` with `secure: true` must build a TLS channel. Constructing a client opens no
+ * connection (gRPC-js dials lazily), so this stays offline; `grpcCert: null` selects the system
+ * trust store.
+ */
+runTest('create builds a secure (TLS) channel when secure is true', (): void => {
+	const config: ClientConfig = { host: 'localhost', port: '50051', secure: true, grpcCert: null };
+	const client: S2tClient = S2tClient.create(config, new FakeAuthProvider());
+	assert.ok(client instanceof S2tClient);
+});

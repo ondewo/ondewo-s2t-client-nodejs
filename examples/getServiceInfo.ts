@@ -29,13 +29,18 @@
 //   Secure channel: ONDEWO_USE_SECURE_CHANNEL, ONDEWO_GRPC_CERT
 //   Keycloak:       KEYCLOAK_URL, KEYCLOAK_REALM, KEYCLOAK_CLIENT_ID,
 //                   KEYCLOAK_USER_NAME, KEYCLOAK_PASSWORD, KEYCLOAK_VERIFY_SSL
+//
+// `main` takes its two outside-world boundaries -- the Keycloak login and the S2T
+// client factory -- as injectable overrides that default to the real ones, so the
+// whole flow is unit-tested with no network and no live server (see
+// `getServiceInfo.spec.ts`) while running the file directly is unaffected.
 
 import * as dotenv from 'dotenv';
 import * as fs from 'fs';
 import * as path from 'path';
 
-import { OfflineTokenProvider } from '../auth/offlineTokenProvider';
-import { ClientConfig, S2tClient } from './s2tClient';
+import { OfflineTokenLoginOptions, OfflineTokenProvider } from '../auth/offlineTokenProvider';
+import { BearerAuthProvider, ClientConfig, S2tClient } from './s2tClient';
 import { S2tGetServiceInfoResponse } from '../api/ondewo/s2t/speech-to-text_pb';
 
 dotenv.config({ path: path.join(__dirname, 'environment.env') });
@@ -48,7 +53,7 @@ dotenv.config({ path: path.join(__dirname, 'environment.env') });
  * @param fallback - The value to use when unset or empty.
  * @returns The parsed boolean.
  */
-function parseBoolean(value: string | undefined, fallback: boolean): boolean {
+export function parseBoolean(value: string | undefined, fallback: boolean): boolean {
 	if (value === undefined || value.trim() === '') {
 		return fallback;
 	}
@@ -62,7 +67,7 @@ function parseBoolean(value: string | undefined, fallback: boolean): boolean {
  *
  * @returns The connection parameters for `S2tClient.create`.
  */
-function buildConfigFromEnv(): ClientConfig {
+export function buildConfigFromEnv(): ClientConfig {
 	const secure: boolean = parseBoolean(process.env.ONDEWO_USE_SECURE_CHANNEL, false);
 	const certPath: string = process.env.ONDEWO_GRPC_CERT ?? '';
 	let grpcCert: Buffer | null = null;
@@ -85,7 +90,7 @@ function buildConfigFromEnv(): ClientConfig {
  * @param error - The caught error.
  * @returns A human-readable description (never leaking credentials).
  */
-function describeError(error: unknown): string {
+export function describeError(error: unknown): string {
 	if (error !== null && typeof error === 'object' && 'code' in error && 'details' in error) {
 		return `gRPC error (code=${String(error.code)}): ${String(error.details)}`;
 	}
@@ -95,20 +100,64 @@ function describeError(error: unknown): string {
 	return String(error);
 }
 
+/** The subset of `S2tClient` that {@link main} drives. */
+export interface ServiceInfoClient {
+	/** Fetches the S2T server info. */
+	getServiceInfo(): Promise<S2tGetServiceInfoResponse>;
+}
+
+/** Injectable `OfflineTokenProvider.login` signature -- the Keycloak boundary of the example. */
+export type LoginFunction = (options: OfflineTokenLoginOptions) => Promise<OfflineTokenProvider>;
+
+/** Injectable `S2tClient.create` signature -- the S2T-server boundary of the example. */
+export type S2tClientFactory = (config: ClientConfig, authProvider: BearerAuthProvider) => ServiceInfoClient;
+
+/**
+ * Constructs the real `S2tClient`. This is the default {@link S2tClientFactory} of
+ * {@link main}; constructing it opens no connection (gRPC-js dials lazily on the
+ * first call).
+ *
+ * @param config - The connection parameters.
+ * @param authProvider - The bearer-token provider stamped onto every call.
+ * @returns The real `S2tClient` bound to `config`.
+ */
+export function createS2tClient(config: ClientConfig, authProvider: BearerAuthProvider): ServiceInfoClient {
+	return S2tClient.create(config, authProvider);
+}
+
+/**
+ * Optional replacements for the two boundaries of {@link main} that touch the
+ * outside world. Both default to the real implementations, so running this file
+ * directly is unaffected; a unit test substitutes them to drive the whole flow
+ * offline.
+ */
+export interface GetServiceInfoOverrides {
+	/** Replacement for `OfflineTokenProvider.login`; defaults to the real login. */
+	loginImpl?: LoginFunction;
+	/** Replacement for {@link createS2tClient}; defaults to the real `S2tClient`. */
+	createClient?: S2tClientFactory;
+}
+
 /**
  * Logs in via the Keycloak offline-token flow, builds an `S2tClient`, and prints
  * the S2T server version. Always stops the token provider's background refresh
  * loop on the way out.
  *
+ * @param overrides - Optional replacements for the two outside-world boundaries
+ *   (see {@link GetServiceInfoOverrides}); both default to the real ones.
  * @returns A promise that resolves once the server version has been printed.
  */
-async function main(): Promise<void> {
+export async function main(overrides: GetServiceInfoOverrides = {}): Promise<void> {
 	console.log('START: getServiceInfo example');
+
+	// The two boundaries that touch the outside world; a unit test replaces them, the example does not.
+	const loginImpl: LoginFunction = overrides.loginImpl ?? OfflineTokenProvider.login;
+	const createClient: S2tClientFactory = overrides.createClient ?? createS2tClient;
 
 	const keycloakUrl: string = process.env.KEYCLOAK_URL ?? 'https://keycloak.example.com/auth';
 	const realm: string = process.env.KEYCLOAK_REALM ?? 'ondewo-ccai-platform';
 	console.log(`Authenticating against Keycloak realm '${realm}' at ${keycloakUrl}`);
-	const authProvider: OfflineTokenProvider = await OfflineTokenProvider.login({
+	const authProvider: OfflineTokenProvider = await loginImpl({
 		keycloakUrl,
 		realm,
 		clientId: process.env.KEYCLOAK_CLIENT_ID ?? 'ondewo-nlu-cai-sdk-public',
@@ -120,7 +169,7 @@ async function main(): Promise<void> {
 
 	const config: ClientConfig = buildConfigFromEnv();
 	console.log(`Connecting to S2T server at ${config.host}:${config.port} (secure=${config.secure})`);
-	const client: S2tClient = S2tClient.create(config, authProvider);
+	const client: ServiceInfoClient = createClient(config, authProvider);
 	try {
 		const info: S2tGetServiceInfoResponse = await client.getServiceInfo();
 		console.log(`S2T service version: ${info.getVersion()}`);
@@ -131,6 +180,8 @@ async function main(): Promise<void> {
 	console.log('DONE: getServiceInfo example');
 }
 
+// Run only when executed directly (`node getServiceInfo.js`), not when imported by the unit test.
+/* c8 ignore next 7 -- direct-run entrypoint: the spec imports this module, so `require.main === module` is false under the test runner, and the `process.exit(1)` path cannot run in-process */
 if (require.main === module) {
 	main().catch((error: unknown): void => {
 		console.error(`FAILED: getServiceInfo example — ${describeError(error)}`);

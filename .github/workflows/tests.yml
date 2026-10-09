@@ -7,7 +7,15 @@ on:
 
 jobs:
   unit-tests:
+    name: tests (node ${{ matrix.node-version }})
     runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        # Same matrix as ondewo-nlu-client-nodejs: 20 is the floor of the installed toolchain
+        # (c8 11 and undici 7 need >= 20), 22 the current LTS, 24 what the repo is developed on.
+        node-version: ['20', '22', '24']
     steps:
       # No `submodules:` key on purpose (the default is false). The tests only need the COMMITTED
       # api/ stubs, which are ordinary tracked files rather than a gitlink, and the
@@ -15,13 +23,16 @@ jobs:
       # runner without a deploy key cannot clone -- fetching submodules would fail this step.
       - uses: actions/checkout@v5
 
-      - name: Set up Node.js 20
+      - name: Set up Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v5
         with:
-          node-version: '20'
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
 
-      - name: Install dependencies
-        run: npm install --no-audit --no-fund
+      # `npm ci`, never `npm install`: it installs exactly the lockfile and fails if package.json
+      # and package-lock.json disagree, instead of silently re-resolving.
+      - name: Install dependencies from the lockfile
+        run: npm ci --no-audit --no-fund
 
       # The release codegen REGENERATES the root package.json, wiping its test scripts and
       # test-only devDependencies, and `make restore_ci_test_setup` merges .ci-package.json back in
@@ -61,3 +72,13 @@ jobs:
 
       - name: Format check
         run: npx prettier --config .prettierrc --check --ignore-path .prettierignore ./
+
+      # auth/grpcChannel.js / .d.ts are tsc output that is COMMITTED because npm ships them.
+      # Rebuild them and fail if the result differs from what was committed. Deliberately NOT
+      # `build:auth`: auth/offlineTokenProvider.js / .d.ts are a hand-maintained CommonJS twin (not
+      # tsc output), and the twin's behaviour is already pinned by `npm test`, which runs the whole
+      # offlineTokenProvider suite against the committed .js as well as the .ts.
+      - name: Committed grpcChannel build artifacts match their source
+        run: |
+          npm run build:grpcChannel
+          git diff --exit-code -- auth/

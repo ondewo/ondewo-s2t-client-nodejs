@@ -106,7 +106,7 @@ code is **generated** and must never be hand-edited:
 | `auth/offlineTokenProvider.js`, `.d.ts`               | **hand-maintained** CommonJS twin + typings shipped to npm                |
 | `examples/s2tClient.ts`, `examples/getServiceInfo.ts` | **hand-written** examples                                                 |
 
-Toolchain: node 24 locally / node 20 in CI, typescript 6.0.3, c8 11.0.0, node's built-in
+Toolchain: node 24 locally / node 20, 22 and 24 in CI, typescript 6.0.3, c8 11.0.0, node's built-in
 `node:test` runner. There is no jest and no `tsconfig`-driven build for the tests — every test
 script drives `tsc` with explicit flags and `--ignoreConfig`.
 
@@ -527,7 +527,8 @@ npm view <pkg> version ; git tag --list <version> ; gh release view <version> --
 - It lives in `auth/` so the proto-compiler's `append-auth-exports.sh` re-exports it from `public-api.*` and
   `create_npm_package` ships it. Unlike `offlineTokenProvider.js`, `auth/grpcChannel.js` / `.d.ts` ARE tsc output:
   regenerate them with `npm run build:grpcChannel` (never `build:auth`, see above).
-  `auth/grpcChannel.artifact.spec.ts` pins the committed `.js` to the tested build, so c8 excludes it.
+  `auth/grpcChannel.artifact.spec.ts` pins the committed `.js` to the tested build, so c8 excludes it, and the CI step
+  "Committed grpcChannel build artifacts match their source" rebuilds `.js` + `.d.ts` and fails on any `git diff`.
 - `grpc.keepalive_time_ms` stays UNSET on purpose: grpc-js has no `grpc.http2.max_pings_without_data`, so it pings
   silent streams and a grpc-core server answers `GOAWAY too_many_pings` (measured RESOURCE_EXHAUSTED after 150 s at
   30 s, 50 s at 10 s). Do not copy the Python keepalive into `DEFAULT_GRPC_CHANNEL_OPTIONS`.

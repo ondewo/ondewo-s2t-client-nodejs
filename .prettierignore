@@ -1,6 +1,9 @@
 .idea/
 .vscode/
 api/
+# the generated package entry point (proto compiler output, like api/)
+public-api.js
+public-api.d.ts
 esm2022/
 fesm2022/
 node_modules

@@ -80,7 +80,7 @@ Every request carries an `authorization: Bearer <jwt>` header sourced from the K
 offline-token provider shipped in `auth/`:
 
 ```js
-const { login } = require('@ondewo/s2t-client-nodejs/auth/offlineTokenProvider');
+const { login } = require('@ondewo/s2t-client-nodejs');
 
 const provider = await login({
   keycloakUrl: 'https://keycloak.example.com/auth',
@@ -98,7 +98,7 @@ Set `keycloakVerifySsl: false` to skip TLS certificate verification on the token
 
 ## TLS, mutual TLS and certificates
 
-gRPC encrypts with **TLS** ("SSL" in names such as `credentials.createSsl` or `grpc.ssl_target_name_override` is legacy naming). The package ships a channel helper, `auth/grpcChannel`, that builds the `@grpc/grpc-js` credentials and channel options for every generated client:
+gRPC encrypts with **TLS** ("SSL" in names such as `credentials.createSsl` or `grpc.ssl_target_name_override` is legacy naming). The package ships a channel helper, `auth/grpcChannel` (exported from the package root), that builds the `@grpc/grpc-js` credentials and channel options for every generated client:
 
 | Mode                                    | `useSecureChannel` | Config fields                                                   |
 |-----------------------------------------|--------------------|-----------------------------------------------------------------|
@@ -120,8 +120,7 @@ Rules the code enforces:
 import { readFileSync } from 'fs';
 
 import * as grpc from '@grpc/grpc-js';
-import { createChannelCredentials, createGrpcClient, GrpcClientConfig } from '@ondewo/s2t-client-nodejs/auth/grpcChannel';
-import { Speech2TextClient } from '@ondewo/s2t-client-nodejs/api/ondewo/s2t/speech-to-text_grpc_pb';
+import { createChannelCredentials, createGrpcClient, GrpcClientConfig, Speech2TextClient } from '@ondewo/s2t-client-nodejs';
 
 const config = new GrpcClientConfig({
   host: '10.0.0.5',

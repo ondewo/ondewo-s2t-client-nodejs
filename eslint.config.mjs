@@ -31,7 +31,10 @@ export default [
 			// the proto stubs in api/ (CommonJS .js + companion .d.ts), linted via
 			// their TypeScript .spec.ts; not authored against the .ts-source rules.
 			'auth/offlineTokenProvider.js',
-			'auth/offlineTokenProvider.d.ts'
+			'auth/offlineTokenProvider.d.ts',
+			// tsc output of auth/grpcChannel.ts (npm run build:grpcChannel), committed for npm packaging
+			'auth/grpcChannel.js',
+			'auth/grpcChannel.d.ts'
 		]
 	},
 	...compat.extends(

@@ -141,3 +141,13 @@
 * [[OND211-2039]](https://ondewo.atlassian.net/browse/OND211-2039) - Added pre-commit hooks and adjusted files to them
 
 *****************
+
+## Release ONDEWO S2T Nodejs Client 1.4.0
+
+### New Features
+
+* Added first public release
+* Javascript and Typescript clients
+* Uses version 1.4.0 from <a href="https://github.com/ondewo/ondewo-s2t-api">ONDEWO S2T APIs</a>
+
+*****************

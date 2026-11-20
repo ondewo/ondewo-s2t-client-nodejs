@@ -339,6 +339,8 @@ export class TranscriptionReturnOptions extends jspb.Message {
     setReturnAlternativeWordsNr(value: number): TranscriptionReturnOptions;
     getReturnWordTiming(): boolean;
     setReturnWordTiming(value: boolean): TranscriptionReturnOptions;
+    getReturnEndOfSpeechCandidate(): boolean;
+    setReturnEndOfSpeechCandidate(value: boolean): TranscriptionReturnOptions;
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): TranscriptionReturnOptions.AsObject;
@@ -360,6 +362,7 @@ export namespace TranscriptionReturnOptions {
         returnAlternativeWords: boolean,
         returnAlternativeWordsNr: number,
         returnWordTiming: boolean,
+        returnEndOfSpeechCandidate: boolean,
     }
 }
 
@@ -376,6 +379,16 @@ export class UtteranceDetectionOptions extends jspb.Message {
     clearTurnDetection(): void;
     getTurnDetection(): TurnDetectionOptions | undefined;
     setTurnDetection(value?: TurnDetectionOptions): UtteranceDetectionOptions;
+
+    hasMinAudioChunkSize(): boolean;
+    clearMinAudioChunkSize(): void;
+    getMinAudioChunkSize(): number | undefined;
+    setMinAudioChunkSize(value: number): UtteranceDetectionOptions;
+
+    hasTranscribeNotFinalPeriodSeconds(): boolean;
+    clearTranscribeNotFinalPeriodSeconds(): void;
+    getTranscribeNotFinalPeriodSeconds(): number | undefined;
+    setTranscribeNotFinalPeriodSeconds(value: number): UtteranceDetectionOptions;
 
     getOneofTranscribeNotFinalCase(): UtteranceDetectionOptions.OneofTranscribeNotFinalCase;
     getOneofTurnDetectionCase(): UtteranceDetectionOptions.OneofTurnDetectionCase;
@@ -395,6 +408,8 @@ export namespace UtteranceDetectionOptions {
         transcribeNotFinal: boolean,
         nextChunkTimeout: number,
         turnDetection?: TurnDetectionOptions.AsObject,
+        minAudioChunkSize?: number,
+        transcribeNotFinalPeriodSeconds?: number,
     }
 
     export enum OneofTranscribeNotFinalCase {
@@ -612,6 +627,8 @@ export class TranscribeStreamResponse extends jspb.Message {
     setUtteranceStart(value: boolean): TranscribeStreamResponse;
     getAudioUuid(): string;
     setAudioUuid(value: string): TranscribeStreamResponse;
+    getEndOfSpeechCandidate(): boolean;
+    setEndOfSpeechCandidate(value: boolean): TranscribeStreamResponse;
 
     hasConfig(): boolean;
     clearConfig(): void;
@@ -639,6 +656,7 @@ export namespace TranscribeStreamResponse {
         audio: Uint8Array | string,
         utteranceStart: boolean,
         audioUuid: string,
+        endOfSpeechCandidate: boolean,
         config?: TranscribeRequestConfig.AsObject,
     }
 
@@ -1499,7 +1517,10 @@ export namespace StreamingServer {
 }
 
 export class StreamingSpeechRecognition extends jspb.Message { 
-    getTranscribeNotFinal(): boolean;
+
+    hasTranscribeNotFinal(): boolean;
+    clearTranscribeNotFinal(): void;
+    getTranscribeNotFinal(): boolean | undefined;
     setTranscribeNotFinal(value: boolean): StreamingSpeechRecognition;
     getDecodingMethod(): string;
     setDecodingMethod(value: string): StreamingSpeechRecognition;
@@ -1515,6 +1536,11 @@ export class StreamingSpeechRecognition extends jspb.Message {
     getTurnDetection(): TurnDetectionOptions | undefined;
     setTurnDetection(value?: TurnDetectionOptions): StreamingSpeechRecognition;
 
+    hasTranscribeNotFinalPeriodSeconds(): boolean;
+    clearTranscribeNotFinalPeriodSeconds(): void;
+    getTranscribeNotFinalPeriodSeconds(): number | undefined;
+    setTranscribeNotFinalPeriodSeconds(value: number): StreamingSpeechRecognition;
+
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): StreamingSpeechRecognition.AsObject;
     static toObject(includeInstance: boolean, msg: StreamingSpeechRecognition): StreamingSpeechRecognition.AsObject;
@@ -1527,12 +1553,13 @@ export class StreamingSpeechRecognition extends jspb.Message {
 
 export namespace StreamingSpeechRecognition {
     export type AsObject = {
-        transcribeNotFinal: boolean,
+        transcribeNotFinal?: boolean,
         decodingMethod: string,
         samplingRate: number,
         minAudioChunkSize: number,
         nextChunkTimeout: number,
         turnDetection?: TurnDetectionOptions.AsObject,
+        transcribeNotFinalPeriodSeconds?: number,
     }
 }
 
@@ -1563,6 +1590,43 @@ export class TurnDetectionOptions extends jspb.Message {
     getTurnDetectionLlmOpenaiOptions(): OpenaiLlmOptions | undefined;
     setTurnDetectionLlmOpenaiOptions(value?: OpenaiLlmOptions): TurnDetectionOptions;
 
+    hasIncompleteMaxSilenceSeconds(): boolean;
+    clearIncompleteMaxSilenceSeconds(): void;
+    getIncompleteMaxSilenceSeconds(): number | undefined;
+    setIncompleteMaxSilenceSeconds(value: number): TurnDetectionOptions;
+
+    hasTurnDetectionConversationContext(): boolean;
+    clearTurnDetectionConversationContext(): void;
+    getTurnDetectionConversationContext(): TurnDetectionConversationContext | undefined;
+    setTurnDetectionConversationContext(value?: TurnDetectionConversationContext): TurnDetectionOptions;
+
+    hasTurnDetectionChatLlmOptions(): boolean;
+    clearTurnDetectionChatLlmOptions(): void;
+    getTurnDetectionChatLlmOptions(): TurnDetectionChatLlmOptions | undefined;
+    setTurnDetectionChatLlmOptions(value?: TurnDetectionChatLlmOptions): TurnDetectionOptions;
+
+    hasTurnDetectionEndOfUtteranceLlmOptions(): boolean;
+    clearTurnDetectionEndOfUtteranceLlmOptions(): void;
+    getTurnDetectionEndOfUtteranceLlmOptions(): TurnDetectionEndOfUtteranceLlmOptions | undefined;
+    setTurnDetectionEndOfUtteranceLlmOptions(value?: TurnDetectionEndOfUtteranceLlmOptions): TurnDetectionOptions;
+
+    hasTurnDetectionOndewoDeOptions(): boolean;
+    clearTurnDetectionOndewoDeOptions(): void;
+    getTurnDetectionOndewoDeOptions(): TurnDetectionOndewoDeOptions | undefined;
+    setTurnDetectionOndewoDeOptions(value?: TurnDetectionOndewoDeOptions): TurnDetectionOptions;
+
+    hasTurnDetectionOndewoDeFusionOptions(): boolean;
+    clearTurnDetectionOndewoDeFusionOptions(): void;
+    getTurnDetectionOndewoDeFusionOptions(): TurnDetectionOndewoDeFusionOptions | undefined;
+    setTurnDetectionOndewoDeFusionOptions(value?: TurnDetectionOndewoDeFusionOptions): TurnDetectionOptions;
+
+    hasTurnDetectionPipecatSmartTurnOptions(): boolean;
+    clearTurnDetectionPipecatSmartTurnOptions(): void;
+    getTurnDetectionPipecatSmartTurnOptions(): TurnDetectionPipecatSmartTurnOptions | undefined;
+    setTurnDetectionPipecatSmartTurnOptions(value?: TurnDetectionPipecatSmartTurnOptions): TurnDetectionOptions;
+
+    getOneofTurnDetectorCase(): TurnDetectionOptions.OneofTurnDetectorCase;
+
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): TurnDetectionOptions.AsObject;
     static toObject(includeInstance: boolean, msg: TurnDetectionOptions): TurnDetectionOptions.AsObject;
@@ -1580,6 +1644,313 @@ export namespace TurnDetectionOptions {
         turnDetectionSystemPrompt?: string,
         turnDetectionUserPrompt?: string,
         turnDetectionLlmOpenaiOptions?: OpenaiLlmOptions.AsObject,
+        incompleteMaxSilenceSeconds?: number,
+        turnDetectionConversationContext?: TurnDetectionConversationContext.AsObject,
+        turnDetectionChatLlmOptions?: TurnDetectionChatLlmOptions.AsObject,
+        turnDetectionEndOfUtteranceLlmOptions?: TurnDetectionEndOfUtteranceLlmOptions.AsObject,
+        turnDetectionOndewoDeOptions?: TurnDetectionOndewoDeOptions.AsObject,
+        turnDetectionOndewoDeFusionOptions?: TurnDetectionOndewoDeFusionOptions.AsObject,
+        turnDetectionPipecatSmartTurnOptions?: TurnDetectionPipecatSmartTurnOptions.AsObject,
+    }
+
+    export enum OneofTurnDetectorCase {
+        ONEOF_TURN_DETECTOR_NOT_SET = 0,
+        TURN_DETECTION_CHAT_LLM_OPTIONS = 8,
+        TURN_DETECTION_END_OF_UTTERANCE_LLM_OPTIONS = 9,
+        TURN_DETECTION_ONDEWO_DE_OPTIONS = 10,
+        TURN_DETECTION_ONDEWO_DE_FUSION_OPTIONS = 11,
+        TURN_DETECTION_PIPECAT_SMART_TURN_OPTIONS = 12,
+    }
+
+}
+
+export class TurnDetectionChatLlmOptions extends jspb.Message { 
+
+    hasOpenaiLlmOptions(): boolean;
+    clearOpenaiLlmOptions(): void;
+    getOpenaiLlmOptions(): OpenaiLlmOptions | undefined;
+    setOpenaiLlmOptions(value?: OpenaiLlmOptions): TurnDetectionChatLlmOptions;
+
+    hasSystemPrompt(): boolean;
+    clearSystemPrompt(): void;
+    getSystemPrompt(): string | undefined;
+    setSystemPrompt(value: string): TurnDetectionChatLlmOptions;
+
+    hasUserPrompt(): boolean;
+    clearUserPrompt(): void;
+    getUserPrompt(): string | undefined;
+    setUserPrompt(value: string): TurnDetectionChatLlmOptions;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): TurnDetectionChatLlmOptions.AsObject;
+    static toObject(includeInstance: boolean, msg: TurnDetectionChatLlmOptions): TurnDetectionChatLlmOptions.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: TurnDetectionChatLlmOptions, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): TurnDetectionChatLlmOptions;
+    static deserializeBinaryFromReader(message: TurnDetectionChatLlmOptions, reader: jspb.BinaryReader): TurnDetectionChatLlmOptions;
+}
+
+export namespace TurnDetectionChatLlmOptions {
+    export type AsObject = {
+        openaiLlmOptions?: OpenaiLlmOptions.AsObject,
+        systemPrompt?: string,
+        userPrompt?: string,
+    }
+}
+
+export class TurnDetectionEndOfUtteranceLlmOptions extends jspb.Message { 
+
+    hasOpenaiLlmOptions(): boolean;
+    clearOpenaiLlmOptions(): void;
+    getOpenaiLlmOptions(): OpenaiLlmOptions | undefined;
+    setOpenaiLlmOptions(value?: OpenaiLlmOptions): TurnDetectionEndOfUtteranceLlmOptions;
+
+    hasEndOfTurnProbabilityThreshold(): boolean;
+    clearEndOfTurnProbabilityThreshold(): void;
+    getEndOfTurnProbabilityThreshold(): number | undefined;
+    setEndOfTurnProbabilityThreshold(value: number): TurnDetectionEndOfUtteranceLlmOptions;
+
+    hasTurnDetectionHoldBands(): boolean;
+    clearTurnDetectionHoldBands(): void;
+    getTurnDetectionHoldBands(): TurnDetectionHoldBands | undefined;
+    setTurnDetectionHoldBands(value?: TurnDetectionHoldBands): TurnDetectionEndOfUtteranceLlmOptions;
+
+    hasUncertainMinWords(): boolean;
+    clearUncertainMinWords(): void;
+    getUncertainMinWords(): number | undefined;
+    setUncertainMinWords(value: number): TurnDetectionEndOfUtteranceLlmOptions;
+
+    hasExactProbability(): boolean;
+    clearExactProbability(): void;
+    getExactProbability(): boolean | undefined;
+    setExactProbability(value: boolean): TurnDetectionEndOfUtteranceLlmOptions;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): TurnDetectionEndOfUtteranceLlmOptions.AsObject;
+    static toObject(includeInstance: boolean, msg: TurnDetectionEndOfUtteranceLlmOptions): TurnDetectionEndOfUtteranceLlmOptions.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: TurnDetectionEndOfUtteranceLlmOptions, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): TurnDetectionEndOfUtteranceLlmOptions;
+    static deserializeBinaryFromReader(message: TurnDetectionEndOfUtteranceLlmOptions, reader: jspb.BinaryReader): TurnDetectionEndOfUtteranceLlmOptions;
+}
+
+export namespace TurnDetectionEndOfUtteranceLlmOptions {
+    export type AsObject = {
+        openaiLlmOptions?: OpenaiLlmOptions.AsObject,
+        endOfTurnProbabilityThreshold?: number,
+        turnDetectionHoldBands?: TurnDetectionHoldBands.AsObject,
+        uncertainMinWords?: number,
+        exactProbability?: boolean,
+    }
+}
+
+export class TurnDetectionOndewoDeOptions extends jspb.Message { 
+
+    hasOpenaiLlmOptions(): boolean;
+    clearOpenaiLlmOptions(): void;
+    getOpenaiLlmOptions(): OpenaiLlmOptions | undefined;
+    setOpenaiLlmOptions(value?: OpenaiLlmOptions): TurnDetectionOndewoDeOptions;
+
+    hasEndOfTurnProbabilityThreshold(): boolean;
+    clearEndOfTurnProbabilityThreshold(): void;
+    getEndOfTurnProbabilityThreshold(): number | undefined;
+    setEndOfTurnProbabilityThreshold(value: number): TurnDetectionOndewoDeOptions;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): TurnDetectionOndewoDeOptions.AsObject;
+    static toObject(includeInstance: boolean, msg: TurnDetectionOndewoDeOptions): TurnDetectionOndewoDeOptions.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: TurnDetectionOndewoDeOptions, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): TurnDetectionOndewoDeOptions;
+    static deserializeBinaryFromReader(message: TurnDetectionOndewoDeOptions, reader: jspb.BinaryReader): TurnDetectionOndewoDeOptions;
+}
+
+export namespace TurnDetectionOndewoDeOptions {
+    export type AsObject = {
+        openaiLlmOptions?: OpenaiLlmOptions.AsObject,
+        endOfTurnProbabilityThreshold?: number,
+    }
+}
+
+export class TurnDetectionOndewoDeFusionOptions extends jspb.Message { 
+
+    hasOpenaiLlmOptions(): boolean;
+    clearOpenaiLlmOptions(): void;
+    getOpenaiLlmOptions(): OpenaiLlmOptions | undefined;
+    setOpenaiLlmOptions(value?: OpenaiLlmOptions): TurnDetectionOndewoDeFusionOptions;
+
+    hasEndOfTurnProbabilityThreshold(): boolean;
+    clearEndOfTurnProbabilityThreshold(): void;
+    getEndOfTurnProbabilityThreshold(): number | undefined;
+    setEndOfTurnProbabilityThreshold(value: number): TurnDetectionOndewoDeFusionOptions;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): TurnDetectionOndewoDeFusionOptions.AsObject;
+    static toObject(includeInstance: boolean, msg: TurnDetectionOndewoDeFusionOptions): TurnDetectionOndewoDeFusionOptions.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: TurnDetectionOndewoDeFusionOptions, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): TurnDetectionOndewoDeFusionOptions;
+    static deserializeBinaryFromReader(message: TurnDetectionOndewoDeFusionOptions, reader: jspb.BinaryReader): TurnDetectionOndewoDeFusionOptions;
+}
+
+export namespace TurnDetectionOndewoDeFusionOptions {
+    export type AsObject = {
+        openaiLlmOptions?: OpenaiLlmOptions.AsObject,
+        endOfTurnProbabilityThreshold?: number,
+    }
+}
+
+export class TurnDetectionPipecatSmartTurnOptions extends jspb.Message { 
+
+    hasModelName(): boolean;
+    clearModelName(): void;
+    getModelName(): string | undefined;
+    setModelName(value: string): TurnDetectionPipecatSmartTurnOptions;
+
+    hasTritonServerHost(): boolean;
+    clearTritonServerHost(): void;
+    getTritonServerHost(): string | undefined;
+    setTritonServerHost(value: string): TurnDetectionPipecatSmartTurnOptions;
+
+    hasTritonServerPort(): boolean;
+    clearTritonServerPort(): void;
+    getTritonServerPort(): number | undefined;
+    setTritonServerPort(value: number): TurnDetectionPipecatSmartTurnOptions;
+
+    hasMaxAudioSeconds(): boolean;
+    clearMaxAudioSeconds(): void;
+    getMaxAudioSeconds(): number | undefined;
+    setMaxAudioSeconds(value: number): TurnDetectionPipecatSmartTurnOptions;
+
+    hasTimeoutSeconds(): boolean;
+    clearTimeoutSeconds(): void;
+    getTimeoutSeconds(): number | undefined;
+    setTimeoutSeconds(value: number): TurnDetectionPipecatSmartTurnOptions;
+
+    hasEndOfTurnProbabilityThreshold(): boolean;
+    clearEndOfTurnProbabilityThreshold(): void;
+    getEndOfTurnProbabilityThreshold(): number | undefined;
+    setEndOfTurnProbabilityThreshold(value: number): TurnDetectionPipecatSmartTurnOptions;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): TurnDetectionPipecatSmartTurnOptions.AsObject;
+    static toObject(includeInstance: boolean, msg: TurnDetectionPipecatSmartTurnOptions): TurnDetectionPipecatSmartTurnOptions.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: TurnDetectionPipecatSmartTurnOptions, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): TurnDetectionPipecatSmartTurnOptions;
+    static deserializeBinaryFromReader(message: TurnDetectionPipecatSmartTurnOptions, reader: jspb.BinaryReader): TurnDetectionPipecatSmartTurnOptions;
+}
+
+export namespace TurnDetectionPipecatSmartTurnOptions {
+    export type AsObject = {
+        modelName?: string,
+        tritonServerHost?: string,
+        tritonServerPort?: number,
+        maxAudioSeconds?: number,
+        timeoutSeconds?: number,
+        endOfTurnProbabilityThreshold?: number,
+    }
+}
+
+export class TurnDetectionConversationContext extends jspb.Message { 
+    clearTurnDetectionContextTurnsList(): void;
+    getTurnDetectionContextTurnsList(): Array<TurnDetectionContextTurn>;
+    setTurnDetectionContextTurnsList(value: Array<TurnDetectionContextTurn>): TurnDetectionConversationContext;
+    addTurnDetectionContextTurns(value?: TurnDetectionContextTurn, index?: number): TurnDetectionContextTurn;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): TurnDetectionConversationContext.AsObject;
+    static toObject(includeInstance: boolean, msg: TurnDetectionConversationContext): TurnDetectionConversationContext.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: TurnDetectionConversationContext, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): TurnDetectionConversationContext;
+    static deserializeBinaryFromReader(message: TurnDetectionConversationContext, reader: jspb.BinaryReader): TurnDetectionConversationContext;
+}
+
+export namespace TurnDetectionConversationContext {
+    export type AsObject = {
+        turnDetectionContextTurnsList: Array<TurnDetectionContextTurn.AsObject>,
+    }
+}
+
+export class TurnDetectionContextTurn extends jspb.Message { 
+    getRole(): TurnDetectionContextTurn.Role;
+    setRole(value: TurnDetectionContextTurn.Role): TurnDetectionContextTurn;
+    getText(): string;
+    setText(value: string): TurnDetectionContextTurn;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): TurnDetectionContextTurn.AsObject;
+    static toObject(includeInstance: boolean, msg: TurnDetectionContextTurn): TurnDetectionContextTurn.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: TurnDetectionContextTurn, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): TurnDetectionContextTurn;
+    static deserializeBinaryFromReader(message: TurnDetectionContextTurn, reader: jspb.BinaryReader): TurnDetectionContextTurn;
+}
+
+export namespace TurnDetectionContextTurn {
+    export type AsObject = {
+        role: TurnDetectionContextTurn.Role,
+        text: string,
+    }
+
+    export enum Role {
+    ROLE_UNSPECIFIED = 0,
+    ROLE_USER = 1,
+    ROLE_ASSISTANT = 2,
+    }
+
+}
+
+export class TurnDetectionHoldBands extends jspb.Message { 
+    clearTurnDetectionHoldBandsList(): void;
+    getTurnDetectionHoldBandsList(): Array<TurnDetectionHoldBand>;
+    setTurnDetectionHoldBandsList(value: Array<TurnDetectionHoldBand>): TurnDetectionHoldBands;
+    addTurnDetectionHoldBands(value?: TurnDetectionHoldBand, index?: number): TurnDetectionHoldBand;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): TurnDetectionHoldBands.AsObject;
+    static toObject(includeInstance: boolean, msg: TurnDetectionHoldBands): TurnDetectionHoldBands.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: TurnDetectionHoldBands, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): TurnDetectionHoldBands;
+    static deserializeBinaryFromReader(message: TurnDetectionHoldBands, reader: jspb.BinaryReader): TurnDetectionHoldBands;
+}
+
+export namespace TurnDetectionHoldBands {
+    export type AsObject = {
+        turnDetectionHoldBandsList: Array<TurnDetectionHoldBand.AsObject>,
+    }
+}
+
+export class TurnDetectionHoldBand extends jspb.Message { 
+    getUpperProbability(): number;
+    setUpperProbability(value: number): TurnDetectionHoldBand;
+    getMaxSilenceSeconds(): number;
+    setMaxSilenceSeconds(value: number): TurnDetectionHoldBand;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): TurnDetectionHoldBand.AsObject;
+    static toObject(includeInstance: boolean, msg: TurnDetectionHoldBand): TurnDetectionHoldBand.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: TurnDetectionHoldBand, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): TurnDetectionHoldBand;
+    static deserializeBinaryFromReader(message: TurnDetectionHoldBand, reader: jspb.BinaryReader): TurnDetectionHoldBand;
+}
+
+export namespace TurnDetectionHoldBand {
+    export type AsObject = {
+        upperProbability: number,
+        maxSilenceSeconds: number,
     }
 }
 

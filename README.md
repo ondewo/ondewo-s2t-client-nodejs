@@ -76,25 +76,33 @@ npm
 
 ## Authentication
 
-Every request carries an `authorization: Bearer <jwt>` header sourced from the Keycloak
-offline-token provider shipped in `auth/`:
+All RPCs are authenticated with a Keycloak-issued **bearer token**. The package ships a token provider that acquires it, refreshes it before it expires and attaches it to every call as the `authorization: Bearer <token>` gRPC metadata.
 
-```js
-const { login } = require('@ondewo/s2t-client-nodejs');
+```ts
+import { Speech2TextClient, createGrpcClient, getKeycloakTokenProvider, GrpcClientConfig } from '@ondewo/s2t-client-nodejs';
 
-const provider = await login({
-  keycloakUrl: 'https://keycloak.example.com/auth',
+// One provider per credential set, shared by every client built from it (one login).
+const tokenProvider = await getKeycloakTokenProvider({
+  keycloakUrl: 'https://auth.example.com/auth',
   realm: 'ondewo-ccai-platform',
-  clientId: 'ondewo-nlu-cai-sdk-public',
-  username: '<technical-user>',
-  password: '<password>'
+  clientId: 'ondewo-s2t-cai-sdk-public',
+  username: 'tech-user@example.com',
+  password: '...', // password login: one ROPC grant with scope=offline_access
+  // refreshToken: '...', // OR a handed-off OFFLINE token: one refresh grant, no password is ever sent
+  tokenExpirationInS: undefined // optional bound on how long the token is refreshed
 });
-// provider.applyToMetadata(metadata) stamps the header onto any gRPC Metadata object.
-// Always provider.stop() when done -- it clears the background refresh timer.
+
+const client: Speech2TextClient = createGrpcClient(Speech2TextClient, new GrpcClientConfig({ host: 's2t.example.com', port: 443 }), {
+  tokenProvider // null (no Keycloak fields set) attaches nothing
+});
 ```
 
-Set `keycloakVerifySsl: false` to skip TLS certificate verification on the token request only
-(opt-in insecure, for a self-signed local Envoy).
+- **Password or offline token.** With `refreshToken` set the provider starts with one `grant_type=refresh_token` exchange and never sends a password grant, not even when the token is refused (the refusal is raised). Keycloak's brute-force protection counts failed *logins*, so many processes sharing one technical user should start from an offline token.
+- **Refresh.** A background timer (unref-ed, so it never keeps the process alive) refreshes 30 s before expiry; `getAuthorizationMetadata()`, which every call reads, refreshes on demand as well. Concurrent calls share one refresh.
+- **Failures never end the refresh.** A failed refresh is retried with jittered exponential backoff (5 s, doubling, capped at 300 s), logs one warning per failure (`logger`, default `console`) and one info line on recovery. While the token is still valid it keeps being served; only an expired token that cannot be refreshed fails the call, with a `KeycloakAuthenticationError` (a `TokenError` subclass whose `cause` is the underlying error). No message or rendering contains a password or token.
+- **Validation.** `keycloakUrl`, `realm` and `clientId` go together (setting only some throws), and one of `password` / `refreshToken` is required. `keycloakVerifySsl: false` disables TLS verification for the token request only.
+- `login(options)` builds a new, unshared provider; call `provider.stop()` (or `close()`) when you are done with one. The legacy `cai-token` / HTTP-basic credentials no longer exist. See the [`examples/`](https://github.com/ondewo/ondewo-s2t-client-nodejs/tree/master/examples) directory for a full `Speech2Text.GetServiceInfo` RPC example.
+- **Earlier (7.x) surface, unchanged.** `OfflineTokenProvider.login(options)` is still the entry point `login()` delegates to, `refreshSkewInS` still works as an alias of `timings.expiryLeewayS`, `provider.applyToMetadata(metadata)` still stamps the current header onto any gRPC `Metadata`-like object (without refreshing it), `refreshNow()` still refreshes immediately, and `INSECURE_AGENT_OPTIONS` is still the pinned undici option set of `keycloakVerifySsl: false`. Token failures are now the typed `KeycloakAuthenticationError` instead of a plain `Error`, and the password grant sends `scope=offline_access`, as every ONDEWO SDK does.
 
 ## TLS, mutual TLS and certificates
 

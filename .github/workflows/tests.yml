@@ -73,12 +73,11 @@ jobs:
       - name: Format check
         run: npx prettier --config .prettierrc --check --ignore-path .prettierignore ./
 
-      # auth/grpcChannel.js / .d.ts are tsc output that is COMMITTED because npm ships them.
-      # Rebuild them and fail if the result differs from what was committed. Deliberately NOT
-      # `build:auth`: auth/offlineTokenProvider.js / .d.ts are a hand-maintained CommonJS twin (not
-      # tsc output), and the twin's behaviour is already pinned by `npm test`, which runs the whole
-      # offlineTokenProvider suite against the committed .js as well as the .ts.
-      - name: Committed grpcChannel build artifacts match their source
+      # auth/grpcChannel.js / .d.ts and auth/offlineTokenProvider.js / .d.ts are tsc output that is
+      # COMMITTED because npm ships them. Rebuild them and fail if the result differs from what was
+      # committed (`npm test` also runs both provider suites against the committed .js).
+      - name: Committed auth build artifacts match their source
         run: |
           npm run build:grpcChannel
+          npm run build:auth
           git diff --exit-code -- auth/

@@ -5,8 +5,8 @@
 //   node --test auth/offlineTokenProvider.spec.ts
 //
 // The whole behavioural suite is a FUNCTION of the module under test, and it is run
-// TWICE: once against `auth/offlineTokenProvider.ts` and once against the
-// hand-maintained CommonJS twin `auth/offlineTokenProvider.js` that `make
+// TWICE: once against `auth/offlineTokenProvider.ts` and once against its
+// CommonJS twin `auth/offlineTokenProvider.js` (tsc output of `npm run build:auth`) that `make
 // create_npm_package` ships and npm consumers actually execute. Without the second
 // run the twin had no test at all, and the c8 gate -- which only ever measured `tsc`
 // output -- could not see an edit to it.
@@ -195,7 +195,7 @@ function runProviderSuite(implementation: string, mod: AuthModule): void {
 		assert.equal(call.params.get('client_id'), CLIENT_ID);
 		assert.equal(call.params.get('username'), USERNAME);
 		assert.equal(call.params.get('password'), PASSWORD);
-		assert.equal(call.params.get('scope'), 'openid offline_access');
+		assert.equal(call.params.get('scope'), 'offline_access');
 		// Public client (Q1): no client_secret must ever be sent.
 		assert.equal(call.params.get('client_secret'), null);
 
@@ -273,6 +273,8 @@ function runProviderSuite(implementation: string, mod: AuthModule): void {
 			username: USERNAME,
 			password: PASSWORD,
 			refreshSkewInS: 0,
+			// The production 1 s floor of every background wait, shrunk so a real timer fires within the test.
+			timings: { minRefreshDelayS: 0.001 },
 			fetchImpl: mock.fetchImpl
 		});
 
@@ -325,7 +327,7 @@ function runProviderSuite(implementation: string, mod: AuthModule): void {
 					password: 'wrong',
 					fetchImpl: mock.fetchImpl
 				}),
-			/HTTP 401/
+			/failed with status 401/
 		);
 	});
 
@@ -343,7 +345,7 @@ function runProviderSuite(implementation: string, mod: AuthModule): void {
 					password: PASSWORD,
 					fetchImpl: mock.fetchImpl
 				}),
-			/missing access_token/
+			/did not contain an access_token/
 		);
 	});
 
@@ -500,33 +502,40 @@ function runProviderSuite(implementation: string, mod: AuthModule): void {
 	});
 
 	/**
-	 * Verifies a non-2xx response whose body cannot be read still raises the error carrying the HTTP
-	 * status: `response.text()` is allowed to reject (a truncated/aborted body) and the detail is
-	 * simply omitted.
+	 * Verifies a response whose body cannot be read (`response.text()` rejects: a truncated/aborted body)
+	 * raises the typed error, naming the read error and carrying it as the cause, as every ONDEWO SDK does.
 	 */
-	runCase('a token error whose body cannot be read still reports the HTTP status', async (): Promise<void> => {
-		const impl = (): Promise<MockResponse> =>
-			Promise.resolve({
-				ok: false,
-				status: 502,
-				statusText: 'Bad Gateway',
-				json: (): Promise<CannedResponse | undefined> => Promise.resolve(undefined),
-				text: (): Promise<string> => Promise.reject(new Error('body stream closed'))
-			});
+	runCase(
+		'a token response whose body cannot be read raises the typed error carrying the cause',
+		async (): Promise<void> => {
+			const impl = (): Promise<MockResponse> =>
+				Promise.resolve({
+					ok: false,
+					status: 502,
+					statusText: 'Bad Gateway',
+					json: (): Promise<CannedResponse | undefined> => Promise.resolve(undefined),
+					text: (): Promise<string> => Promise.reject(new Error('body stream closed'))
+				});
 
-		await assert.rejects(
-			(): Promise<Provider> =>
-				login({
-					keycloakUrl: KEYCLOAK_URL,
-					realm: REALM,
-					clientId: CLIENT_ID,
-					username: USERNAME,
-					password: PASSWORD,
-					fetchImpl: impl as unknown as typeof fetch
-				}),
-			/HTTP 502 Bad Gateway$/
-		);
-	});
+			await assert.rejects(
+				(): Promise<Provider> =>
+					login({
+						keycloakUrl: KEYCLOAK_URL,
+						realm: REALM,
+						clientId: CLIENT_ID,
+						username: USERNAME,
+						password: PASSWORD,
+						fetchImpl: impl as unknown as typeof fetch
+					}),
+				(thrown: unknown): boolean => {
+					assert.ok(thrown instanceof mod.KeycloakAuthenticationError);
+					assert.match(thrown.message, /Keycloak token login failed \(Error: body stream closed\)/);
+					assert.match(String((thrown.cause as Error).message), /body stream closed/);
+					return true;
+				}
+			);
+		}
+	);
 
 	/** Verifies an explicit `refreshNow()` after `stop()` still refreshes but arms no new timer. */
 	runCase('refreshNow after stop refreshes once and re-arms no timer', async (): Promise<void> => {
@@ -554,8 +563,8 @@ function runProviderSuite(implementation: string, mod: AuthModule): void {
 		assert.equal(mock.calls.length, 2);
 	});
 
-	/** Verifies a refresh skew larger than the token lifetime clamps the delay to zero instead of going negative. */
-	runCase('a refresh skew larger than expires_in clamps the delay to zero', async (): Promise<void> => {
+	/** Verifies a refresh skew larger than the token lifetime clamps the delay to the minimum instead of going negative. */
+	runCase('a refresh skew larger than expires_in clamps the delay to the minimum', async (): Promise<void> => {
 		const mock: FetchMock = buildFetchMock([
 			// 1s lifetime with a 5s skew => a negative delay before the clamp.
 			{ access_token: 'access-1', refresh_token: 'offline-1', expires_in: 1 },
@@ -568,6 +577,8 @@ function runProviderSuite(implementation: string, mod: AuthModule): void {
 			username: USERNAME,
 			password: PASSWORD,
 			refreshSkewInS: 5,
+			// The production 1 s floor of every background wait, shrunk so a real timer fires within the test.
+			timings: { minRefreshDelayS: 0.001 },
 			fetchImpl: mock.fetchImpl
 		});
 
@@ -617,6 +628,8 @@ function runProviderSuite(implementation: string, mod: AuthModule): void {
 				username: USERNAME,
 				password: PASSWORD,
 				refreshSkewInS: 0,
+				// The production 1 s floor of every background wait, shrunk so a real timer fires within the test.
+				timings: { minRefreshDelayS: 0.001 },
 				fetchImpl: mock.fetchImpl
 			});
 
@@ -629,12 +642,114 @@ function runProviderSuite(implementation: string, mod: AuthModule): void {
 			assert.equal(provider.getAccessToken(), 'access-1');
 		}
 	);
+
+	/** Shared login options of the cases below. */
+	const credentials: { keycloakUrl: string; realm: string; clientId: string; username: string; password: string } = {
+		keycloakUrl: KEYCLOAK_URL,
+		realm: REALM,
+		clientId: CLIENT_ID,
+		username: USERNAME,
+		password: PASSWORD
+	};
+
+	/** Verifies every token reader and refreshNow refuse before a token was acquired. */
+	runCase('the token readers and refreshNow refuse before a token was acquired', async (): Promise<void> => {
+		const provider: Provider = new OfflineTokenProvider({ ...credentials });
+		assert.throws((): string => provider.getAccessToken(), { name: 'TokenError', message: /No access token/ });
+		assert.throws((): string => provider.getAuthorizationHeader(), { name: 'TokenError' });
+		assert.throws((): FakeMetadata => provider.applyToMetadata(new FakeMetadata()), { name: 'TokenError' });
+		await assert.rejects((): Promise<void> => provider.refreshNow(), { name: 'TokenError' });
+		provider.stop();
+	});
+
+	/** Verifies concurrent refreshNow calls share one in-flight refresh request. */
+	runCase('concurrent refreshNow calls share one in-flight refresh', async (): Promise<void> => {
+		const mock: FetchMock = buildFetchMock([
+			{ access_token: 'access-1', refresh_token: 'offline-1', expires_in: 300 },
+			{ access_token: 'access-2', refresh_token: 'offline-2', expires_in: 300 }
+		]);
+		const provider: Provider = await login({ ...credentials, fetchImpl: mock.fetchImpl });
+		try {
+			await Promise.all([provider.refreshNow(), provider.refreshNow(), provider.refreshNow()]);
+			assert.equal(mock.calls.length, 2);
+			assert.equal(provider.getAccessToken(), 'access-2');
+		} finally {
+			provider.stop();
+		}
+	});
+
+	/** Verifies a refused refreshNow raises the typed error, keeps the token and never falls back to a password. */
+	runCase('a refused refreshNow raises the typed error and keeps the token', async (): Promise<void> => {
+		const mock: FetchMock = buildFetchMock([
+			{ access_token: 'access-1', refresh_token: 'offline-1', expires_in: 300 },
+			{ status: 401 }
+		]);
+		const provider: Provider = await login({ ...credentials, fetchImpl: mock.fetchImpl });
+		try {
+			await assert.rejects((): Promise<void> => provider.refreshNow(), {
+				name: 'KeycloakAuthenticationError',
+				message: /Keycloak token refresh failed with status 401/
+			});
+			assert.equal(provider.getAccessToken(), 'access-1');
+			assert.equal(mock.calls[1].params.get('password'), null);
+		} finally {
+			provider.stop();
+		}
+	});
+
+	/** Verifies a password login whose response carries no refresh_token is refused (no offline session). */
+	runCase('a password login without a refresh_token in the response is refused', async (): Promise<void> => {
+		const mock: FetchMock = buildFetchMock([{ access_token: 'access-1', expires_in: 300 }]);
+		await assert.rejects((): Promise<Provider> => login({ ...credentials, fetchImpl: mock.fetchImpl }), {
+			name: 'KeycloakAuthenticationError',
+			message: /did not contain a refresh_token/
+		});
+	});
+
+	/** Verifies a diagnostics handler that throws never ends the background loop. */
+	runCase('a throwing onRefreshError handler still leaves the loop armed', async (): Promise<void> => {
+		const mock: FetchMock = buildFetchMock([
+			{ access_token: 'access-1', refresh_token: 'offline-1', expires_in: 0 },
+			{ status: 503 },
+			{ access_token: 'access-2', refresh_token: 'offline-2', expires_in: 300 }
+		]);
+		let handlerCalls: number = 0;
+		const provider: Provider = await login({
+			...credentials,
+			refreshSkewInS: 0,
+			randomFraction: (): number => 0,
+			// The production floor and retry base, shrunk so real timers fire within the test.
+			timings: { minRefreshDelayS: 0.001, retryBaseDelayS: 0.01, retryMaxDelayS: 0.01 },
+			fetchImpl: mock.fetchImpl
+		});
+		provider.onRefreshError((): void => {
+			handlerCalls += 1;
+			throw new Error('a buggy diagnostics handler');
+		});
+		await sleep(100);
+		provider.stop();
+		assert.equal(handlerCalls, 1);
+		assert.equal(mock.calls.length, 3);
+		assert.equal(provider.getAccessToken(), 'access-2');
+	});
+
+	/** Verifies a missing options object and an empty username are refused before any request. */
+	runCase('login refuses a missing options object and an empty username', async (): Promise<void> => {
+		await assert.rejects((): Promise<Provider> => login(undefined as unknown as typeof credentials), {
+			name: 'TokenError',
+			message: /requires an options object/
+		});
+		await assert.rejects((): Promise<Provider> => login({ ...credentials, username: '' }), {
+			name: 'TokenError',
+			message: /"username" is required/
+		});
+	});
 }
 
 // The TypeScript source: the file developers edit, compiled by `npm run build:tests`.
 runProviderSuite('ts', tsProvider);
 
-// The hand-maintained CommonJS twin, loaded from the REPO ROOT (not from `.test-build`), so the
+// The CommonJS twin (`npm run build:auth`), loaded from the REPO ROOT (not from `.test-build`), so the
 // exact bytes shipped to npm are the ones executed here and measured by the c8 gate.
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const jsProvider: AuthModule = require(

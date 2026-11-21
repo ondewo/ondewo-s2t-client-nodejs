@@ -103,21 +103,21 @@ code is **generated** and must never be hand-edited:
 | `src/ondewo-s2t-api/`                                 | submodule: the `.proto` source                                            |
 | `ondewo-proto-compiler/`                              | submodule: the codegen docker image                                       |
 | `auth/offlineTokenProvider.ts`                        | **hand-written** — the D18 Keycloak offline-token provider                |
-| `auth/offlineTokenProvider.js`, `.d.ts`               | **hand-maintained** CommonJS twin + typings shipped to npm                |
+| `auth/offlineTokenProvider.js`, `.d.ts`               | `npm run build:auth` output (CommonJS twin + typings) shipped to npm      |
 | `examples/s2tClient.ts`, `examples/getServiceInfo.ts` | **hand-written** examples                                                 |
 
 Toolchain: node 24 locally / node 20, 22 and 24 in CI, typescript 6.0.3, c8 11.0.0, node's built-in
 `node:test` runner. There is no jest and no `tsconfig`-driven build for the tests — every test
 script drives `tsc` with explicit flags and `--ignoreConfig`.
 
-**`auth/offlineTokenProvider.js` and `.d.ts` are NOT `tsc` output.** They are hand-maintained
-ES5-style CommonJS twins (tab-indented, prettier-formatted, licence header, `module.exports = {...}`).
-`npm run build:auth` regenerates them from the `.ts` and produces a ~390-line diff, so **do not run
-it to "sync"** — edit all three files by hand and keep them semantically identical. The `.js` twin
-is what npm consumers actually execute (`make create_npm_package` copies `auth/` wholesale), so
-`npm test` runs the whole behavioural suite against BOTH files and the c8 gate measures both —
-see below. `.d.ts` is the one member of the trio no test executes; the parity case at the end of
-`offlineTokenProvider.spec.ts` compares only the two runtime surfaces.
+**`auth/offlineTokenProvider.js` and `.d.ts` are `tsc` output** of `npm run build:auth`, committed
+because npm ships them (they used to be a hand-maintained ES5 twin; since the cross-SDK Keycloak
+provider of 7.6.x they are generated like `auth/grpcChannel.*` and in every sibling SDK). Edit the
+`.ts`, then run `npm run build:auth`. The `.js` twin is what npm consumers actually execute
+(`make create_npm_package` copies `auth/` wholesale), so `npm test` runs both provider suites
+(`offlineTokenProvider.spec.ts` and the cross-SDK catalogue `keycloakTokenProvider.spec.ts`) against
+BOTH files and the c8 gate measures both — see below; `auth/grpcChannel.artifact.spec.ts` and the CI
+step "Committed auth build artifacts match their source" pin the committed files to the source.
 
 ## Tests and the coverage gate
 
@@ -157,32 +157,34 @@ c8 --check-coverage --statements 100 --lines 100 --branches 100 --functions 100 
   probe left the report at `All files | 100 | 100 | 100 | 100`, exit 0). With both `--src` entries
   the same probe turns the run red (`untestedTwin.js | 0 | 0 | 0 | 0 | 1-3`, exit 1). Do not drop
   either flag.
-- **The behavioural suite is run twice.** `offlineTokenProvider.spec.ts` wraps every case in
-  `runProviderSuite(implementation, mod)` and calls it with the compiled `.ts` and with the twin
-  `require`d from the repo root (`resolvePath(__dirname, '..', '..', 'auth', ...)`) — 17 cases each,
-  named `ts: …` / `js: …`, plus one shape-parity case. Verified by mutating the twin ALONE:
+- **The behavioural suites are run twice.** `offlineTokenProvider.spec.ts` wraps every case in
+  `runProviderSuite(implementation, mod)`, and `keycloakTokenProvider.spec.ts` (the T01-T62 catalogue)
+  in `runCatalogue(implementation, mod)`; both are called with the compiled `.ts` and with the twin
+  `require`d from the repo root (`resolvePath(__dirname, '..', '..', 'auth', ...)`), named
+  `ts: …` / `js: …`, plus one shape-parity case. Verified by mutating the twin ALONE:
   `authorization` → `Authorization` fails `js: applyToMetadata …`; `rejectUnauthorized: false` →
   `true` fails `js: keycloakVerifySsl false …` and the parity case; an extra prototype method fails
   the parity case. Before this, an edit to the twin was caught by nothing.
 - Coverage is source-mapped back to the `.ts` (hence `--sourceMap` in `build:tests`); the twin has
   no source map, so it is reported as `auth/offlineTokenProvider.js` in its own right.
-- **eslint deliberately still ignores `auth/offlineTokenProvider.{js,d.ts}`.** They are ES5-style by
-  design (`var`, no annotations) and the repo's type-aware ruleset (`no-var`, `typedef`,
-  `explicit-function-return-type`) would report them as errors, failing `make eslint`. Their guards are
-  prettier (format), the `js:` suite (behaviour), c8 (coverage) and the parity case (shape).
-- **There is exactly ONE `c8 ignore` in the repo**: the `require.main === module` direct-run
-  entrypoint at the bottom of `examples/getServiceInfo.ts`, which cannot execute in-process because
-  the spec imports the module. Every other "defensive" ignore that used to sit in
-  `offlineTokenProvider.ts` was deleted and replaced with a real test (stopped-provider
-  `refreshNow`, the negative-delay clamp, the still-open bounded-window clamp, the swallowed
-  background-refresh rejection, and an unreadable error body). Do not reintroduce blanket ignores.
+- **eslint and prettier ignore `auth/offlineTokenProvider.{js,d.ts}`**, like `auth/grpcChannel.*`: they
+  are tsc output. Their guards are the artifact spec and CI step (identity with the source), the `js:`
+  suites (behaviour), c8 (coverage) and the parity case (shape).
+- **There are exactly THREE `c8 ignore`s in the repo**, each naming why the code cannot run under
+  the test runner: the `require.main === module` direct-run entrypoint at the bottom of
+  `examples/getServiceInfo.ts` (the spec imports the module), and in `auth/offlineTokenProvider.ts`
+  the `unref()`-less timer branch (Node's `Timeout` always has one) and the collected-`WeakRef` branch
+  of the background step (needs a garbage collection a test cannot force without `--expose-gc`); the
+  latter two are identical in every ONDEWO nodejs SDK. Every other "defensive" branch is covered by a
+  real test. Do not reintroduce blanket ignores.
 - `INSECURE_AGENT_OPTIONS` in `auth/offlineTokenProvider.ts` exists so the security-relevant
   `rejectUnauthorized: false` literal is pinned by an assertion. Flipping it to `true` makes
   `npm test` exit 1 (verified) — an `instanceof Agent` assertion alone would not have noticed.
 - `examples/getServiceInfo.ts` takes its two outside-world boundaries (`loginImpl`, `createClient`)
   as injectable overrides that default to the real ones. `main()` called with NO overrides resolves
-  both defaults at the top and then fails at the mocked Keycloak call, which is how the `??`
-  right-hand branches get covered without any network.
+  both defaults at the top and then fails at the mocked Keycloak call (with a technical user set) or at
+  the real login's option validation (without one), which is how the `??` right-hand branches get
+  covered without any network.
 
 ## CI: `.github/workflows/tests.yml`
 
@@ -525,8 +527,8 @@ npm view <pkg> version ; git tag --list <version> ; gh release view <version> --
   `toString` / `inspect` / `JSON.stringify`; no message renders a PEM. Documented in README "TLS, mutual TLS and
   certificates" (edit `src/README.md`, the root copy is a build output).
 - It lives in `auth/` so the proto-compiler's `append-auth-exports.sh` re-exports it from `public-api.*` and
-  `create_npm_package` ships it. Unlike `offlineTokenProvider.js`, `auth/grpcChannel.js` / `.d.ts` ARE tsc output:
-  regenerate them with `npm run build:grpcChannel` (never `build:auth`, see above).
+  `create_npm_package` ships it. Like `offlineTokenProvider.js`, `auth/grpcChannel.js` / `.d.ts` are tsc output:
+  regenerate them with `npm run build:grpcChannel`.
   `auth/grpcChannel.artifact.spec.ts` pins the committed `.js` to the tested build, so c8 excludes it, and the CI step
   "Committed grpcChannel build artifacts match their source" rebuilds `.js` + `.d.ts` and fails on any `git diff`.
 - `grpc.keepalive_time_ms` stays UNSET on purpose: grpc-js has no `grpc.http2.max_pings_without_data`, so it pings

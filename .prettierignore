@@ -9,9 +9,12 @@ fesm2022/
 node_modules
 npm
 RELEASE.md
-# tsc output of auth/grpcChannel.ts (npm run build:grpcChannel), committed for npm packaging
+# tsc output of auth/grpcChannel.ts (npm run build:grpcChannel) and auth/offlineTokenProvider.ts
+# (npm run build:auth), committed for npm packaging
 auth/grpcChannel.js
 auth/grpcChannel.d.ts
+auth/offlineTokenProvider.js
+auth/offlineTokenProvider.d.ts
 src/
 
 ondewo-proto-compiler

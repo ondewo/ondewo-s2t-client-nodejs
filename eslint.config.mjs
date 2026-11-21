@@ -32,9 +32,7 @@ export default [
 			'src/ondewo-s2t-api',
 			'**/ondewo-proto-compiler',
 			'**/*.mjs',
-			// Hand-shipped auth runtime + typings: same generated-artifact shape as
-			// the proto stubs in api/ (CommonJS .js + companion .d.ts), linted via
-			// their TypeScript .spec.ts; not authored against the .ts-source rules.
+			// tsc output of auth/offlineTokenProvider.ts (npm run build:auth), committed for npm packaging
 			'auth/offlineTokenProvider.js',
 			'auth/offlineTokenProvider.d.ts',
 			// tsc output of auth/grpcChannel.ts (npm run build:grpcChannel), committed for npm packaging

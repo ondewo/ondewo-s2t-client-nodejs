@@ -1,6 +1,5 @@
-// Hand-written ONDEWO auth helper -- NOT generated from a proto.
-//
-// Copyright 2026 ONDEWO GmbH
+"use strict";
+// Copyright 2021-2026 ONDEWO GmbH
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,279 +13,860 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// D18 headless-SDK authentication helper for the ONDEWO node SDKs.
-//
-// Implements the offline-token + bounded auto-refresh flow described in the
-// Keycloak migration plan (docs/development/keycloak-migration-plan.md, D18 / 7.8):
-//
-//   1. One-time login via Resource Owner Password Credentials (ROPC) against a
-//      PUBLIC Keycloak client (no client_secret, Q1) with scope=offline_access,
-//      yielding a short-lived access token and a long-lived offline refresh
-//      token.
-//   2. A background loop that exchanges the offline refresh token for a fresh
-//      access token before the current one expires, so callers always read a
-//      valid `Authorization: Bearer <jwt>` value.
-//   3. The refresh loop stops once tokenExpirationInS has elapsed since login
-//      (when provided); after that the access token lapses and re-login is
-//      required.
-//
-// The helper is transport-agnostic: it exposes the current access token, a
-// ready `Bearer` authorization header, and an `applyToMetadata` helper that sets
-// the `authorization` key on any gRPC `Metadata`-like object (anything exposing a
-// `set(key, value)` method). This keeps the module free of a hard dependency on
-// `@grpc/grpc-js` at import time while integrating cleanly with the generated
-// gRPC stubs.
-'use strict';
-
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.OfflineTokenProvider = exports.KeycloakAuthenticationError = exports.TokenError = exports.INSECURE_AGENT_OPTIONS = exports.DEFAULT_KEYCLOAK_TOKEN_TIMINGS = void 0;
+exports.computeRefreshBackoffS = computeRefreshBackoffS;
+exports.login = login;
+exports.keycloakProviderRegistryKey = keycloakProviderRegistryKey;
+exports.getKeycloakTokenProvider = getKeycloakTokenProvider;
 /**
- * Builds the realm OIDC token endpoint URL, tolerating a trailing slash on `keycloakUrl`.
+ * D18 headless-SDK auth helper (keycloak-migration-plan §7.8 + D18).
  *
- * @param {string} keycloakUrl the base Keycloak URL (a trailing slash is stripped).
- * @param {string} realm the Keycloak realm whose token endpoint is targeted.
- * @returns {string} the fully qualified `…/realms/<realm>/protocol/openid-connect/token` URL.
+ * Acquires a Keycloak access token for the PUBLIC SDK client `ondewo-s2t-cai-sdk-public` (no
+ * `client_secret` -- Q1) either with a one-time ROPC login (`grant_type=password`,
+ * `scope=offline_access`) or, when a handed-off OFFLINE refresh token is configured, with a single
+ * refresh grant (no password is ever sent then). The access token is refreshed two ways, both bounded
+ * by `tokenExpirationInS` (if given) since the initial acquisition:
+ *
+ * - proactively, by a background timer that fires {@link KeycloakTokenTimings.expiryLeewayS} before
+ *   the token expires;
+ * - lazily, by {@link OfflineTokenProvider.getAuthorizationMetadata}, which every gRPC call reads.
+ *
+ * Both paths share ONE refresh decision and ONE jittered failure backoff: a failed refresh never ends
+ * the background loop, never falls back to a password grant, and is only raised once the access token
+ * has actually expired. Concurrent callers share one in-flight refresh (single flight).
+ *
+ * @packageDocumentation
+ */
+const crypto_1 = require("crypto");
+const perf_hooks_1 = require("perf_hooks");
+const util_1 = require("util");
+/**
+ * Production timings, identical in every ONDEWO SDK. A Keycloak outage is retried no faster than every
+ * 5 s and backs off to every 300 s: ondewo runs one client per call container, so a 1 Hz retry that is
+ * harmless for one process is an amplifier against the realm all of them share.
+ */
+exports.DEFAULT_KEYCLOAK_TOKEN_TIMINGS = Object.freeze({
+    expiryLeewayS: 30,
+    minRefreshDelayS: 1,
+    retryBaseDelayS: 5,
+    retryMaxDelayS: 300,
+    maxRetryExponent: 6,
+    httpTimeoutS: 10,
+    maxErrorBodyChars: 500
+});
+/** What a rendering shows in place of a non-empty secret. */
+const REDACTED_SECRET = '***REDACTED***';
+/**
+ * The undici `Agent` options that switch TLS certificate verification OFF for the token request when
+ * `keycloakVerifySsl` is `false`. Exported so the security-relevant `rejectUnauthorized: false` literal is
+ * pinned by a test rather than living as a bare literal that could be flipped without any test noticing.
+ */
+exports.INSECURE_AGENT_OPTIONS = {
+    connect: { rejectUnauthorized: false }
+};
+/** Error raised on an invalid configuration, and the base class of {@link KeycloakAuthenticationError}. */
+class TokenError extends Error {
+    /**
+     * Create a {@link TokenError} with a fixed `name` of `"TokenError"`.
+     *
+     * @param message - Human-readable description of the token failure.
+     */
+    constructor(message) {
+        super(message);
+        this.name = 'TokenError';
+    }
+}
+exports.TokenError = TokenError;
+/**
+ * Raised for every failure of a login, a refresh, or the lazy read of an expired token. The original
+ * error, if any, is its `cause`. The message never contains a credential.
+ */
+class KeycloakAuthenticationError extends TokenError {
+    /**
+     * @param message - Description of the failure; never contains a credential.
+     * @param cause - The underlying error, if any.
+     */
+    constructor(message, cause) {
+        super(message);
+        this.name = 'KeycloakAuthenticationError';
+        this.cause = cause;
+    }
+}
+exports.KeycloakAuthenticationError = KeycloakAuthenticationError;
+/**
+ * Compute the wait before the next attempt after `consecutiveFailures` failed refreshes: uniform in
+ * `[base, ceiling]` with the ceiling doubling per failure up to the maximum (full jitter). The jitter is
+ * the load-bearing half: N containers whose refreshes fail in the same instant would otherwise retry in
+ * lockstep for as long as the outage lasts.
+ *
+ * @param consecutiveFailures - Failed refreshes so far; values below 1 count as 1.
+ * @param randomFraction - Source of a [0,1) fraction; a value outside [0,1] is clamped.
+ * @param timings - Timings to use; defaults to {@link DEFAULT_KEYCLOAK_TOKEN_TIMINGS}.
+ * @returns Seconds to wait.
+ */
+function computeRefreshBackoffS(consecutiveFailures, randomFraction, timings = exports.DEFAULT_KEYCLOAK_TOKEN_TIMINGS) {
+    const exponent = Math.min(Math.max(consecutiveFailures, 1) - 1, timings.maxRetryExponent);
+    const ceilingS = Math.min(timings.retryBaseDelayS * 2 ** exponent, timings.retryMaxDelayS);
+    const fraction = Math.min(Math.max(randomFraction(), 0), 1);
+    return timings.retryBaseDelayS + fraction * (ceilingS - timings.retryBaseDelayS);
+}
+/**
+ * Build the OIDC token endpoint URL for a realm, tolerating a trailing slash on `keycloakUrl`.
+ *
+ * @param keycloakUrl - Base Keycloak URL (trailing slashes are stripped).
+ * @param realm - Realm name; URL-encoded into the path.
+ * @returns The fully-qualified `.../protocol/openid-connect/token` endpoint URL.
  */
 function buildTokenEndpoint(keycloakUrl, realm) {
-	var base = String(keycloakUrl).replace(/\/+$/, '');
-	return base + '/realms/' + realm + '/protocol/openid-connect/token';
+    const base = keycloakUrl.replace(/\/+$/, '');
+    return `${base}/realms/${encodeURIComponent(realm)}/protocol/openid-connect/token`;
 }
-
 /**
- * POSTs a url-encoded body to the Keycloak token endpoint and returns the parsed JSON, raising on a
- * non-2xx response or a body missing `access_token` / `refresh_token`.
+ * Render an error as `<Type>: <message>` for log lines and error messages.
  *
- * @param {typeof fetch} fetchImpl the `fetch` implementation used to make the request.
- * @param {string} tokenEndpoint the realm OIDC token endpoint URL to POST to.
- * @param {URLSearchParams} body the url-encoded form body (grant type, client id, credentials/refresh token).
- * @returns {Promise<object>} the parsed token response carrying the access and refresh tokens.
- * @throws {Error} if the response status is non-2xx, or the body lacks an access or refresh token.
+ * @param error - Anything that was thrown.
+ * @returns The rendering.
  */
-async function requestToken(fetchImpl, tokenEndpoint, body) {
-	var response = await fetchImpl(tokenEndpoint, {
-		method: 'POST',
-		headers: { 'content-type': 'application/x-www-form-urlencoded' },
-		body: body.toString()
-	});
-	if (!response.ok) {
-		var detail = await response.text().catch(function () {
-			return '';
-		});
-		throw new Error(
-			('Keycloak token request failed: HTTP ' + response.status + ' ' + response.statusText + ' ' + detail).trim()
-		);
-	}
-	var parsed = await response.json();
-	if (!parsed || !parsed.access_token || !parsed.refresh_token) {
-		throw new Error('Keycloak token response is missing access_token or refresh_token');
-	}
-	return parsed;
+function describeError(error) {
+    if (error instanceof Error) {
+        return `${error.name}: ${error.message}`;
+    }
+    return `${typeof error}: ${String(error)}`;
 }
-
 /**
- * The undici `Agent` options that switch TLS certificate verification OFF for the
- * token request. Exported so the security-relevant `rejectUnauthorized: false`
- * literal is pinned by a test rather than living as a bare literal that could be
- * flipped without any test noticing.
+ * Say whether a transport rejection is a network failure (refused, DNS, TLS, timeout, socket).
  *
- * @type {{ connect: { rejectUnauthorized: boolean } }}
+ * @param error - What the transport threw.
+ * @returns `true` for a network failure, `false` for anything else (e.g. a bug in an injected transport).
  */
-var INSECURE_AGENT_OPTIONS = { connect: { rejectUnauthorized: false } };
-
-/**
- * Builds the default `fetch` used when no `fetchImpl` is injected.
- *
- * With `verifySsl` `true` (the default) this is simply the global `fetch`, so the
- * Keycloak token request performs normal TLS certificate verification. With
- * `verifySsl` `false`, a cached undici `Agent` configured with
- * `rejectUnauthorized: false` is attached to every request as its `dispatcher`, so
- * the token call skips TLS certificate verification (opt-in insecure; Node-only).
- * The dispatcher is built once here and reused for the login and all refreshes;
- * the secure default never loads undici.
- *
- * @param {boolean} verifySsl whether to verify the Keycloak server's TLS certificate.
- * @returns {typeof fetch} a `fetch` implementation bound to the chosen TLS-verification behaviour.
- */
-function createDefaultFetch(verifySsl) {
-	if (verifySsl) {
-		return fetch;
-	}
-	var Agent = require('undici').Agent;
-	var dispatcher = new Agent(INSECURE_AGENT_OPTIONS);
-	return function (input, init) {
-		return fetch(input, Object.assign({}, init, { dispatcher: dispatcher }));
-	};
+function isNetworkError(error) {
+    if (!(error instanceof Error)) {
+        return false;
+    }
+    const code = error.code;
+    return (error.name === 'AbortError' ||
+        error.name === 'TimeoutError' ||
+        typeof code === 'string' ||
+        error.message === 'fetch failed');
 }
-
 /**
- * Long-lived access-token provider backed by a Keycloak offline token.
+ * The JSON type word of a parsed value that is not an object.
  *
- * Obtain an instance via the module-level `login(...)` (or the static
- * `OfflineTokenProvider.login(...)`). Always call `stop()` when the provider is
- * no longer needed to clear the background refresh timer.
+ * @param value - The parsed JSON value.
+ * @returns `array`, `null`, `string`, `number` or `boolean`.
+ */
+function jsonTypeWord(value) {
+    if (Array.isArray(value)) {
+        return 'array';
+    }
+    if (value === null) {
+        return 'null';
+    }
+    return typeof value;
+}
+/** The global `WeakRef` constructor. */
+const WeakReferenceImpl = globalThis
+    .WeakRef;
+/** Default scheduler: an `unref`-ed `setTimeout`, looked up at call time. */
+const DEFAULT_SCHEDULER = {
+    schedule: (task, delayInMs) => {
+        const handle = setTimeout(() => {
+            void task();
+        }, delayInMs);
+        // Do not keep the event loop alive solely for the refresh timer.
+        /* c8 ignore next 3 -- the else branch is unreachable: Node's Timeout always exposes unref() */
+        if (typeof handle.unref === 'function') {
+            handle.unref();
+        }
+        return handle;
+    },
+    cancel: (handle) => {
+        clearTimeout(handle);
+    }
+};
+/** Default logger: `console`, without debug lines. */
+const DEFAULT_LOGGER = {
+    warn: (message) => console.warn(message),
+    info: (message) => console.info(message)
+};
+/**
+ * Background timer callback. Holds the provider only WEAKLY, so a pending timer never keeps an
+ * otherwise unreachable provider (and its registry slot) alive.
+ *
+ * @param providerRef - Weak reference to the provider.
+ * @returns A promise that settles once the step is done; it never rejects.
+ */
+async function runBackgroundRefresh(providerRef) {
+    const provider = providerRef.deref();
+    /* c8 ignore next 3 -- only reachable after a garbage collection, which a test cannot force without --expose-gc */
+    if (provider === undefined) {
+        return;
+    }
+    await provider.onBackgroundTimer();
+}
+/**
+ * A live access-token holder backed by a bounded, failure-tolerant auto-refresh. Obtain one from
+ * {@link login} or {@link getKeycloakTokenProvider}; read {@link getAuthorizationMetadata} for the gRPC
+ * metadata of every call and call {@link stop} when done.
  */
 class OfflineTokenProvider {
-	/**
-	 * Initializes the provider from a completed login and arms the first refresh.
-	 * Private: instances are created only via the static `OfflineTokenProvider.login`.
-	 *
-	 * @param {object} options the Keycloak/ROPC parameters supplied to `login`.
-	 * @param {object} initial the token response returned by the one-time login.
-	 */
-	constructor(options, initial) {
-		this.tokenEndpoint = buildTokenEndpoint(options.keycloakUrl, options.realm);
-		this.clientId = options.clientId;
-		this.refreshSkewInMs = (options.refreshSkewInS === undefined ? 30 : options.refreshSkewInS) * 1000;
-		this.deadlineEpochMs =
-			options.tokenExpirationInS === undefined ? null : Date.now() + options.tokenExpirationInS * 1000;
-		this.fetchImpl =
-			options.fetchImpl === undefined ? createDefaultFetch(options.keycloakVerifySsl !== false) : options.fetchImpl;
-
-		this.accessToken = initial.access_token;
-		this.refreshToken = initial.refresh_token;
-		this.refreshTimer = null;
-		this.stopped = false;
-		this.scheduleRefresh(initial.expires_in);
-	}
-
-	/**
-	 * Performs the one-time ROPC + offline_access login and returns a started
-	 * provider whose access token is auto-refreshed in the background.
-	 *
-	 * @param {object} options the Keycloak/ROPC parameters (public client, no secret).
-	 * @returns {Promise<OfflineTokenProvider>} a started provider holding a fresh access token.
-	 * @throws {Error} if the token request fails or returns a malformed body.
-	 */
-	static async login(options) {
-		var fetchImpl =
-			options.fetchImpl === undefined ? createDefaultFetch(options.keycloakVerifySsl !== false) : options.fetchImpl;
-		var tokenEndpoint = buildTokenEndpoint(options.keycloakUrl, options.realm);
-		var body = new URLSearchParams({
-			grant_type: 'password',
-			client_id: options.clientId,
-			username: options.username,
-			password: options.password,
-			scope: 'openid offline_access'
-		});
-		var initial = await requestToken(fetchImpl, tokenEndpoint, body);
-		return new OfflineTokenProvider(options, initial);
-	}
-
-	/**
-	 * Returns the current (valid) access token.
-	 *
-	 * @returns {string} the current bearer access token.
-	 */
-	getAccessToken() {
-		return this.accessToken;
-	}
-
-	/**
-	 * Returns the ready-to-send `Authorization` header value (`Bearer <jwt>`).
-	 *
-	 * @returns {string} the `Authorization` header value, e.g. `Bearer <jwt>`.
-	 */
-	getAuthorizationHeader() {
-		return 'Bearer ' + this.accessToken;
-	}
-
-	/**
-	 * Sets `authorization: Bearer <jwt>` on the supplied gRPC `Metadata`-like
-	 * object and returns it (for chaining into a stub call).
-	 *
-	 * @param {object} metadata the gRPC `Metadata`-like object to mutate.
-	 * @returns {object} the same `metadata` object, now carrying the `authorization` header.
-	 */
-	applyToMetadata(metadata) {
-		// Native gRPC (grpc-python / @grpc/grpc-js) requires an all-lowercase
-		// header key; a capital `Authorization` is rejected at call time.
-		metadata.set('authorization', this.getAuthorizationHeader());
-		return metadata;
-	}
-
-	/**
-	 * Stops the background refresh loop. Idempotent. After calling this the
-	 * access token will lapse at its natural expiry and a new login is required.
-	 */
-	stop() {
-		this.stopped = true;
-		if (this.refreshTimer !== null) {
-			clearTimeout(this.refreshTimer);
-			this.refreshTimer = null;
-		}
-	}
-
-	/**
-	 * Exchanges the offline refresh token for a fresh access token immediately.
-	 *
-	 * @returns {Promise<void>} resolves once the access token has been refreshed
-	 *   (and the next background refresh re-scheduled).
-	 * @throws {Error} if the refresh request fails or returns a malformed body.
-	 */
-	async refreshNow() {
-		var body = new URLSearchParams({
-			grant_type: 'refresh_token',
-			client_id: this.clientId,
-			refresh_token: this.refreshToken
-		});
-		var refreshed = await requestToken(this.fetchImpl, this.tokenEndpoint, body);
-		this.accessToken = refreshed.access_token;
-		// Keycloak may rotate the refresh token; keep the latest one.
-		if (refreshed.refresh_token) {
-			this.refreshToken = refreshed.refresh_token;
-		}
-		this.scheduleRefresh(refreshed.expires_in);
-	}
-
-	/**
-	 * Arms a single timer for the next refresh, clamped to the bounded deadline (when set).
-	 *
-	 * @param {number} expiresInS the lifetime in seconds of the access token just obtained;
-	 *   the timer fires `refreshSkewInS` seconds before this elapses.
-	 * @returns {void}
-	 */
-	scheduleRefresh(expiresInS) {
-		var self = this;
-		if (this.stopped) {
-			return;
-		}
-		if (this.deadlineEpochMs !== null && Date.now() >= this.deadlineEpochMs) {
-			// The bounded auto-refresh window has elapsed; stop renewing.
-			return;
-		}
-
-		var delayMs = expiresInS * 1000 - this.refreshSkewInMs;
-		if (delayMs < 0) {
-			delayMs = 0;
-		}
-		if (this.deadlineEpochMs !== null) {
-			delayMs = Math.min(delayMs, this.deadlineEpochMs - Date.now());
-		}
-
-		this.refreshTimer = setTimeout(function () {
-			self.refreshNow().catch(function () {
-				// Swallow refresh errors so an unhandled rejection never crashes the
-				// host process; the access token simply lapses and the caller will
-				// observe an UNAUTHENTICATED gRPC error and re-login.
-			});
-		}, delayMs);
-		// Do not keep the event loop alive solely for the refresh timer.
-		if (this.refreshTimer && typeof this.refreshTimer.unref === 'function') {
-			this.refreshTimer.unref();
-		}
-	}
+    /**
+     * Construct an inert provider from login options. No network call is made here; call
+     * {@link bootstrap} (or use the {@link login} factory) to acquire the first token.
+     *
+     * @param options - The {@link OfflineTokenLoginOptions}.
+     */
+    constructor(options) {
+        this.tokenEndpoint = buildTokenEndpoint(options.keycloakUrl, options.realm);
+        this.clientId = options.clientId;
+        this.tokenExpirationInS = options.tokenExpirationInS;
+        this.fetchImpl = options.fetchImpl ?? createDefaultFetch(options.keycloakVerifySsl ?? true);
+        this.nowInMs = options.nowInMs ?? (() => perf_hooks_1.performance.now());
+        this.randomFraction = options.randomFraction ?? Math.random;
+        this.logger = options.logger ?? DEFAULT_LOGGER;
+        this.scheduler = options.scheduler ?? DEFAULT_SCHEDULER;
+        this.startBackgroundRefresh = options.startBackgroundRefresh ?? true;
+        this.timings = Object.freeze({
+            ...exports.DEFAULT_KEYCLOAK_TOKEN_TIMINGS,
+            ...(options.refreshSkewInS === undefined ? {} : { expiryLeewayS: options.refreshSkewInS }),
+            ...options.timings
+        });
+        this.selfRef = new WeakReferenceImpl(this);
+        this.accessToken = null;
+        this.refreshToken =
+            typeof options.refreshToken === 'string' && options.refreshToken.length > 0 ? options.refreshToken : null;
+        this.accessTokenExpiresAtS = 0;
+        this.timer = null;
+        this.stopped = false;
+        this.closed = false;
+        this.deadlineS = null;
+        this.onRefreshErrorHandler = null;
+        this.consecutiveRefreshFailures = 0;
+        this.nextRefreshAttemptAtS = 0;
+        this.lastRefreshFailure = null;
+        this.inFlightRefresh = null;
+    }
+    /**
+     * Acquire the first token and arm the background refresh. Awaited by {@link login}.
+     *
+     * With a handed-off `refreshToken` this is ONE refresh grant and the password is never sent (a
+     * refused token is raised, not answered with a password login); otherwise ONE password grant. A
+     * failure is raised without retry and without arming anything.
+     *
+     * @param username - The 2FA-exempt technical-user email.
+     * @param password - The technical-user password (unused when a refresh token was handed off).
+     * @returns A promise that resolves once the first token is stored and the refresh is armed.
+     * @throws {@link KeycloakAuthenticationError} If the token endpoint fails, or a password login's
+     *   response carries no `refresh_token` (the SDK client lacks `directAccessGrants` + `offline_access`).
+     */
+    async bootstrap(username, password) {
+        if (this.refreshToken !== null) {
+            await this.exchangeRefreshToken();
+        }
+        else {
+            const payload = await this.postTokenRequest({
+                grant_type: 'password',
+                client_id: this.clientId,
+                username,
+                password,
+                scope: 'offline_access'
+            }, 'login');
+            this.storeTokens(payload);
+            if (this.refreshToken === null) {
+                throw new KeycloakAuthenticationError('Keycloak token response did not contain a refresh_token; the SDK client must have ' +
+                    'directAccessGrants + the offline_access scope (ondewo-s2t-cai-sdk-public)');
+            }
+        }
+        if (this.tokenExpirationInS !== undefined) {
+            this.deadlineS = this.nowS() + this.tokenExpirationInS;
+        }
+        if (this.startBackgroundRefresh) {
+            this.armNextRefresh();
+        }
+    }
+    /**
+     * The `authorization` gRPC metadata of the next call, refreshing first when the token is within the
+     * leeway of its expiry. Concurrent callers share one refresh. While a failed refresh backs off no
+     * request is sent and the still-valid token is served; an expired token that cannot be refreshed is
+     * raised instead of being handed to a server that would refuse it. After the bounded deadline the
+     * token is served as it is and allowed to lapse.
+     *
+     * @returns `['authorization', 'Bearer <access_token>']`.
+     * @throws {@link TokenError} If no token was acquired yet.
+     * @throws {@link KeycloakAuthenticationError} If the access token has expired and could not be refreshed.
+     */
+    async getAuthorizationMetadata() {
+        if (this.accessToken === null) {
+            throw new TokenError('No access token available; login() has not completed or has lapsed');
+        }
+        await this.refreshIfWithinWindow();
+        return ['authorization', `Bearer ${this.accessToken}`];
+    }
+    /**
+     * Register a callback invoked with the error of a failed background refresh (optional diagnostics).
+     * A later call replaces any previously registered handler.
+     *
+     * @param handler - Callback receiving the {@link KeycloakAuthenticationError} of the failed refresh.
+     */
+    onRefreshError(handler) {
+        this.onRefreshErrorHandler = handler;
+    }
+    /**
+     * Return the current access token without refreshing it; prefer {@link getAuthorizationMetadata}.
+     *
+     * @returns The current access token.
+     * @throws {@link TokenError} If no access token is available yet, i.e. login has not completed.
+     */
+    getAccessToken() {
+        if (this.accessToken === null) {
+            throw new TokenError('No access token available; login() has not completed or has lapsed');
+        }
+        return this.accessToken;
+    }
+    /**
+     * Build the value for an `Authorization` gRPC metadata header WITHOUT refreshing it; prefer
+     * {@link getAuthorizationMetadata}, which refreshes on demand.
+     *
+     * @returns The header value `Bearer <access_token>`.
+     * @throws {@link TokenError} If no access token is available yet, i.e. login has not completed.
+     */
+    getAuthorizationHeader() {
+        if (this.accessToken === null) {
+            throw new TokenError('No access token available; login() has not completed or has lapsed');
+        }
+        return `Bearer ${this.accessToken}`;
+    }
+    /**
+     * Perform the initial token acquisition and return a started provider (the s2t 7.x entry point that
+     * {@link login} delegates to).
+     *
+     * @param options - The {@link OfflineTokenLoginOptions}.
+     * @returns A promise resolving to a bootstrapped provider.
+     * @throws {@link TokenError} If the options are invalid (before any network call).
+     * @throws {@link KeycloakAuthenticationError} If the initial token acquisition fails.
+     */
+    static async login(options) {
+        validateLoginOptions(options);
+        const provider = new OfflineTokenProvider(options);
+        await provider.bootstrap(options.username, options.password);
+        return provider;
+    }
+    /**
+     * Set `authorization: Bearer <access_token>` on a gRPC `Metadata`-like object WITHOUT refreshing it
+     * (s2t 7.x); prefer {@link getAuthorizationMetadata} or the `tokenProvider` option of `createGrpcClient`.
+     *
+     * @typeParam T - The concrete {@link MetadataLike} type passed in.
+     * @param metadata - The gRPC `Metadata`-like object to mutate.
+     * @returns The same `metadata` object, now carrying the `authorization` header.
+     * @throws {@link TokenError} If no access token is available yet.
+     */
+    applyToMetadata(metadata) {
+        metadata.set('authorization', this.getAuthorizationHeader());
+        return metadata;
+    }
+    /**
+     * Refresh the access token now, whatever its expiry (s2t 7.x).
+     *
+     * @returns A promise that resolves once the access token has been refreshed.
+     * @throws {@link KeycloakAuthenticationError} If the refresh fails.
+     */
+    async refreshNow() {
+        await this.runForcedRefresh();
+    }
+    /**
+     * Stop the background refresh, interrupting a pending wait (also a backoff wait) so no further
+     * request is sent. Idempotent and safe from any state, also from inside an `onRefreshError` handler.
+     * The lazy {@link getAuthorizationMetadata} keeps refreshing on demand afterwards.
+     */
+    stop() {
+        this.closed = true;
+        this.halt();
+    }
+    /** Alias of {@link stop}. */
+    close() {
+        this.stop();
+    }
+    /**
+     * Whether {@link stop} / {@link close} was called.
+     *
+     * @returns `true` once the provider was closed by its user.
+     */
+    isClosed() {
+        return this.closed;
+    }
+    /**
+     * Redacted description: no token value, an empty token stays visible as `''`.
+     *
+     * @returns For example `OfflineTokenProvider(tokenEndpoint=..., clientId=..., accessToken=***REDACTED***, refreshToken=***REDACTED***)`.
+     */
+    toString() {
+        return (`OfflineTokenProvider(tokenEndpoint=${this.tokenEndpoint}, clientId=${this.clientId}, ` +
+            `accessToken=${redact(this.accessToken)}, refreshToken=${redact(this.refreshToken)})`);
+    }
+    /**
+     * Loggable form with the tokens redacted.
+     *
+     * @returns A plain object safe to log or `JSON.stringify`.
+     */
+    toJSON() {
+        return {
+            tokenEndpoint: this.tokenEndpoint,
+            clientId: this.clientId,
+            accessToken: redact(this.accessToken),
+            refreshToken: redact(this.refreshToken)
+        };
+    }
+    /**
+     * `util.inspect()` / `console.log()` rendering: the same as {@link toString}.
+     *
+     * @returns The redacted description.
+     */
+    [util_1.inspect.custom]() {
+        return this.toString();
+    }
+    /** End the background refresh (user stop or the bounded deadline) and release the armed timer. */
+    halt() {
+        this.stopped = true;
+        if (this.timer !== null) {
+            const timer = this.timer;
+            this.timer = null;
+            try {
+                this.scheduler.cancel(timer);
+            }
+            catch {
+                // A scheduler that refuses the cancel cannot be helped here; `stopped` already keeps the
+                // fired task from sending a request or re-arming, so stop() must not throw for it.
+            }
+        }
+    }
+    /**
+     * The current monotonic time in seconds.
+     *
+     * @returns Seconds.
+     */
+    nowS() {
+        return this.nowInMs() / 1000;
+    }
+    /**
+     * Arm the background timer for the next refresh: the leeway before expiry, or after a failure the
+     * backoff (never the floor alone), floored at the minimum delay and clamped to the bounded deadline.
+     * Stops the loop once the deadline has passed.
+     */
+    armNextRefresh() {
+        if (this.stopped) {
+            return;
+        }
+        const nowS = this.nowS();
+        if (this.deadlineS !== null && nowS >= this.deadlineS) {
+            this.halt();
+            return;
+        }
+        let delayS = this.accessTokenExpiresAtS - this.timings.expiryLeewayS - nowS;
+        if (this.consecutiveRefreshFailures > 0) {
+            delayS = this.nextRefreshAttemptAtS - nowS;
+        }
+        delayS = Math.max(delayS, this.timings.minRefreshDelayS);
+        if (this.deadlineS !== null) {
+            delayS = Math.min(delayS, this.deadlineS - nowS);
+        }
+        const selfRef = this.selfRef;
+        this.timer = this.scheduler.schedule(() => runBackgroundRefresh(selfRef), delayS * 1000);
+    }
+    /**
+     * One background step: refresh if due, report a failure, re-arm. A failure never ends the loop.
+     *
+     * @returns A promise that settles when the step is done; it never rejects.
+     */
+    async onBackgroundTimer() {
+        this.timer = null;
+        if (this.stopped) {
+            return;
+        }
+        const failuresBefore = this.consecutiveRefreshFailures;
+        try {
+            await this.refreshIfWithinWindow();
+        }
+        catch (error) {
+            // Already recorded and warned about by recordRefreshFailure; never a second warning.
+            this.logger.debug?.(`Keycloak background refresh will be retried (${describeError(error)})`);
+        }
+        if (this.consecutiveRefreshFailures > failuresBefore && this.onRefreshErrorHandler !== null) {
+            try {
+                this.onRefreshErrorHandler(this.lastRefreshFailure);
+            }
+            catch {
+                // A diagnostics handler that throws is the caller's bug; it must not end the loop.
+            }
+        }
+        this.armNextRefresh();
+    }
+    /**
+     * The refresh decision shared by the lazy and the background path (single flight).
+     *
+     * @returns A promise that resolves when the token may be served.
+     * @throws {@link KeycloakAuthenticationError} If the token has expired and could not be refreshed.
+     */
+    async refreshIfWithinWindow() {
+        while (this.inFlightRefresh !== null) {
+            await this.inFlightRefresh;
+        }
+        const nowS = this.nowS();
+        if (this.deadlineS !== null && nowS >= this.deadlineS) {
+            return;
+        }
+        if (nowS < this.accessTokenExpiresAtS - this.timings.expiryLeewayS) {
+            return;
+        }
+        if (nowS < this.nextRefreshAttemptAtS) {
+            if (nowS < this.accessTokenExpiresAtS) {
+                return;
+            }
+            throw new KeycloakAuthenticationError(`The Keycloak access token has expired and the refresh is backing off after ` +
+                `${this.consecutiveRefreshFailures} consecutive failure(s); the next attempt is due in ` +
+                `${(this.nextRefreshAttemptAtS - nowS).toFixed(1)}s`);
+        }
+        const outcome = { failure: null };
+        const attempt = this.exchangeRefreshToken().then(() => this.recordRefreshSuccess(), (error) => {
+            outcome.failure = error;
+            this.recordRefreshFailure(outcome.failure);
+        });
+        this.inFlightRefresh = attempt;
+        try {
+            await attempt;
+        }
+        finally {
+            this.inFlightRefresh = null;
+        }
+        // Re-read the clock: the failed attempt may itself have taken up to the HTTP timeout.
+        if (outcome.failure !== null && this.nowS() >= this.accessTokenExpiresAtS) {
+            throw outcome.failure;
+        }
+    }
+    /**
+     * Count a failed refresh, schedule the next attempt (backoff measured from NOW) and warn once.
+     * Deliberately not a fallback to a password grant.
+     *
+     * @param error - The failure; only its type and message are logged.
+     */
+    recordRefreshFailure(error) {
+        const nowS = this.nowS();
+        this.consecutiveRefreshFailures += 1;
+        this.lastRefreshFailure = error;
+        const delayS = computeRefreshBackoffS(this.consecutiveRefreshFailures, this.randomFraction, this.timings);
+        this.nextRefreshAttemptAtS = nowS + delayS;
+        const remainingS = this.accessTokenExpiresAtS - nowS;
+        const validity = remainingS > 0
+            ? `the current access token stays valid for ${remainingS.toFixed(1)}s`
+            : 'the current access token has expired';
+        this.logger.warn(`Keycloak token refresh failed (attempt ${this.consecutiveRefreshFailures}); retrying in ` +
+            `${delayS.toFixed(1)}s, ${validity} (${describeError(error)})`);
+    }
+    /** Reset the failure backoff after a successful refresh and log the recovery, if any. */
+    recordRefreshSuccess() {
+        if (this.consecutiveRefreshFailures > 0) {
+            this.logger.info(`Keycloak token refresh recovered after ${this.consecutiveRefreshFailures} failed attempt(s)`);
+        }
+        this.consecutiveRefreshFailures = 0;
+        this.nextRefreshAttemptAtS = 0;
+    }
+    /**
+     * Exchange the offline refresh token for a fresh access token.
+     *
+     * @returns A promise that resolves once the new token is stored.
+     * @throws {@link KeycloakAuthenticationError} On any failure.
+     */
+    async exchangeRefreshToken() {
+        const payload = await this.postTokenRequest({
+            grant_type: 'refresh_token',
+            client_id: this.clientId,
+            refresh_token: this.refreshToken
+        }, 'refresh');
+        this.storeTokens(payload);
+    }
+    /**
+     * POST a form to the token endpoint and return the parsed JSON object. Every failure becomes a
+     * {@link KeycloakAuthenticationError} carrying the original error as its cause.
+     *
+     * @param params - Form fields (grant type, client id, credentials).
+     * @param action - `login` or `refresh`, for the messages.
+     * @returns The parsed token response.
+     * @throws {@link KeycloakAuthenticationError} On a transport error, a non-2xx status or an unusable body.
+     */
+    async postTokenRequest(params, action) {
+        const timeoutInMs = this.timings.httpTimeoutS * 1000;
+        let status;
+        let text;
+        try {
+            const response = await this.fetchImpl(this.tokenEndpoint, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    Accept: 'application/json'
+                },
+                body: new URLSearchParams(params).toString(),
+                signal: AbortSignal.timeout(timeoutInMs),
+                timeoutInMs
+            });
+            status = response.status;
+            text = await response.text();
+        }
+        catch (error) {
+            if (isNetworkError(error)) {
+                throw new KeycloakAuthenticationError(`Keycloak token ${action} could not reach the token endpoint (${describeError(error)})`, error);
+            }
+            throw new KeycloakAuthenticationError(`Keycloak token ${action} failed (${describeError(error)})`, error);
+        }
+        if (status < 200 || status >= 300) {
+            throw new KeycloakAuthenticationError(`Keycloak token ${action} failed with status ${status}: ${text.slice(0, this.timings.maxErrorBodyChars)}`);
+        }
+        let body;
+        try {
+            body = JSON.parse(text);
+        }
+        catch (error) {
+            throw new KeycloakAuthenticationError(`Keycloak token ${action} returned status ${status} with a body that is not JSON`, error);
+        }
+        if (typeof body !== 'object' || body === null || Array.isArray(body)) {
+            throw new KeycloakAuthenticationError(`Keycloak token ${action} returned a JSON ${jsonTypeWord(body)} instead of an object`);
+        }
+        return body;
+    }
+    /**
+     * Validate a token response, then store the access token, a rotated refresh token and the expiry.
+     * A malformed response changes no state.
+     *
+     * @param payload - The parsed token response.
+     * @throws {@link KeycloakAuthenticationError} If it carries no usable `access_token` or a non-numeric
+     *   `expires_in`. The message names the response's FIELDS, never a value.
+     */
+    storeTokens(payload) {
+        const accessToken = payload.access_token;
+        if (typeof accessToken !== 'string' || accessToken.length === 0) {
+            throw new KeycloakAuthenticationError('Keycloak token response did not contain an access_token; the response carried the fields ' +
+                `[${Object.keys(payload).sort().join(', ')}] (values withheld: a token response is credential material)`);
+        }
+        const expiresInS = parseExpiresIn(payload.expires_in);
+        this.accessToken = accessToken;
+        // Keycloak may rotate the offline refresh token; keep the newest one when present.
+        const refreshToken = payload.refresh_token;
+        if (typeof refreshToken === 'string' && refreshToken.length > 0) {
+            this.refreshToken = refreshToken;
+        }
+        this.accessTokenExpiresAtS = this.nowS() + Math.max(expiresInS, 0);
+    }
+    /**
+     * Refresh the access token NOW, whatever its expiry: the explicit "refresh" of the earlier API. It
+     * joins a refresh already in flight instead of sending a second one, counts towards the shared
+     * failure backoff like any other refresh, and never sends a password grant.
+     *
+     * @returns A promise that resolves once the refreshed token is stored.
+     * @throws {@link TokenError} If no token was acquired yet.
+     * @throws {@link KeycloakAuthenticationError} If the refresh fails.
+     */
+    async runForcedRefresh() {
+        if (this.accessToken === null) {
+            throw new TokenError('No access token available; login() has not completed or has lapsed');
+        }
+        if (this.inFlightRefresh !== null) {
+            await this.inFlightRefresh;
+            return;
+        }
+        const outcome = { failure: null };
+        const attempt = this.exchangeRefreshToken().then(() => this.recordRefreshSuccess(), (error) => {
+            outcome.failure = error;
+            this.recordRefreshFailure(outcome.failure);
+        });
+        this.inFlightRefresh = attempt;
+        try {
+            await attempt;
+        }
+        finally {
+            this.inFlightRefresh = null;
+        }
+        if (outcome.failure !== null) {
+            throw outcome.failure;
+        }
+    }
 }
-
+exports.OfflineTokenProvider = OfflineTokenProvider;
 /**
- * Convenience wrapper around `OfflineTokenProvider.login`.
+ * Parse `expires_in`: missing means 0, a number or a numeric string is accepted.
  *
- * @param {object} options the Keycloak/ROPC parameters (public client, no secret).
- * @returns {Promise<OfflineTokenProvider>} a started provider.
+ * @param value - The raw field.
+ * @returns Seconds.
+ * @throws {@link KeycloakAuthenticationError} If the value is not numeric (the value is withheld).
+ */
+function parseExpiresIn(value) {
+    if (value === undefined) {
+        return 0;
+    }
+    let parsed = Number.NaN;
+    if (typeof value === 'number') {
+        parsed = value;
+    }
+    else if (typeof value === 'string' && value.trim().length > 0) {
+        parsed = Number(value);
+    }
+    if (Number.isNaN(parsed)) {
+        throw new KeycloakAuthenticationError('Keycloak token response carried a non-numeric expires_in (value withheld)');
+    }
+    return parsed;
+}
+/**
+ * Redact a token for rendering: non-empty becomes the marker, empty or unset renders as `''`.
+ *
+ * @param secret - The token, or `null`.
+ * @returns The redacted rendering.
+ */
+function redact(secret) {
+    return secret === null || secret.length === 0 ? "''" : REDACTED_SECRET;
+}
+/**
+ * Validate login options before any network I/O.
+ *
+ * @param options - The options to check.
+ * @throws {@link TokenError} If `options` is missing, a Keycloak field (`keycloakUrl`, `realm`,
+ *   `clientId`) or `username` is absent/empty, or neither `password` nor `refreshToken` is set.
+ */
+function validateLoginOptions(options) {
+    if (options === undefined || options === null) {
+        throw new TokenError('login() requires an options object');
+    }
+    for (const key of ['keycloakUrl', 'realm', 'clientId']) {
+        if (!isNonEmptyString(options[key])) {
+            throw new TokenError(`login() option "${key}" is required and must be a non-empty string; the Keycloak fields ` +
+                '`keycloakUrl`, `realm`, and `clientId` must be provided together');
+        }
+    }
+    if (!isNonEmptyString(options.username)) {
+        throw new TokenError('login() option "username" is required and must be a non-empty string');
+    }
+    if (options.refreshToken !== undefined && typeof options.refreshToken !== 'string') {
+        throw new TokenError('login() option "refreshToken" must be a string');
+    }
+    if (!isNonEmptyString(options.password) && !isNonEmptyString(options.refreshToken)) {
+        throw new TokenError('login() option "password" is required and must be a non-empty string unless a refresh token is ' +
+            'handed off: either the field `password` or the field `refreshToken` (refresh_token) is mandatory');
+    }
+}
+/**
+ * @param value - Anything.
+ * @returns Whether `value` is a non-empty string.
+ */
+function isNonEmptyString(value) {
+    return typeof value === 'string' && value.length > 0;
+}
+/**
+ * Acquire a Keycloak token against the PUBLIC SDK client and return a live provider whose access token
+ * is auto-refreshed until `tokenExpirationInS` elapses. With `refreshToken` set this is one refresh
+ * grant (no password is ever sent); otherwise a one-time ROPC + `offline_access` login.
+ *
+ * Every call builds a NEW provider (one login); share one with {@link getKeycloakTokenProvider}.
+ *
+ * @param options - The {@link OfflineTokenLoginOptions}; `keycloakUrl`, `realm`, `clientId` and
+ *   `username` are required, plus `password` or `refreshToken`.
+ * @returns A promise resolving to a bootstrapped {@link OfflineTokenProvider}.
+ * @throws {@link TokenError} If the options are invalid (before any network call).
+ * @throws {@link KeycloakAuthenticationError} If the initial token acquisition fails.
  */
 async function login(options) {
-	return OfflineTokenProvider.login(options);
+    return OfflineTokenProvider.login(options);
 }
-
-module.exports = {
-	OfflineTokenProvider: OfflineTokenProvider,
-	login: login,
-	INSECURE_AGENT_OPTIONS: INSECURE_AGENT_OPTIONS
-};
+/** Shared providers by credential key; held weakly so an unused provider can be collected. */
+const PROVIDER_REGISTRY = new Map();
+/** Provider creations in flight, so concurrent first use logs in once. */
+const PENDING_PROVIDERS = new Map();
+/**
+ * The registry key of a credential set: the SHA-256 hex digest of the fields that define the identity,
+ * so the key holds no secret and is never an object identity. `refreshToken` takes part: two token-only
+ * configs carry an EMPTY password and would otherwise share one provider across tenants.
+ *
+ * @param options - The Keycloak options.
+ * @returns A 64-character hex digest.
+ */
+function keycloakProviderRegistryKey(options) {
+    const fields = [
+        options.keycloakUrl ?? '',
+        options.realm ?? '',
+        options.clientId ?? '',
+        options.username ?? '',
+        options.password ?? '',
+        options.tokenExpirationInS === undefined ? '' : String(options.tokenExpirationInS),
+        String(options.keycloakVerifySsl ?? true),
+        options.refreshToken ?? ''
+    ];
+    return (0, crypto_1.createHash)('sha256').update(fields.join('\0'), 'utf8').digest('hex');
+}
+/**
+ * Return the provider shared by every client of one credential set, logging in once.
+ *
+ * Returns `null` when Keycloak is not configured (none of `keycloakUrl`, `realm`, `clientId` is set):
+ * then no authorization metadata is attached at all (plaintext server, or an ingress that injects auth).
+ * A closed provider is never handed out; a new one is created instead.
+ *
+ * @param options - The Keycloak options; the transport seams of the FIRST caller of a key are used.
+ * @returns The shared provider, or `null` without a Keycloak configuration.
+ * @throws {@link TokenError} If only some of `keycloakUrl`, `realm`, `clientId` are set, or the other
+ *   login options are invalid.
+ * @throws {@link KeycloakAuthenticationError} If the initial token acquisition fails.
+ */
+async function getKeycloakTokenProvider(options) {
+    const tripleSet = [options.keycloakUrl, options.realm, options.clientId].filter(isNonEmptyString).length;
+    if (tripleSet === 0) {
+        return null;
+    }
+    if (tripleSet < 3) {
+        throw new TokenError('The Keycloak fields `keycloakUrl`, `realm`, and `clientId` must be provided together ' +
+            '(keycloak_url, realm, client_id).');
+    }
+    validateLoginOptions(options);
+    const key = keycloakProviderRegistryKey(options);
+    for (const [registeredKey, reference] of PROVIDER_REGISTRY) {
+        const registered = reference.deref();
+        if (registered === undefined || registered.isClosed()) {
+            PROVIDER_REGISTRY.delete(registeredKey);
+        }
+    }
+    const pending = PENDING_PROVIDERS.get(key);
+    if (pending !== undefined) {
+        return pending;
+    }
+    const existing = PROVIDER_REGISTRY.get(key)?.deref();
+    if (existing !== undefined) {
+        return existing;
+    }
+    const creation = login(options);
+    PENDING_PROVIDERS.set(key, creation);
+    try {
+        const provider = await creation;
+        PROVIDER_REGISTRY.set(key, new WeakReferenceImpl(provider));
+        return provider;
+    }
+    finally {
+        PENDING_PROVIDERS.delete(key);
+    }
+}
+/**
+ * Build the default {@link TokenFetch}: delegate to the global `fetch` (Node >= 18).
+ *
+ * When `verifySsl` is `false`, a cached undici `Agent` with `rejectUnauthorized: false` is attached to
+ * every request as its `dispatcher`, so the Keycloak token call skips TLS certificate verification
+ * (opt-in insecure; Node-only; never a process-wide switch). The secure default never loads undici.
+ *
+ * @param verifySsl - Whether to verify the Keycloak server's TLS certificate.
+ * @returns A {@link TokenFetch} bound to the chosen TLS-verification behaviour.
+ */
+function createDefaultFetch(verifySsl) {
+    let dispatcher;
+    if (!verifySsl) {
+        // Lazy require keeps undici out of the default (secure) code path.
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        const { Agent } = require('undici');
+        dispatcher = new Agent(exports.INSECURE_AGENT_OPTIONS);
+    }
+    return (url, init) => {
+        const globalFetch = globalThis.fetch;
+        return globalFetch(url, dispatcher === undefined ? init : { ...init, dispatcher });
+    };
+}

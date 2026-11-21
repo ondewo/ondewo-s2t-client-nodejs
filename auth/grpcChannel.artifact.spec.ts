@@ -31,3 +31,17 @@ describe('auth/grpcChannel.js', () => {
 		assert.equal(shipped, tested);
 	});
 });
+
+// auth/offlineTokenProvider.js is the committed `npm run build:auth` output; offlineTokenProvider.spec.ts and
+// keycloakTokenProvider.spec.ts run against it as well as against the test build, and this pins that it IS
+// the build of the current source.
+describe('auth/offlineTokenProvider.js', () => {
+	it('is the tsc output of auth/offlineTokenProvider.ts (run `npm run build:auth` after editing the source)', () => {
+		const tested: string = readFileSync(join(__dirname, 'offlineTokenProvider.js'), 'utf8').replace(
+			/\n\/\/# sourceMappingURL=.*\n?$/,
+			'\n'
+		);
+		const shipped: string = readFileSync(join(__dirname, '..', '..', 'auth', 'offlineTokenProvider.js'), 'utf8');
+		assert.equal(shipped, tested);
+	});
+});

@@ -322,21 +322,43 @@ runTest('main stops the token provider even when the RPC fails', async (): Promi
 });
 
 /**
- * Called with NO overrides (so the real login and the real client factory are selected) and an empty
- * environment, main must reject with the Keycloak error -- proving the defaults are wired up without
- * ever reaching the gRPC dial.
+ * Called with NO overrides (so the real login and the real client factory are selected) and only a
+ * technical user in the environment, main must reject with the Keycloak error -- proving the defaults
+ * are wired up without ever reaching the gRPC dial.
  */
 runTest('main with no overrides selects the real login and client factory', async (): Promise<void> => {
-	await withEnv({}, async (): Promise<void> => {
+	// A technical user is set: the real login validates its options before any request.
+	await withEnv({ KEYCLOAK_USER_NAME: 'tech-bot', KEYCLOAK_PASSWORD: 'super-secret' }, async (): Promise<void> => {
 		const globalRef: { fetch?: typeof fetch } = globalThis as { fetch?: typeof fetch };
 		const previousFetch: typeof fetch | undefined = globalRef.fetch;
 		globalRef.fetch = buildTokenFetch(401);
 		silenceConsole();
 		try {
-			await assert.rejects((): Promise<void> => main(), /HTTP 401/);
+			await assert.rejects((): Promise<void> => main(), /failed with status 401/);
 		} finally {
 			mock.restoreAll();
 			globalRef.fetch = previousFetch;
 		}
+	});
+});
+
+/** With no technical user in the environment, the real login refuses before it sends any request. */
+runTest('main without a technical user is refused by the real login before any request', async (): Promise<void> => {
+	await withEnv({}, async (): Promise<void> => {
+		let requests: number = 0;
+		const globalRef: { fetch?: typeof fetch } = globalThis as { fetch?: typeof fetch };
+		const previousFetch: typeof fetch | undefined = globalRef.fetch;
+		globalRef.fetch = ((): Promise<Response> => {
+			requests += 1;
+			return Promise.reject(new Error('no request may be sent'));
+		}) as unknown as typeof fetch;
+		silenceConsole();
+		try {
+			await assert.rejects((): Promise<void> => main(), /login\(\) option "username" is required/);
+		} finally {
+			mock.restoreAll();
+			globalRef.fetch = previousFetch;
+		}
+		assert.equal(requests, 0);
 	});
 });

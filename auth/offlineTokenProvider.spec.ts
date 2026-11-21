@@ -697,13 +697,15 @@ function runProviderSuite(implementation: string, mod: AuthModule): void {
 		}
 	});
 
-	/** Verifies a password login whose response carries no refresh_token is refused (no offline session). */
-	runCase('a password login without a refresh_token in the response is refused', async (): Promise<void> => {
+	/** Verifies a password login whose response carries no refresh_token is accepted, like the python SDK. */
+	runCase('a password login without a refresh_token in the response is accepted', async (): Promise<void> => {
 		const mock: FetchMock = buildFetchMock([{ access_token: 'access-1', expires_in: 300 }]);
-		await assert.rejects((): Promise<Provider> => login({ ...credentials, fetchImpl: mock.fetchImpl }), {
-			name: 'KeycloakAuthenticationError',
-			message: /did not contain a refresh_token/
-		});
+		const provider: Provider = await login({ ...credentials, fetchImpl: mock.fetchImpl });
+		try {
+			assert.equal(provider.getAccessToken(), 'access-1');
+		} finally {
+			provider.stop();
+		}
 	});
 
 	/** Verifies a diagnostics handler that throws never ends the background loop. */

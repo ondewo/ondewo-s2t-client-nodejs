@@ -335,8 +335,12 @@ export declare class OfflineTokenProvider {
     /**
      * Refresh the access token now, whatever its expiry (s2t 7.x).
      *
+     * It skips only the leeway window: after `tokenExpirationInS` elapsed, or while the shared backoff of
+     * earlier failures is pending, it sends no request and rejects instead. A failed refresh rejects too
+     * (unlike the lazy path, which keeps serving a still-valid token).
+     *
      * @returns A promise that resolves once the access token has been refreshed.
-     * @throws {@link KeycloakAuthenticationError} If the refresh fails.
+     * @throws {@link KeycloakAuthenticationError} If the refresh fails, the login lifetime elapsed or the backoff is pending.
      */
     refreshNow(): Promise<void>;
     /**

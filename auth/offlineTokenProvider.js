@@ -273,10 +273,6 @@ class OfflineTokenProvider {
                 scope: 'offline_access'
             }, 'login');
             this.storeTokens(payload);
-            if (this.refreshToken === null) {
-                throw new KeycloakAuthenticationError('Keycloak token response did not contain a refresh_token; the SDK client must have ' +
-                    'directAccessGrants + the offline_access scope (ondewo-s2t-cai-sdk-public)');
-            }
         }
         if (this.tokenExpirationInS !== undefined) {
             this.deadlineS = this.nowS() + this.tokenExpirationInS;
@@ -368,8 +364,12 @@ class OfflineTokenProvider {
     /**
      * Refresh the access token now, whatever its expiry (s2t 7.x).
      *
+     * It skips only the leeway window: after `tokenExpirationInS` elapsed, or while the shared backoff of
+     * earlier failures is pending, it sends no request and rejects instead. A failed refresh rejects too
+     * (unlike the lazy path, which keeps serving a still-valid token).
+     *
      * @returns A promise that resolves once the access token has been refreshed.
-     * @throws {@link KeycloakAuthenticationError} If the refresh fails.
+     * @throws {@link KeycloakAuthenticationError} If the refresh fails, the login lifetime elapsed or the backoff is pending.
      */
     async refreshNow() {
         await this.runForcedRefresh();
@@ -580,7 +580,7 @@ class OfflineTokenProvider {
         const payload = await this.postTokenRequest({
             grant_type: 'refresh_token',
             client_id: this.clientId,
-            refresh_token: this.refreshToken
+            refresh_token: this.refreshToken ?? ''
         }, 'refresh');
         this.storeTokens(payload);
     }
@@ -644,7 +644,10 @@ class OfflineTokenProvider {
         const accessToken = payload.access_token;
         if (typeof accessToken !== 'string' || accessToken.length === 0) {
             throw new KeycloakAuthenticationError('Keycloak token response did not contain an access_token; the response carried the fields ' +
-                `[${Object.keys(payload).sort().join(', ')}] (values withheld: a token response is credential material)`);
+                `[${Object.keys(payload)
+                    .sort()
+                    .map((name) => `'${name}'`)
+                    .join(', ')}] (values withheld: a token response is credential material)`);
         }
         const expiresInS = parseExpiresIn(payload.expires_in);
         this.accessToken = accessToken;
@@ -671,6 +674,16 @@ class OfflineTokenProvider {
         if (this.inFlightRefresh !== null) {
             await this.inFlightRefresh;
             return;
+        }
+        // An explicit refresh skips only the leeway window (R2): it never sends a request after the login
+        // lifetime (R1) or while the shared backoff is pending (R3), and it reports that it did not refresh.
+        const nowS = this.nowS();
+        if (this.deadlineS !== null && nowS >= this.deadlineS) {
+            throw new KeycloakAuthenticationError('The Keycloak login lifetime (tokenExpirationInS) has elapsed; no further token refresh is sent');
+        }
+        if (nowS < this.nextRefreshAttemptAtS) {
+            throw new KeycloakAuthenticationError(`The Keycloak token refresh is backing off after ${this.consecutiveRefreshFailures} consecutive ` +
+                `failure(s); the next attempt is due in ${(this.nextRefreshAttemptAtS - nowS).toFixed(1)}s`);
         }
         const outcome = { failure: null };
         const attempt = this.exchangeRefreshToken().then(() => this.recordRefreshSuccess(), (error) => {
@@ -793,7 +806,7 @@ function keycloakProviderRegistryKey(options) {
         options.username ?? '',
         options.password ?? '',
         options.tokenExpirationInS === undefined ? '' : String(options.tokenExpirationInS),
-        String(options.keycloakVerifySsl ?? true),
+        (options.keycloakVerifySsl ?? true) ? 'True' : 'False',
         options.refreshToken ?? ''
     ];
     return (0, crypto_1.createHash)('sha256').update(fields.join('\0'), 'utf8').digest('hex');
